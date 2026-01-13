@@ -12,7 +12,6 @@ After creating a repo with this template, deploy works automatically with each p
 ### Todo:
 
 - Because of the `Template_Next` path in the URL, `Template_Next` is required in line 8 of the [package.json file](package.json) file￼. If you deploy the repository to a different URL (e.g., if you choose a different name for your repo), you will need to adapt or remove this part.
-- Enable GitHub Pages in your repository’s Settings and set the source to GitHub Actions.
 - Adjust the path of the badges at the beginning of this README file so that they reference your own repository instead of the template.
 
 # Next
