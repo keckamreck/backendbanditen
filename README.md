@@ -1,5 +1,5 @@
-[![Build Frontend](https://github.com/DHBW-KA-Webengineering/Template_Next/actions/workflows/build-frontend.yml/badge.svg)](https://github.com/DHBW-KA-Webengineering/Template_Next/actions/workflows/build-frontend.yml)
-[![Publish Frontend](https://github.com/DHBW-KA-Webengineering/Template_Next/actions/workflows/publish-frontend.yml/badge.svg)](https://github.com/DHBW-KA-Webengineering/Template_Next/actions/workflows/publish-frontend.yml)
+[![Build Frontend](https://github.com/keckamreck/backendbanditen/actions/workflows/build-frontend.yml/badge.svg)](https://github.com/keckamreck/backendbanditen/actions/workflows/build-frontend.yml)
+[![Publish Frontend](https://github.com/keckamreck/backendbanditen/actions/workflows/publish-frontend.yml/badge.svg)](https://github.com/keckamreck/backendbanditen/actions/workflows/publish-frontend.yml)
 
 # Template_Next
 
@@ -7,7 +7,7 @@ This repository is a template with a working GitHub action for the build and Git
 
 ## How to use this template
 
-After creating a repo with this template, deploy works automatically with each push to github pages. The template is deployed to [dhbw-ka-webengineering.github.io/Template_Next/](https://dhbw-ka-webengineering.github.io/Template_Next/)
+After creating a repo with this template, deploy works automatically with each push to github pages. The template is deployed to [keckamreck.github.io/backendbanditen/] (https://keckamreck.github.io/backendbanditen/)
 
 ### Todo:
 
