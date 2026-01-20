@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "BASE_PATH=\"\" next dev --turbopack",
     "build": "next build",
-    "build:gh-pages": "BASE_PATH=/backendbanditen",
+    "build:gh-pages": "BASE_PATH=/backendbanditen next build",
     "start": "next start",
     "lint": "next lint"
   },
