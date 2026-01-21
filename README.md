@@ -9,11 +9,6 @@ This repository is a template with a working GitHub action for the build and Git
 
 After creating a repo with this template, deploy works automatically with each push to github pages. The template is deployed to [keckamreck.github.io/backendbanditen/] (https://keckamreck.github.io/backendbanditen/)
 
-### Todo:
-
-- Because of the `Template_Next` path in the URL, `Template_Next` is required in line 8 of the [package.json file](package.json) file￼. If you deploy the repository to a different URL (e.g., if you choose a different name for your repo), you will need to adapt or remove this part.
-- Adjust the path of the badges at the beginning of this README file so that they reference your own repository instead of the template.
-
 # Next
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
