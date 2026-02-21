@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 1em 1em 1em 1em;
+}
+
+.card {
+  border: 1px solid black;
+  padding: 2px 14px;
+}
+
+.card > h1 {
+  position: relative;
+  font-size: 1.7em;
+}
+
+.card > h3 {
+  position: relative;
+  font-size: 1.2em;
+}
+
+.card > h4 {
+  position: absolute;
+  margin-left: 19em;
+  margin-top: -2.7em;
+}
