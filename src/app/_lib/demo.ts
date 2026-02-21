@@ -15,7 +15,7 @@ export function generateGroup() {
 
 function generateTask(){
   let tasks: Task[] = [
-    { id: 0, title: "This a task", priority: Priority.High},
+    { id: 0, title: "This is a task", priority: Priority.High},
     { id: 1, title: "This is another task", priority: Priority.Low},
   ];
   return tasks;
