@@ -1,0 +1,30 @@
+.page {
+  display: flex;
+  background: white;
+  color: orange;
+  font-size: 1em;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0;
+}
+.main{
+
+  div{
+    display: flex;
+    width: 50vw;
+    //background: black;
+
+  }
+  h1{
+    width: 50vw;
+    color: orange;
+  }
+  input{
+    background: white;
+    color: black;
+  }
+}
+
+
