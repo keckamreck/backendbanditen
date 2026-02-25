@@ -1,8 +1,9 @@
 "use client";
-
 import styles from "./page.module.scss";
 import Head from "next/head";
 import { useState } from 'react';
+import Image from "next/image";
+// import { newList } ;
 
 
 
@@ -17,14 +18,24 @@ export default function DashboardPage() {
             </Head>
             <main className={styles.main}>
                 <div>
-                    <SearchBar />
-                    <Biber />
-                    <button onClick={()=>{setLikes(like+1); console.log(like)}}>
-                        Like
-                    </button>
+                    <div>
+                        <SearchBar />
+                    </div>
+                    <div>
+                        <button title="addList" onClick={()=>newList()}>
+                            +
+                        </button>
+                    </div>
+
                 </div>
-                <div background-color="#090309">
-                    <h1>Biber sidjjshdjhj hjhdjs hdjsjd hsjdj djhsjhdj shdj hsdjadjhj jhj hdjhsd jjd h</h1>
+                <div>
+                    <Biber />
+
+                </div>
+                <div className={styles.todayButton}>
+                    <button id="todayButton" >
+                        Einkaufen
+                    </button>
                 </div>
             </main>
         </div>
@@ -41,7 +52,7 @@ export default function DashboardPage() {
 
     }
     function Biber(){
-        let biber= title("Keser")
+        let biber= title("Kneser")
         return(
             <h1>{biber}</h1>
         )

@@ -2,29 +2,58 @@
   display: flex;
   background: white;
   color: orange;
-  font-size: 1em;
+  font-size: 2em;
   width: 100vw;
   height: 100vh;
   flex-direction: column;
   align-items: center;
-  padding-top: 0;
+
 }
 .main{
 
+  margin-top: 2vh;
+  width: 96vw;
+  height: 96vh;
+  border: black solid 1px;
   div{
     display: flex;
-    width: 50vw;
-    //background: black;
-
+    width: inherit;
+    align-items: center;
+    justify-content: center;
+    border: black solid 1px;
+    div{
+      display: flex;
+      width: 50vw;
+    }
   }
-  h1{
-    width: 50vw;
+  button{
+    font-size: 1em;
+    height: 2em;
+    width: 2em;
+    text-align: center;
+}
+  a{
     color: orange;
+    text-align: center;
   }
+
   input{
+    width: 50vw;
+    height: 2em;
+    font-size: 1em;
     background: white;
     color: black;
   }
 }
+.todayButton{
+  button{
+
+    font-size: 1.5em;
+    width: 100%;
+    text-align: center;
+  }
+
+}
+
 
 
