@@ -6,13 +6,13 @@ export function generateGroup() {
       {
         slug: "basic",
         title: "Test group",
-        data: generateTask(),
+        entries: generateEntries(),
       },
     ];
   return groups[0];
 }
 
-function generateTask(){
+function generateEntries(){
   let tasks: Task[] = [
     { id: 0, title: "This is a task", priority: Priority.High},
     { id: 1, title: "This is another task", priority: Priority.Low},

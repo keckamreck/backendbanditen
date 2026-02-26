@@ -8,7 +8,7 @@ export default async function ArchiveGroup({
 }) {
   const slug = (await params).slug;
   const group = getGroup(slug);
-  const listTasks = group.data.map(task => {
+  const listTasks = group.entries.map(task => {
     return renderTask(task);
   });
 
