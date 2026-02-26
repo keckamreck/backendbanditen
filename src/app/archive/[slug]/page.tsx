@@ -1,12 +1,5 @@
-import { getGroup } from "../../_lib/group";
-import { getPriority } from "../../_lib/priority";
-import { Group } from ".../_types/group.ts";
-import { Task } from ".../_types/task.ts";
-import styles from './page.module.css'
 
-export function generateStaticParams() {
-  return [{ slug: "basic" }, { slug: "sports" }, { slug: "school" }]
-}
+import styles from './page.module.css'
 
 export default async function ArchiveGroup({
   params,

@@ -1,6 +1,5 @@
-import { Group } from "../_types/group.ts";
-import { Task } from "../_types/task.ts";
-import { Priority } from "../_types/priority.ts";
+import { Group } from "../_models/group";
+import { Priority, Task } from "../_models/task";
 
 export function generateGroup() {
   const groups: Group[] = [

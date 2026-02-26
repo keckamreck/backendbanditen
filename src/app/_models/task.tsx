@@ -1,4 +1,8 @@
-import { Priority } from "./priority.ts";
+export enum Priority {
+  High,
+  Medium,
+  Low
+};
 
 export type Task = {
   id: number;

@@ -1,4 +1,4 @@
-import { Priority } from "../_types/priority.ts";
+import { Priority } from "../_models/task";
 
 export function getPriority(id: number) {
   return Priority[id];
