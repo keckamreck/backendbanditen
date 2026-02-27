@@ -1,7 +1,7 @@
 "use client";
 
 import { Group, getGroup } from '@/app/_models/group';
-import { renderTask } from '@/app/_components/card';
+import { TaskCard } from '@/app/_components/card';
 import { DeleteButton } from '@/app/_components/button';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -29,6 +29,6 @@ export default function ArchivePage() {
 
 function getTasks(group: Group) {
   return group.entries.map(task => {
-    return renderTask(task);
+    return <TaskCard key={task.id} task={task}/>;
   });
 }
