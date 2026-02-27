@@ -13,8 +13,7 @@ export default function ArchivePage() {
   const group = getGroup(slug);
   const [tasks, deleteTasks] = useState(getTasks(group));
 
-  function handleDelete()
-  {
+  function handleDelete() {
     deleteTasks([]);
   }
 
