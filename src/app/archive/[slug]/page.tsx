@@ -7,8 +7,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styles from './page.module.css'
 
-export default function ArchivePage()
-{
+export default function ArchivePage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
   const group = getGroup(slug);
@@ -28,8 +27,7 @@ export default function ArchivePage()
   );
 }
 
-function getTasks(group: Group)
-{
+function getTasks(group: Group) {
   return group.entries.map(task => {
     return renderTask(task);
   });
