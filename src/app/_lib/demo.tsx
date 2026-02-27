@@ -1,5 +1,5 @@
-import { Group } from "../_models/group";
-import { Priority, Task } from "../_models/task";
+import { Group } from '@/app/_models/group';
+import { Priority, Task } from '@/app/_models/task';
 
 export function generateGroup() {
   const groups: Group[] = [

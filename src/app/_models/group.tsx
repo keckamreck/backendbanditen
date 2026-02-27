@@ -1,5 +1,5 @@
-import { Task } from "./task";
-import { generateGroup } from "../_lib/demo";
+import { Task } from './task';
+import { generateGroup } from '@/app/_lib/demo';
 
 export type Group = {
   slug: string;
