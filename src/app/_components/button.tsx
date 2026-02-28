@@ -9,8 +9,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function DeleteButton(props: ButtonProps) {
   return (
-    <button id="delete-button" type="button" onClick={props.onClick} className={styles.button}>
-      <FontAwesomeIcon size="3x" icon={faTrash}/>
+    <button id="delete-button" type="button" onClick={props.onClick} className={styles.buttonDelete}>
+      <FontAwesomeIcon size="2x" icon={faTrash}/>
     </button>
   );
 }
