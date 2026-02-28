@@ -5,10 +5,12 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonHTMLAttributes } from "react";
 import styles from './button.module.css'
 
-export function DeleteButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+
+export function DeleteButton(props: ButtonProps) {
   return (
     <button id="delete-button" type="button" onClick={props.onClick} className={styles.button}>
-      <FontAwesomeIcon icon={faTrash}/>
+      <FontAwesomeIcon size="3x" icon={faTrash}/>
     </button>
   );
 }
