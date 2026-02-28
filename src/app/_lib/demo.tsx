@@ -5,7 +5,7 @@ export function generateGroup() {
   const groups: Group[] = [
       {
         slug: "basic",
-        title: "Test group",
+        title: "Basic group",
         entries: generateEntries(),
       },
     ];
@@ -14,8 +14,9 @@ export function generateGroup() {
 
 function generateEntries() {
   let tasks: Task[] = [
-    { id: 0, title: "This is a task", priority: Priority.High},
-    { id: 1, title: "This is another task", priority: Priority.Low},
+    { id: 0, title: "This is a task", date: new Date("2025-02-01"), priority: Priority.High},
+    { id: 1, title: "This is another task", date: new Date("2025-03-01"), priority: Priority.Medium},
+    { id: 2, title: "This is another task", date: new Date("2025-04-01"), priority: Priority.Low},
   ];
   return tasks;
 }
