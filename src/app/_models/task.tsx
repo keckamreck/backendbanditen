@@ -7,5 +7,6 @@ export enum Priority {
 export type Task = {
   id: number;
   title: string;
+  date: Date;
   priority: Priority;
 };
