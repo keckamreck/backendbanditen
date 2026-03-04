@@ -1,22 +1,45 @@
-import { Group } from '@/app/_models/group';
+import { List } from '@/app/_models/list';
 import { Priority, Task } from '@/app/_models/task';
 
-export function generateGroup() {
-  const groups: Group[] = [
-      {
-        slug: "basic",
-        title: "Basic group",
-        entries: generateEntries(),
-      },
-    ];
-  return groups[0];
+export function generateList(id: number) {
+  const list: List = {
+      id: id,
+      title: "Basic list"
+    };
+
+  return list;
 }
 
-function generateEntries() {
+export function generateTasks(listKey: number) {
   let tasks: Task[] = [
-    { id: 0, title: "This is a task", date: new Date("2025-02-01"), priority: Priority.High},
-    { id: 1, title: "This is another task", date: new Date("2025-03-01"), priority: Priority.Medium},
-    { id: 2, title: "This is another task", date: new Date("2025-04-01"), priority: Priority.Low},
+    { 
+      id: 0,
+      title: "This is a task",
+      note: "none",
+      deadline: new Date("2025-02-01"),
+      priority: Priority.High,
+      listKey: listKey,
+      done: false
+    },
+    { 
+      id: 1,
+      title: "This is another task",
+      note: "none",
+      deadline: new Date("2025-03-01"),
+      priority: Priority.Medium,
+      listKey: listKey,
+      done: false
+    },
+    { 
+      id: 2,
+      title: "This is another task",
+      note: "none",
+      deadline: new Date("2025-04-01"),
+      priority: Priority.Low,
+      listKey: listKey,
+      done: false
+    },
   ];
+
   return tasks;
 }
