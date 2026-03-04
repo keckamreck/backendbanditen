@@ -16,7 +16,7 @@ export function generateTasks(listKey: number) {
       id: 0,
       title: "This is a task",
       note: "none",
-      deadline: new Date("2025-02-01"),
+      deadline: new Date("2025-02-01T10:01:00"),
       priority: Priority.High,
       listKey: listKey,
       done: false
@@ -25,7 +25,7 @@ export function generateTasks(listKey: number) {
       id: 1,
       title: "This is another task",
       note: "none",
-      deadline: new Date("2025-03-01"),
+      deadline: new Date("2025-03-01T11:00:00"),
       priority: Priority.Medium,
       listKey: listKey,
       done: false
@@ -34,7 +34,7 @@ export function generateTasks(listKey: number) {
       id: 2,
       title: "This is another task",
       note: "none",
-      deadline: new Date("2025-04-01"),
+      deadline: new Date("2025-04-01T22:00:00"),
       priority: Priority.Low,
       listKey: listKey,
       done: false
