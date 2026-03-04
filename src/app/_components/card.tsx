@@ -17,7 +17,7 @@ export function TaskCard(props: TaskProps) {
           <h4>{task.id}</h4>
         </div>
         <div className={styles.row}>
-          <h3>Fällig am {task.date.toLocaleDateString()}</h3>
+          <h3>Fällig am {task.deadline?.toLocaleDateString()}</h3>
           <PriorityBadge priority={task.priority}/> 
         </div>
       </div>
