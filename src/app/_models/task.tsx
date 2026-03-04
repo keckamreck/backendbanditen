@@ -4,9 +4,12 @@ export enum Priority {
   Low
 };
 
-export type Task = {
+export interface Task {
   id: number;
   title: string;
-  date: Date;
+  note?: string;
+  deadline?: Date;
   priority: Priority;
+  listKey: number;
+  done: boolean;
 };
