@@ -1,6 +1,6 @@
 import { PriorityBadge } from './badge';
 import { Task } from '@/app/_models/task';
-import { getPriority } from '@/app/_lib/priority';
+import { getDate, getTime } from '@/app/_lib/helpers';
 import styles from './card.module.css'
 
 export interface TaskProps {
@@ -9,6 +9,9 @@ export interface TaskProps {
 
 export function TaskCard(props: TaskProps) {
   const task = props.task;
+  const date = getDate(task.deadline);
+  const time = getTime(task.deadline);
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -17,7 +20,7 @@ export function TaskCard(props: TaskProps) {
           <h4>{task.id}</h4>
         </div>
         <div className={styles.row}>
-          <h3>Fällig am {task.deadline?.toLocaleDateString()}</h3>
+          <h3>Fällig am {date} um {time}</h3>
           <PriorityBadge priority={task.priority}/> 
         </div>
       </div>
