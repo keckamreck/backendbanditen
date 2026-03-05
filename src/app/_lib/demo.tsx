@@ -9,6 +9,20 @@ export function generateList(id: number) {
 
   return list;
 }
+export function generateLists(){
+  const lists: List[] = [
+   {
+    id: 1,
+    title: "Basic list"
+  },
+  {
+    id:2,
+    title: "Einkaufen"
+  }
+  ];
+
+  return lists;
+}
 
 export function generateTasks(listKey: number) {
   let tasks: Task[] = [

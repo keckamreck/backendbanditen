@@ -2,15 +2,25 @@
 import styles from "./page.module.scss";
 import Head from "next/head";
 import {useMemo, useState} from 'react';
-import List from "@/app/components_dashboard/List";
-// import { plus } from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {List} from "@/app/_models/list";
+import PopupWithInput from "@/app/_components/popup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+import {generateLists, generateTasks} from "@/app/_lib/demo";
+import {Task} from "@/app/_models/task";
+
 
 
 
 export default function DashboardPage() {
     const [like, setLikes] = useState(0);
-    const lists = [];
+    let lists: List[] = generateLists();
+    let tasks: Task[] = generateTasks(1);
+
+    console.log(lists);
+    newList("Früstück");
+    console.log(lists);
 
     function title(title: string){
         return(title);
@@ -29,8 +39,8 @@ export default function DashboardPage() {
                         <SearchBar />
                     </div>
                     <div>
-                        <button title="addList" onClick={()=>newList()}>
-                            {/*<FontAwesomeIcon icon={plus} />*/}
+                        <button title="addList" onClick={()=>PopupWithInput()}>
+                            <FontAwesomeIcon icon={faPlus} style={{color: "rgb(80, 30, 79)",}} />
                         </button>
                     </div>
 
@@ -66,10 +76,15 @@ export default function DashboardPage() {
 
     }
 
+    function Popup(){
 
-    function newList(){
-        const list= new List("Biber")
-        lists.push(list)
+    }
+    function newList(name: string) {
+        const list: List = {
+            id: lists.length+1,
+            title: name
+        };
+        lists.push(list);
 
     }
 
