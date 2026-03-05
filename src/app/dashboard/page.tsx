@@ -1,14 +1,21 @@
 "use client";
 import styles from "./page.module.scss";
 import Head from "next/head";
-import { useState } from 'react';
-import Image from "next/image";
-// import { newList } ;
+import {useMemo, useState} from 'react';
+import List from "@/app/components_dashboard/List";
+// import { plus } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 
 export default function DashboardPage() {
     const [like, setLikes] = useState(0);
+    const lists = [];
+
+    function title(title: string){
+        return(title);
+    }
+
     return(
 
         <div className={styles.page}>
@@ -23,7 +30,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                         <button title="addList" onClick={()=>newList()}>
-                            +
+                            {/*<FontAwesomeIcon icon={plus} />*/}
                         </button>
                     </div>
 
@@ -58,8 +65,12 @@ export default function DashboardPage() {
         )
 
     }
-    function title(title: string){
-        return(title);
+
+
+    function newList(){
+        const list= new List("Biber")
+        lists.push(list)
+
     }
 
 }
