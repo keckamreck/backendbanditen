@@ -1,28 +1,45 @@
 .container {
-  display: flex;
-  flex-direction: column;
   padding: 0.5em;
 }
 
 .card {
   border: 1px solid black;
   border-radius: 15px;
-  padding: 4px 38px 4px 16px;
+  padding: 4px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "title button"
+    "infos button";
+  gap: 5px;
+  gap: 0.5em;
 }
 
 .card > .row {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    height: 2.3em;
+  grid-area: infos;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5em;
+  height: 2.3em;
 }
 
-.row > h1 {
+.card > h1 {
+  grid-area: title;
   font-size: x-large;
+  margin: 0;
+}
+
+.buttonEdit {
+  grid-area: button;
+  background-color: transparent;
+  border: none;
+  justify-self: right;
+  font-size: 30px;
 }
 
 .row > h3 {
   font-size: medium;
+  margin: 0;
 }
