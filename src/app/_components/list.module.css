@@ -1,11 +1,12 @@
 .container {
-  display: flex;
-  flex-direction: column;
   padding: 0.5em;
 }
 
 .card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   border: 1px solid black;
   border-radius: 15px;
-  padding: 4px 38px 4px 16px;
+  padding: 0px 1em 0px 4em;
 }

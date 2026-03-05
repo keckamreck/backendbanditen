@@ -3,7 +3,7 @@
 import { getList, getTasks } from '@/app/_models/list';
 import { Task } from '@/app/_models/task';
 import { TaskCard } from '@/app/_components/card';
-import { DeleteButton } from '@/app/_components/button';
+import { ArchiveButton, DeleteButton } from '@/app/_components/button';
 import { Header } from '@/app/_components/list';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ export default function ArchivePage() {
   return (
     <>
       <Header title={list.title}>
-        <DeleteButton onClick={handleDelete}/>
+        <ArchiveButton onClick={handleDelete}/>
       </Header>
       {showTasks(tasks)}
       <DeleteButton className={styles.buttonDelete} onClick={handleDelete}/>

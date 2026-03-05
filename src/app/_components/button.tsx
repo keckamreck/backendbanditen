@@ -1,7 +1,7 @@
 "use client";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
 import { ButtonHTMLAttributes } from 'react';
 import styles from './button.module.css'
 
@@ -11,6 +11,14 @@ export function DeleteButton(props: ButtonProps) {
   return (
     <button id="delete-button" type="button" onClick={props.onClick} className={`${styles.button} ${props.className}`}>
       <FontAwesomeIcon size="2x" icon={faTrash}/>
+    </button>
+  );
+}
+
+export function ArchiveButton(props: ButtonProps) {
+  return (
+    <button className={styles.button}>
+      <FontAwesomeIcon size="2x" icon={faBoxArchive}/>
     </button>
   );
 }
