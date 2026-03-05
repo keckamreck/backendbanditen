@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+}
+
+.card {
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 4px 38px 4px 16px;
+}
