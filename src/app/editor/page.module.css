@@ -1,18 +1,34 @@
-.form{
+.dflexRow{
+    display: flex;
+    flex-direction: row;
+}
+.dflexCol{
     display: flex;
     flex-direction: column;
+}
+.bodyForm{
+    padding: 2vw 2vw 2vw 2vw;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 8px;
+    width: 95vw;
+    margin-top: 10vw;
+}
+.form{
     margin: 0;
     width: 95em;
     align-self: center;
 }
 .input {
-    width: 95vw;
     font-family: "Avenir Next", sans-serif;
+    font-size: 14px;
 }
 .list{
-    display: flex;
-    flex-direction: row;
+    margin-top: 2vw;
 }
 .selectList{
     width: 100%;
 }
+
