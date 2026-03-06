@@ -1,8 +1,13 @@
 .container {
   padding: 0.5em;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.5em;
 }
 
 .card {
+  flex: 1;
   border: 1px solid black;
   border-radius: 15px;
   padding: 4px 16px;
@@ -42,4 +47,18 @@
 .row > h3 {
   font-size: medium;
   margin: 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+}
+
+.check > button {
+  background-color: transparent;
+  border: none;
+  font-size: xx-large;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }

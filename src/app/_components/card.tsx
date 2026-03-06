@@ -4,11 +4,12 @@ import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { PriorityBadge } from "./badge";
 import { Task } from "@/app/_models/task";
-import { getPriority } from "@/app/_lib/priority";
 import styles from "./card.module.css";
 
 export interface TaskProps {
   task: Task;
+  onPencilClick: () => void;
+  onDoneClick: () => void;
 }
 
 export function TaskCard(props: TaskProps) {
@@ -16,12 +17,13 @@ export function TaskCard(props: TaskProps) {
   return (
     <div className={styles.container}>
       <div className={styles.check}>
-        <FontAwesomeIcon icon={faCircle} />
-        <FontAwesomeIcon icon={faCheckCircle} />
+        <button onClick={props.onDoneClick}>
+          <FontAwesomeIcon icon={task.done ? faCheckCircle : faCircle} />
+        </button>
       </div>
       <div className={styles.card}>
         <h1>{task.title}</h1>
-        <button className={styles.buttonEdit}>
+        <button className={styles.buttonEdit} onClick={props.onPencilClick}>
           <FontAwesomeIcon icon={faPencil} />
         </button>
         <div className={styles.row}>
