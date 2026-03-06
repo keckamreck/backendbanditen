@@ -1,12 +1,12 @@
 "use client";
 
-import { getList, getTasks } from '@/app/_models/list';
-import { Task } from '@/app/_models/task';
-import { TaskCard } from '@/app/_components/card';
-import { DeleteButton } from '@/app/_components/button';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
-import styles from './page.module.css'
+import { getList, getTasks } from "@/app/_models/list";
+import { Task } from "@/app/_models/task";
+import { TaskCard } from "@/app/_components/TaskCard";
+import { DeleteButton } from "@/app/_components/button";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import styles from "./page.module.css";
 
 export default function ArchivePage() {
   const params = useParams<{ id: string }>();
@@ -22,14 +22,22 @@ export default function ArchivePage() {
     <>
       <h1>List: {list.title}</h1>
       {showTasks(tasks)}
-      <DeleteButton onClick={handleDelete}/>
+      <DeleteButton onClick={handleDelete} />
     </>
   );
 }
 
-
 function showTasks(tasks: Task[]) {
-  return tasks.map(task => {
-    return <TaskCard key={task.id} task={task}/>;
+  return tasks.map((task) => {
+    return (
+      <TaskCard
+        key={task.id}
+        task={task}
+        onPencilClick={() => console.log("Pencil clicked")}
+        onDoneClick={() =>
+          (task.done = !task.done) && console.log("Done clicked " + task.done)
+        }
+      />
+    );
   });
 }
