@@ -9,12 +9,14 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import {generateLists, generateTasks} from "@/app/_lib/demo";
 import {Task} from "@/app/_models/task";
+import * as string_decoder from "node:string_decoder";
 
 
 
 
 export default function DashboardPage() {
     const [like, setLikes] = useState(0);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     let lists: List[] = generateLists();
     let tasks: Task[] = generateTasks(1);
 
@@ -33,15 +35,19 @@ export default function DashboardPage() {
                 <meta charSet="utf-8" />
                 <title>Dashboard</title>
             </Head>
+            <PopupWithInput isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
             <main className={styles.main}>
+
                 <div>
                     <div>
                         <SearchBar />
                     </div>
                     <div>
-                        <button title="addList" onClick={()=>PopupWithInput()}>
+                        <button title="addList" onClick={()=>setIsPopupOpen(true)}>
                             <FontAwesomeIcon icon={faPlus} style={{color: "rgb(80, 30, 79)",}} />
                         </button>
+
+
                     </div>
 
                 </div>
@@ -76,9 +82,6 @@ export default function DashboardPage() {
 
     }
 
-    function Popup(){
-
-    }
     function newList(name: string) {
         const list: List = {
             id: lists.length+1,
