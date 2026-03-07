@@ -1,31 +1,49 @@
+.list {
+  z-index: 100;
+  height: 100vh;
+  overflow-y: auto;
+}
+
 .topBar {
+  background-color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: min-content;
   justify-content: space-between;
-  gap: 1em;
+  /* gap: 1em; */
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid black;
 }
 
-.topBar .list {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  align-content: center;
+.list .topBar .listName {
   border: 1px solid black;
   border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  align-content: center;
 }
 
-.topBar .list > h1 {
+.list .topBar > h1 {
   font-size: x-large;
   font-weight: normal;
-  margin: 0.5em;
   padding: 0.5em;
   display: inline-block;
   text-align: center;
 }
 
-.topBar .list .buttonEdit {
+.buttonEdit {
   background-color: transparent;
   border: none;
-  font-size: 30px;
+  justify-self: right;
+  font-size: 25px;
+}
+
+.buttonBack {
+  background-color: transparent;
+  border: none;
+  justify-self: left;
+  font-size: 25px;
 }

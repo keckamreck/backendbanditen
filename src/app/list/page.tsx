@@ -18,10 +18,12 @@ function List({ ListId }: { ListId: number }) {
         <button className={styles.buttonBack}>
           <FontAwesomeIcon icon={faX} />
         </button>
-        <h1>{list.title}</h1>
-        <button className={styles.buttonEdit}>
-          <FontAwesomeIcon icon={faPencil} />
-        </button>
+        <div className={styles.listName}>
+          <h1>{list.title}</h1>
+          <button className={styles.buttonEdit}>
+            <FontAwesomeIcon icon={faPencil} />
+          </button>
+        </div>
       </div>
       <div className={styles.tasks}>
         {tasks.map((task) => (

@@ -1,6 +1,7 @@
 body {
   margin: 0;
 }
+
 .container {
   padding: 0.5em;
   display: flex;
