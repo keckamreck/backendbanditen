@@ -8,30 +8,34 @@
   background-color: white;
   display: flex;
   flex-direction: row;
-  align-items: center;
   height: min-content;
-  justify-content: space-between;
-  /* gap: 1em; */
+  justify-content: stretch;
   position: sticky;
   top: 0;
   border-bottom: 1px solid black;
+  padding: 0.5em;
+  gap: 1em;
 }
 
 .list .topBar .listName {
+  flex: 1;
   border: 1px solid black;
   border-radius: 15px;
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   align-content: center;
+  margin: 0;
 }
 
-.list .topBar > h1 {
+.list .topBar .listName > h1 {
+  flex: 1;
   font-size: x-large;
   font-weight: normal;
-  padding: 0.5em;
+  padding: 0.4em;
   display: inline-block;
   text-align: center;
+  margin: 0;
 }
 
 .buttonEdit {
@@ -39,11 +43,14 @@
   border: none;
   justify-self: right;
   font-size: 25px;
+  padding: 0.4em;
 }
 
-.buttonBack {
+.list .topBar .buttonBack {
   background-color: transparent;
   border: none;
-  justify-self: left;
-  font-size: 25px;
+  font-size: xx-large;
+  padding: 0;
+  display: flex;
+  align-items: center;
 }
