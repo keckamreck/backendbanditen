@@ -7,23 +7,35 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
-import { use } from "react";
+import { ButtonSort } from "../_components/ButtonSort";
+import { use, useState } from "react";
 
 function List({ ListId }: { ListId: number }) {
   const list = getList(ListId);
-  const tasks = getTasks(ListId);
+  const initialTasks = getTasks(ListId);
+  const [tasks, setTasks] = useState(initialTasks);
+
   return (
     <div className={styles.list}>
       <div className={styles.topBar}>
-        <button className={styles.buttonBack}>
+        <button
+          className={styles.buttonBack}
+          onClick={() => console.log("Back clicked")}
+        >
           <FontAwesomeIcon icon={faX} />
         </button>
         <div className={styles.listName}>
           <h1>{list.title}</h1>
-          <button className={styles.buttonEdit}>
+          <button
+            className={styles.buttonEdit}
+            onClick={() => console.log("Edit clicked")}
+          >
             <FontAwesomeIcon icon={faPencil} />
           </button>
         </div>
+      </div>
+      <div className={styles.sort}>
+        <ButtonSort></ButtonSort>
       </div>
       <div className={styles.tasks}>
         {tasks.map((task) => (
@@ -31,10 +43,14 @@ function List({ ListId }: { ListId: number }) {
             key={task.id}
             task={task}
             onPencilClick={() => console.log("Pencil clicked")}
-            onDoneClick={() =>
-              (task.done = !task.done) &&
-              console.log("Done clicked " + task.done)
-            }
+            onDoneClick={() => {
+              setTasks(
+                tasks.map((t) =>
+                  t.id === task.id ? { ...t, done: !t.done } : t,
+                ),
+              );
+              console.log("Done clicked");
+            }}
           />
         ))}
       </div>
