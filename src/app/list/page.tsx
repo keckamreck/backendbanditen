@@ -1,5 +1,6 @@
 "use client";
 
+import { Sort } from "@/app/_models/list";
 import { getList } from "@/app/_models/list";
 import { getTasks } from "@/app/_models/list";
 import { TaskCard } from "@/app/_components/TaskCard";
@@ -14,6 +15,18 @@ function List({ ListId }: { ListId: number }) {
   const list = getList(ListId);
   const initialTasks = getTasks(ListId);
   const [tasks, setTasks] = useState(initialTasks);
+  const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    switch (sort) {
+      case Sort.Fälligkeitsdatum:
+        return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
+      case Sort.Priorität:
+        return a.priority - b.priority;
+      case Sort.Alphabetisch:
+        return a.title.localeCompare(b.title);
+    }
+  });
 
   return (
     <div className={styles.list}>
@@ -35,10 +48,10 @@ function List({ ListId }: { ListId: number }) {
         </div>
       </div>
       <div className={styles.sort}>
-        <ButtonSort></ButtonSort>
+        <ButtonSort sort={sort} changeSort={setSort}></ButtonSort>
       </div>
       <div className={styles.tasks}>
-        {tasks.map((task) => (
+        {sortedTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
