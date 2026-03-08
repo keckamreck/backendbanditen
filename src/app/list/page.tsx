@@ -6,6 +6,7 @@ import { getTasks } from "@/app/_models/list";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
 import { ButtonSort } from "../_components/ButtonSort";
@@ -47,8 +48,16 @@ function List({ ListId }: { ListId: number }) {
           </button>
         </div>
       </div>
-      <div className={styles.sort}>
-        <ButtonSort sort={sort} changeSort={setSort}></ButtonSort>
+      <div className={styles.up}>
+        <div className={styles.sort}>
+          <ButtonSort sort={sort} changeSort={setSort}></ButtonSort>
+        </div>
+        <button
+          className={styles.buttonAdd}
+          onClick={() => console.log("new task")}
+        >
+          <FontAwesomeIcon icon={faCirclePlus} />
+        </button>
       </div>
       <div className={styles.tasks}>
         {sortedTasks.map((task) => (
