@@ -1,13 +1,14 @@
 "use client";
 
+import { TopBar } from "@/app/_components/TopBar";
 import { Sort } from "@/app/_models/list";
 import { getList } from "@/app/_models/list";
 import { getTasks } from "@/app/_models/list";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+// import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+// import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
 import { ButtonSort } from "../_components/ButtonSort";
 import { use, useState } from "react";
@@ -31,23 +32,7 @@ function List({ ListId }: { ListId: number }) {
 
   return (
     <div className={styles.list}>
-      <div className={styles.topBar}>
-        <button
-          className={styles.buttonBack}
-          onClick={() => console.log("Back clicked")}
-        >
-          <FontAwesomeIcon icon={faX} />
-        </button>
-        <div className={styles.listName}>
-          <h1>{list.title}</h1>
-          <button
-            className={styles.buttonEdit}
-            onClick={() => console.log("Edit clicked")}
-          >
-            <FontAwesomeIcon icon={faPencil} />
-          </button>
-        </div>
-      </div>
+      <TopBar ListId={ListId}></TopBar>
       <div className={styles.up}>
         <div className={styles.sort}>
           <ButtonSort sort={sort} changeSort={setSort}></ButtonSort>
