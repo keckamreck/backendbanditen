@@ -18,7 +18,7 @@ export function ButtonSort({ sort, changeSort }: ButtonSortProps) {
 
   return (
     <div>
-      <button className={styles.button} onClick={nextSort}>
+      <button id="ButtonSort" className={styles.button} onClick={nextSort}>
         <span> Sortiert nach: </span>
         <span>{sort}</span>
       </button>

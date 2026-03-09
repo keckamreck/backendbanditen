@@ -19,13 +19,17 @@ export function TaskCard(props: TaskProps) {
   return (
     <div className={styles.container}>
       <div className={styles.check}>
-        <button onClick={props.onDoneClick}>
+        <button id="ButtonDone" onClick={props.onDoneClick}>
           <FontAwesomeIcon icon={task.done ? faCheckCircle : faCircle} />
         </button>
       </div>
       <div className={styles.card}>
         <h1>{task.title}</h1>
-        <button className={styles.buttonEdit} onClick={props.onPencilClick}>
+        <button
+          id="ButtonEditTask"
+          className={styles.buttonEdit}
+          onClick={props.onPencilClick}
+        >
           <FontAwesomeIcon icon={faPencil} />
         </button>
         <div className={styles.row}>
