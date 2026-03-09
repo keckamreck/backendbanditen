@@ -1,0 +1,72 @@
+.container {
+  width: 85vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 1.5em;
+  column-gap: 0.5em;
+  padding-left: 7.5vw;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 35vw;
+  max-width: 5cm;
+  padding: 1.25em;
+  background: white;
+  border-radius: 12px;
+  border: 1.5px solid black;
+  /*box-shadow: 0 4px 6px rgba(0,0,0,0.3);*/
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  padding: 0.5em;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row{
+  flex-grow: 1; /* Nimmt den restlichen Platz in der Karte ein */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Zentriert die Gruppe vertikal */
+  align-items: center;
+}
+
+.title{
+  font-size: 1.15em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  /* Wichtig: Das Element muss wissen, worauf es sich bezieht */
+  display: block; 
+  width: 100%;
+}
+
+.starIcon{
+  font-size: 1.25em;
+  padding: 0.5em 0.2em 0.5em 1em;
+}
+
+.taskAmount{
+  font-size: 1.25em;
+  margin: 0;
+}
+
+.dueTasks{
+  font-size: 1em;
+  margin: 0;
+}
+
+.link{
+  text-decoration: none;
+  color: inherit;
+}

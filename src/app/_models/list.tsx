@@ -3,6 +3,7 @@ import { generateList, generateTasks } from '@/app/_lib/demo';
 export interface List{
   id: number;
   title: string;
+  isFavourite? : boolean;
 };
 
 export function getList(id: number) {
