@@ -1,0 +1,125 @@
+.dflexRow {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw
+}
+
+.dflexCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.bodyForm {
+    padding: 2vw 4vw 2vw 4vw;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 8px;
+    width: 95vw;
+    margin-top: 3rem;
+}
+
+.input {
+    font-family: "Avenir Next", sans-serif;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 5px;
+    background-color: transparent;
+    font-size: 16px;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.list {
+    margin-top: 3vw;
+    margin-bottom: 2vw;
+}
+
+.selectList {
+    width: 100%;
+}
+
+.hideElement {
+    display: none;
+}
+
+.time {
+    width: 20px;
+    text-align: center;
+}
+
+.stringDate {
+    margin: 0 0 0 0;
+    font-family: "Avenir Next", sans-serif;
+    font-size: 16px;
+    border-style: none;
+    background-color: transparent;
+}
+
+.date {
+    display: flex;
+    margin-bottom: 3vw;
+    margin-top: 2vw;
+}
+
+.calendar {
+    align-items: center;
+    height: 280px;
+}
+
+.iconDate {
+    padding-top: 3px;
+}
+
+.iconTime {
+    padding-top: 4px;
+}
+
+.buttonShowDeadline {
+    display: flex;
+    width: 23px;
+    background-color: transparent;
+    border-style: none;
+    padding-left: 0;
+}
+.buttonShowDeadline:active {
+    transform: scale(0.96);
+    transition: transform 0.2s ease;
+}
+
+.iconShowDeadline {
+    display: flex;
+    font-size: 23px;
+    color: darkgray;
+}
+.minutes{
+    margin-left: -5px;
+}
+.hours {
+    margin-right: -5px;
+}
+.labelList {
+    align-content: center;
+}
+
+.priorityButton {
+    margin-top: 1vw;
+    margin-bottom: 2vw;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+}
+.saveDeleteButtons{
+    margin-top: 3vw;
+    justify-content: center;
+}
+.titleComponent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 95vw;
+}

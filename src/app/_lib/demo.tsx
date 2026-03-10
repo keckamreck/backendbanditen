@@ -31,12 +31,30 @@ let tasks: Task[] = [
   },
 ];
 
-export function generateList(id: number) {
-  const list: List = {
-    id: id,
-    title: "Basic list",
-  };
+let list: List[] = [
+  {
+    id: 0,
+    title: "Arbeit",
+  },
+  {
+    id: 1,
+    title: "Privat",
+  },
+  {
+    id: 2,
+    title: "Studium",
+  },
+  {
+    id: 3,
+    title: "sonstiges",
+  },
+  {
+    id: 4,
+    title: "Haushalt",
+  },
+];
 
+export function getLists() {
   return list;
 }
 
