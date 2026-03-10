@@ -10,11 +10,14 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { getLists } from "@/app/_lib/demo";
+import { getLists, getTasks } from "@/app/_lib/demo";
+import { Task } from "@/app/_models/task";
 
 export default function DashboardPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [todayTask, setTodayTask] = useState<Task | null>(null);
 
   useEffect(() => {
     const initialLists = getLists();
@@ -24,8 +27,23 @@ export default function DashboardPage() {
     };
     initialLists.push(breakfastList);
     setLists(initialLists);
+    const initialTasks = getTasks();
+    setTasks(initialTasks);
     console.log("Lists initialized:", initialLists);
+    console.log("Tasks initialized:", initialTasks);
   }, []);
+
+  useEffect(() => {
+    const getTodayTask = () => {
+      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const sortedTasks = [...filteredTasks].sort((a, b) => {
+        return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
+      });
+      setTodayTask(sortedTasks[0]);
+    };
+
+    getTodayTask();
+  }, [tasks]);
 
   function newList(name: string) {
     const newListItem: List = {
@@ -72,11 +90,18 @@ export default function DashboardPage() {
         {/* Bereich für heute/nächste fällige Listen */}
         <div className={styles.todaySection}>
           <h3>Heute fällig</h3>
-          <div className={styles.todayContent}>
+          <div
+            className={styles.todayContent}
+            onClick={() =>
+              alert(`Open Detail View for task with id: ${todayTask?.id}  `)
+            }
+          >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
-                <span className={styles.dueTitle}>Einkaufen</span>
-                <span className={styles.dueDate}>Heute, 15:30</span>
+                <span className={styles.dueTitle}>{todayTask?.title}</span>
+                <span className={styles.dueDate}>
+                  Heute, 15:30 {todayTask?.id}
+                </span>
               </div>
               <div className={styles.dueIcon}>
                 <FontAwesomeIcon icon={faCalendarWeek} />
