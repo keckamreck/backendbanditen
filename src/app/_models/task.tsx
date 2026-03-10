@@ -26,24 +26,3 @@ export interface saveTodo {
   timeMinutes?: number;
   notes?: string;
 }
-
-export function getTaskofList(listKey: number) {
-  const tasks = getTasks();
-  let tasksofList = [];
-  for (let e of tasks) {
-    if (e.listKey === listKey) {
-      tasksofList.push(e);
-    }
-  }
-  return tasksofList;
-}
-
-export function getTask(id: number) {
-  const tasks: Task[] = getTasks();
-  for (let e of tasks) {
-    if (e.id === id) {
-      return e;
-    }
-  }
-  return tasks[0];
-}

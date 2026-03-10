@@ -1,7 +1,8 @@
 "use client";
 
 import styles from "./TopBar.module.css";
-import { getList, List } from "../_models/list";
+import { List } from "../_models/list";
+import { getList } from "@/app/_models/function";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";

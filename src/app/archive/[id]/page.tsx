@@ -1,7 +1,7 @@
 "use client";
 
-import { getTaskofList } from "@/app/_models/task";
-import { getList } from "@/app/_models/list";
+import { getTaskofList } from "@/app/_models/function";
+import { getList } from "@/app/_models/function";
 import { Task } from "@/app/_models/task";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { ArchiveButton, DeleteButton } from "@/app/_components/button";
