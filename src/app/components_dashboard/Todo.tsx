@@ -1,6 +1,4 @@
 import {Component} from "react";
-import {types} from "sass";
-import List = types.List;
 
 class Todo extends Component{
     id;
