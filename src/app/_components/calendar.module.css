@@ -1,0 +1,84 @@
+.headerComponent {
+    display: flex;
+    width: 298px;
+    justify-content: space-between;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns:repeat(7, 40px);
+    gap: 3px;
+    place-items: center;
+    font-size: 13px;
+    font-weight: bold;
+    max-width: 10vw;
+}
+
+.headerWeekdays {
+    margin-bottom: 0;
+}
+
+.today, .currentDays, .selectedDay, .remainingDays, .remainingDaysSelected {
+    font-family: "Avenir Next", sans-serif;
+    font-size: 13px;
+    border-style: none;
+    background-color: transparent;
+    height: 32px;
+    border-radius: 5px;
+    width: 40px;
+    justify-self: center;
+}
+
+.today {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #bcbcbc;
+}
+
+.selectedDay {
+    background-color: #bcbcbc;
+}
+
+.remainingDays {
+    color: #cecece;
+}
+
+.remainingDaysSelected {
+    color: white;
+    background-color: #bcbcbc;
+}
+
+.button:active, .currentDays:active, .remainingDaysSelected:active, .selectedDay:active {
+    transform: scale(0.94);
+    transition: transform 0.2s ease;
+}
+
+.button:not(:active) {
+    background-color: white;
+    border-style: none;
+}
+
+.selectShownMonth {
+    font-family: "Avenir Next", sans-serif;
+    font-size: 13px;
+    background-color: transparent;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+.button {
+    background-color: transparent;
+    border: none;
+    height: 30px;
+    border-radius: 10vw;
+}
+
+.selectYear {
+    width: 60px;
+    margin-left: 10px;
+    padding-left: 5px;
+}
+
+
