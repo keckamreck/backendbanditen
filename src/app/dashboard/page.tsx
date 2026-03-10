@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import Head from "next/head";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, FormEvent} from 'react';
 import {List} from "@/app/_models/list";
 import PopupWithInput from "@/app/_components/popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -82,13 +82,11 @@ export default function DashboardPage() {
 
     function SearchBar(){
         return(
-            <form className={styles.searchForm}>
+            <form className={styles.searchForm} onSubmit={(e)=>handleSearchSubmit(e)}>
                 <div className={styles.searchInputWrapper}>
-                    <FontAwesomeIcon
-                        icon={faSearch}
-                        className={styles.searchIcon}
-                    />
+                    <FontAwesomeIcon icon={faSearch} className={styles.searchIcon}/>
                     <input
+                        id="searchInput"
                         className={styles.searchBar}
                         type="search"
                         placeholder="Listen durchsuchen..."
@@ -97,4 +95,33 @@ export default function DashboardPage() {
             </form>
         )
     }
+
+    function searchLists(s: string) {
+        const results = lists.filter(list => list.title.toLowerCase().includes(s.toLowerCase()));
+
+        if (results.length > 0) {
+            alert(`Gefundene Listen:\n${results.map(r => r.title ).join("\n")}`);
+
+
+        } else {
+            alert("Keine Listen gefunden!");
+        }
+    }
+
+    function handleSearchSubmit(e: FormEvent) {
+        e.preventDefault()
+
+
+        const input = (document.getElementById("searchInput") as HTMLInputElement)
+
+        if (input && input.value.trim()) {
+            // console.log("Form submitted with name:", input.value);
+
+            searchLists(input.value.trim());
+            input.value = '';
+        } else {
+            alert("Bitte geben Sie einen Namen ein!");
+        }
+    }
+
 }
