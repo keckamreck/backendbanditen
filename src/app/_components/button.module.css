@@ -2,11 +2,3 @@
   border: 0;
   background: none;
 }
-
-.buttonDelete {
-  border: 0;
-  background: none;
-  position: fixed;
-  right: 4px;
-  bottom: 40px;
-}
