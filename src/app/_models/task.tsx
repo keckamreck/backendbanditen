@@ -2,7 +2,7 @@ export enum Priority {
   High,
   Medium,
   Low
-};
+}
 
 export interface Task {
   id: number;
@@ -12,4 +12,4 @@ export interface Task {
   priority: Priority;
   listKey: number;
   done: boolean;
-};
+}
