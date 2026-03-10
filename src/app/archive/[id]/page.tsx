@@ -2,7 +2,7 @@
 
 import { getList, getTasks } from "@/app/_models/list";
 import { Task } from "@/app/_models/task";
-import { TaskCard } from "@/app/_components/card";
+import { TaskCard } from "@/app/_components/TaskCard";
 import { ArchiveButton, DeleteButton } from "@/app/_components/button";
 import { Header } from "@/app/_components/list";
 import { useParams } from "next/navigation";
