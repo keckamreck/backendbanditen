@@ -7,14 +7,15 @@ import { faStar as emptyStar} from "@fortawesome/free-regular-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Link from "next/link";
-import { eventNames } from "process";
-
+import { getTasks } from "../_lib/demo";
 export interface ListProps {
   list: List;
   onToggleFavorite?: (updatedList: List) => void;
 }
 
 export function ListCard({ list, onToggleFavorite }: ListProps) {
+
+  const dueTasks = getTasks(list.id)
 
   const [isFavourite, setIsFavorite] = useState(list.isFavourite ?? false);
 
@@ -41,7 +42,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
       </div>
       <div className={styles.row}>
         <h1 className={styles.taskAmount}>
-          16
+          {dueTasks}
         </h1>
         <p className={styles.dueTasks}>
           noch fällig
