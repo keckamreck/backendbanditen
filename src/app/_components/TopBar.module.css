@@ -1,0 +1,88 @@
+.container {
+  z-index: 100;
+  position: sticky;
+  background-color: white;
+  top: 0;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: row;
+  height: min-content;
+  justify-content: stretch;
+  /* border-bottom: 1px solid black; */
+  padding: 0.5em;
+  padding-bottom: 0;
+  gap: 1em;
+}
+
+.container .topBar .listName {
+  flex: 1;
+  border: 1px solid black;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  justify-content: space-between;
+}
+
+.container .topBar .listName > div {
+  width: 100%;
+}
+
+.container .topBar .listName > div > h1 {
+  flex: 1;
+  width: 100%;
+  font-size: x-large;
+  font-weight: normal;
+  padding: 0.4em;
+  display: inline-block;
+  text-align: center;
+  margin: 0;
+}
+
+.container .topBar .listName > div > input {
+  flex: 1;
+  width: 100%;
+  font-size: x-large;
+  font-weight: normal;
+  padding: 0.4em;
+  display: inline-block;
+  text-align: left;
+  margin: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-family: inherit;
+}
+
+.buttonEdit {
+  background-color: transparent;
+  border: none;
+  justify-self: right;
+  font-size: 25px;
+  padding: 0.4em;
+}
+
+.container .topBar .buttonBack {
+  background-color: transparent;
+  border: none;
+  font-size: xx-large;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.buttonAdd {
+  background-color: transparent;
+  border: none;
+  font-size: x-large;
+  padding: 1em;
+}
+
+.up {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
