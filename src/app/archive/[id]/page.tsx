@@ -1,6 +1,7 @@
 "use client";
 
-import { getList, getTasks } from "@/app/_models/list";
+import { getTaskofList } from "@/app/_models/task";
+import { getList } from "@/app/_models/list";
 import { Task } from "@/app/_models/task";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { ArchiveButton, DeleteButton } from "@/app/_components/button";
@@ -13,7 +14,7 @@ export default function ArchivePage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const list = getList(id);
-  const [tasks, deleteTasks] = useState(getTasks(list.id));
+  const [tasks, deleteTasks] = useState(getTaskofList(list.id));
 
   function handleDelete() {
     deleteTasks([]);

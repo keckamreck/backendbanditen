@@ -58,7 +58,7 @@ export function getLists() {
   return list;
 }
 
-export function generateTasks() {
+export function getTasks() {
   return tasks;
 }
 

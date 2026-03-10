@@ -3,19 +3,19 @@
 import { TopBar } from "@/app/_components/TopBar";
 import { Sort } from "@/app/_models/list";
 import { getList } from "@/app/_models/list";
-import { getTasks } from "@/app/_models/list";
+import { getTaskofList } from "@/app/_models/task";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 // import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
-import { ButtonSort } from "../_components/ButtonSort";
+import { ButtonSort } from "@/app/_components/ButtonSort";
 import { use, useState } from "react";
 
 function List({ ListId }: { ListId: number }) {
   const list = getList(ListId);
-  const initialTasks = getTasks(ListId);
+  const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
   const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
 

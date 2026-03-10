@@ -1,4 +1,4 @@
-import { getLists, generateTasks } from "@/app/_lib/demo";
+import { getLists } from "@/app/_lib/demo";
 
 export enum Sort {
   Fälligkeitsdatum = "Fälligkeitsdatum",
@@ -12,9 +12,11 @@ export interface List {
 }
 
 export function getList(id: number) {
-  return getLists();
-}
-
-export function getTasks(listKey: number) {
-  return generateTasks();
+  const lists: List[] = getLists();
+  for (let e of lists) {
+    if (e.id === id) {
+      return e;
+    }
+  }
+  return lists[0];
 }
