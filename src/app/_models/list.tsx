@@ -1,4 +1,4 @@
-import { generateList, generateTasks } from "@/app/_lib/demo";
+import { getLists, generateTasks } from "@/app/_lib/demo";
 
 export enum Sort {
   Fälligkeitsdatum = "Fälligkeitsdatum",
@@ -12,9 +12,9 @@ export interface List {
 }
 
 export function getList(id: number) {
-  return generateList(id);
+  return getLists();
 }
 
 export function getTasks(listKey: number) {
-  return generateTasks(listKey);
+  return generateTasks();
 }

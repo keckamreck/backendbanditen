@@ -1,0 +1,65 @@
+.priority {
+    border-style: solid;
+    border-color: transparent;
+    font-family: "Avenir Next", sans-serif;
+    font-size: 14px;
+    width: 25vw;
+    height: 30px;
+    justify-self: center;
+}
+.low{
+    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+    background-color: #b6d6f0;
+}
+.medium{
+    border-left-style: none;
+    border-right-style: none;
+    background-color: #f2d2a6;
+}
+.high{
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
+    background-color: #f2a68e;
+}
+.lowFocus, .highFocus{
+    font-weight: bold;
+    border-width: 1px;
+    border-color: black;
+}
+.mediumFocus {
+    border-left-style: solid;
+    border-right-style: solid;
+    border-color: black;
+    border-width: 1px;
+    font-weight: bold;
+}
+
+
+.button{
+    font-size: 18px;
+    border-style: none;
+    border-radius: 5px;
+    height: 30px;
+    background-color: transparent;
+    font-weight: bold;
+    width: 40vw;
+
+}
+.save {
+    background-color: #dafde5;
+    color: #159c56;
+}
+.delete {
+    color: #d05e65;
+    background-color: #ffcac7;
+}
+.button:active {
+    background-color: #eaeaea;
+}
+.button:disabled {
+    border-color: #bcbcbc;
+    color: #bcbcbc;
+    background-color: transparent;
+    cursor: unset;
+}

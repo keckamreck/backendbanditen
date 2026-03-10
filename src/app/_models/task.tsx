@@ -13,3 +13,14 @@ export interface Task {
   listKey: number;
   done: boolean;
 }
+
+export interface saveTodo {
+  title: string;
+  enterDeadline: boolean;
+  indexSelectedList: number;
+  selectedPriority: Priority;
+  date?: Date;
+  timeHour?: number;
+  timeMinutes?: number;
+  notes?: string;
+}
