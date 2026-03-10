@@ -43,8 +43,7 @@ export function getTask(id: number) {
   for (let e of tasks) {
     if (e.id === id) {
       return e;
-    } else {
-      throw new Error("List not found");
     }
   }
+  return tasks[0];
 }
