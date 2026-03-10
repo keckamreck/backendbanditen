@@ -1,3 +1,5 @@
+
+
 export function getDate(date?: Date) {
   const output = `${date?.toLocaleDateString()}`;
 
