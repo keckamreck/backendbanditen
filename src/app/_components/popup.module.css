@@ -1,0 +1,111 @@
+.overlay  {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(229, 219, 219, 0.5); /* Halbtransparenter Hintergrund */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+
+}
+.overlay .container {
+  border: #171717 2px solid;
+  position: relative;
+  width: 80vw;
+  height: 30vh;
+  background-color: rgb(229, 219, 219);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 1000;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.overlay .closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: black;
+}
+.overlay [id="createList-label"] {
+  position: relative;
+  font-size: 1em;
+  font-weight: bold;
+  /*margin-bottom: 20px;*/
+}
+
+.overlay .form {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  /*margin-top: 50%;*/
+}
+
+.overlay .form section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay .form input[type="text"] {
+  border-radius: 5px;
+  border: #171717 2px solid;
+  background-color: rgb(229, 219, 219);
+  width: 70%;
+  height: 2em;
+  /*padding: 0.5em;*/
+  font-size: 1em;
+}
+
+.overlay .form input[type="submit"] {
+  width: 50%;
+  height: 2.5em;
+  justify-content: flex-start;
+  /*padding: 0.5em 1em;*/
+  /*font-size: 1em;*/
+}
+
+/*.canvasContainer {*/
+/*  position: relative;*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.outerCanvas {*/
+/*  position: absolute;*/
+/*}*/
+
+/*.innerCanvas {*/
+/*  position: absolute;*/
+/*}*/
+
+
+
+/*console.log("PopupWithInput Pressed!");*/
+
+/*if (!isOpen) return null;*/
+
+/*return (*/
+
+/*<div className={styles.popup} onClick={onClose}>*/
+/*<canvas id="rectangle" onClick={(e) => e.stopPropagation()}/>*/
+/*<canvas id="inner_rectangle" className={styles.popupContent}></canvas>*/
+
+/*</div>*/
+
+/*);*/
