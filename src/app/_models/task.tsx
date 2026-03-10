@@ -1,7 +1,9 @@
+import { getLists, getTasks } from "@/app/_lib/demo";
+
 export enum Priority {
   High,
   Medium,
-  Low
+  Low,
 }
 
 export interface Task {
@@ -12,4 +14,15 @@ export interface Task {
   priority: Priority;
   listKey: number;
   done: boolean;
+}
+
+export interface saveTodo {
+  title: string;
+  enterDeadline: boolean;
+  indexSelectedList: number;
+  selectedPriority: Priority;
+  date?: Date;
+  timeHour?: number;
+  timeMinutes?: number;
+  notes?: string;
 }
