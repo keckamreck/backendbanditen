@@ -67,7 +67,9 @@ export default function DashboardPage() {
         }
       }
     };
+    const timer = setInterval(getDueTaskTime, 60000);
     getDueTaskTime();
+    return () => clearInterval(timer);
   }, [dueTask]);
 
   function newList(name: string) {
