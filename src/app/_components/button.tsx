@@ -1,7 +1,7 @@
 "use client";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faBoxArchive, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { ButtonHTMLAttributes } from 'react';
 import styles from './button.module.css'
 
@@ -21,4 +21,12 @@ export function ArchiveButton(props: ButtonProps) {
       <FontAwesomeIcon size="2x" icon={faBoxArchive}/>
     </button>
   );
+}
+
+export function ChevronButton(props: ButtonProps) {
+  return (
+    <button className={styles.button}>
+      <FontAwesomeIcon size="2x" icon={faChevronLeft}/>
+    </button>
+  )
 }
