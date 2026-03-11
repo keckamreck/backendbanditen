@@ -38,7 +38,7 @@ export default function ArchivePage() {
   );
 }
 
-function showTasks(tasks: Task[], handler: any) {
+function showTasks(tasks: Task[], handler: (id: number) => void) {
   return tasks.map((task) => {
     return (
       <TaskCard
