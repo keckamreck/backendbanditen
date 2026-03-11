@@ -25,7 +25,7 @@ export function ArchiveButton(props: ButtonProps) {
 
 export function ChevronButton(props: ButtonProps) {
   return (
-    <button className={styles.button}>
+    <button type="button" onClick={props.onClick} className={styles.button}>
       <FontAwesomeIcon size="2x" icon={faChevronLeft}/>
     </button>
   )

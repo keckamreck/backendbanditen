@@ -29,7 +29,7 @@ export default function ArchivePage() {
 
   return (
     <>
-      <TopBarArchive title={list.title} />
+      <TopBarArchive title={list.title} id={list.id} />
       <div className={styles.tasks}>
         {showTasks(tasks, handleDone)}
       </div>
