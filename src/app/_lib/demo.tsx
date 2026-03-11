@@ -5,7 +5,6 @@ let tasks: Task[] = [
   {
     id: 0,
     title: "This is a task",
-    note: "none",
     deadline: new Date("2025-02-01T10:01:00"),
     priority: Priority.High,
     listKey: 1,
@@ -14,16 +13,15 @@ let tasks: Task[] = [
   {
     id: 1,
     title: "This is another task",
-    note: "none",
     deadline: new Date("2025-03-01T11:00:00"),
     priority: Priority.Medium,
-    listKey: 1,
+    listKey: 2,
     done: false,
   },
   {
     id: 2,
     title: "This is another task",
-    note: "none",
+    note: "das ist eine Notiz",
     deadline: new Date("2025-04-01T22:00:00"),
     priority: Priority.Low,
     listKey: 1,
@@ -62,6 +60,16 @@ export function getTasks() {
   return tasks;
 }
 
-export function editTasks() {
-  tasks[0].title = "Der Titel wurde geändert";
+export function addTask(task: Task): void {
+  tasks.push(task);
+  console.log(tasks);
+}
+
+export function editTask(task: Task) {
+  console.log(task);
+}
+
+export function deleteTask(id: number) {
+  const index: number = tasks.findIndex((task) => task.id === id);
+  tasks.splice(index, 1);
 }

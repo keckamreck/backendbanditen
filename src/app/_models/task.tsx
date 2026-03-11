@@ -19,10 +19,8 @@ export interface Task {
 export interface saveTodo {
   title: string;
   enterDeadline: boolean;
-  indexSelectedList: number;
+  idSelectedList: number;
   selectedPriority: Priority;
-  date?: Date;
-  timeHour?: number;
-  timeMinutes?: number;
-  notes?: string;
+  deadline: Date;
+  notes: string;
 }

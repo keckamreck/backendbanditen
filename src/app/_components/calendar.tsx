@@ -212,16 +212,22 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
       if (index === 0) {
         m = month - 2;
         oneMonthBack();
-        getDays();
       } else if (index === 2) {
         m = month;
         oneMonthAgo();
-        getDays();
       } else {
         m = month - 1;
       }
       setSelectedDate(new Date(year, m, day));
-      action(new Date(year, m, day));
+      action(
+        new Date(
+          year,
+          m,
+          day,
+          defaultDate.getHours(),
+          defaultDate.getMinutes(),
+        ),
+      );
     }
   }
 
