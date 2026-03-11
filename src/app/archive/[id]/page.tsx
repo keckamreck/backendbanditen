@@ -3,8 +3,8 @@
 import { getList, getTaskofList } from "@/app/_models/function";
 import { Task } from "@/app/_models/task";
 import { TaskCard } from "@/app/_components/TaskCard";
-import { ArchiveButton, DeleteButton } from "@/app/_components/button";
-import { Header } from "@/app/_components/list";
+import { DeleteButton } from "@/app/_components/button";
+import { TopBarArchive } from "@/app/_components/TopBarArchive";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import styles from "./page.module.css";
@@ -29,9 +29,7 @@ export default function ArchivePage() {
 
   return (
     <>
-      <Header title={list.title}>
-        <ArchiveButton onClick={handleDelete} />
-      </Header>
+      <TopBarArchive title={list.title} id={list.id} />
       <div className={styles.tasks}>
         {showTasks(tasks, handleDone)}
       </div>
@@ -40,7 +38,7 @@ export default function ArchivePage() {
   );
 }
 
-function showTasks(tasks: Task[], handler: any) {
+function showTasks(tasks: Task[], handler: (id: number) => void) {
   return tasks.map((task) => {
     return (
       <TaskCard
