@@ -118,7 +118,9 @@ export default function DashboardPage() {
           <div
             className={styles.todayContent}
             onClick={() =>
-              alert(`Open Detail View for task with id: ${dueTask?.id}  `)
+              alert(
+                `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
+              )
             }
           >
             <div className={styles.dueItem}>
