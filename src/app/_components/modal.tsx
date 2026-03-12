@@ -29,10 +29,22 @@ export function Modal(props: ModalProps) {
   return (
     <div style={{display: (isVisible) ? 'block' : 'none'}} className={styles.modal}>
       <div className={styles.content}>
-        <CloseButton onClick={handleClose} className={styles.closeButton}></CloseButton>
+        <CloseButton onClick={handleClose} className={styles.closeButton}/>
         <p>{props.title}</p>
-        <button onClick={handleConfirm} type="button" className={styles.yesButton}>{props.yes}</button>
-        <button onClick={handleClose} type="button" className={styles.noButton}>{props.no}</button>
+        <button
+          onClick={handleConfirm}
+          type="button"
+          className={styles.yesButton}
+        >
+          {props.yes}
+        </button>
+        <button
+          onClick={handleClose}
+          type="button"
+          className={styles.noButton}
+        >
+          {props.no}
+        </button>
       </div>
     </div>
   );
