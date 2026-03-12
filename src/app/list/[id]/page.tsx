@@ -12,6 +12,7 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
 import { use, useState } from "react";
+import { useParams } from "next/navigation";
 
 function List({ ListId }: { ListId: number }) {
   const list = getList(ListId);
@@ -66,5 +67,7 @@ function List({ ListId }: { ListId: number }) {
 }
 
 export default function Page() {
-  return <List ListId={1} />;
+  const parms = useParams();
+  const id = parms.id;
+  return <List ListId={Number(id)} />;
 }
