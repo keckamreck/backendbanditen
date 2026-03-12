@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { getList, getTaskofList } from "@/app/_models/function";
-import { Task } from "@/app/_models/task";
-import { TaskCard } from "@/app/_components/TaskCard";
-import { DeleteButton } from "@/app/_components/button";
-import { TopBarArchive } from "@/app/_components/TopBarArchive";
-import { useParams } from "next/navigation";
-import { useState } from "react";
-import styles from "./page.module.css";
+import { getList, getTaskofList } from '@/app/_models/function';
+import { Task } from '@/app/_models/task';
+import { TaskCard } from '@/app/_components/TaskCard';
+import { DeleteButton } from '@/app/_components/button';
+import { TopBarArchive } from '@/app/_components/TopBarArchive';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import styles from './page.module.css';
 
 export default function ArchivePage() {
   const params = useParams<{ id: string }>();
