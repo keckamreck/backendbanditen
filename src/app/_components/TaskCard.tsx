@@ -49,7 +49,6 @@ export function TaskCard(props: TaskProps) {
           <FontAwesomeIcon icon={faPencil} />
         </button>
         <div className={styles.row}>
-          {/* <h3>{(task.deadline?.getMonth() + 1).toString()}</h3> */}
           <h3>{deadline}</h3>
           <PriorityBadge priority={task.priority} />
         </div>
