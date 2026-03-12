@@ -5,6 +5,7 @@ import { Task } from '@/app/_models/task';
 import { TaskCard } from '@/app/_components/TaskCard';
 import { DeleteButton } from '@/app/_components/button';
 import { TopBarArchive } from '@/app/_components/TopBarArchive';
+import { Modal } from '@/app/_components/modal';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styles from './page.module.css';
@@ -14,6 +15,7 @@ export default function ArchivePage() {
   const id = Number(params.id);
   const list = getList(id);
   const [tasks, handleTasks] = useState(getTaskofList(list.id));
+  const [showModal, setShowModal] = useState(false);
 
   function handleDelete() {
     handleTasks([]);
@@ -27,13 +29,31 @@ export default function ArchivePage() {
     );
   }
 
+  function toggleModal() {
+    setShowModal(!showModal);
+  }
+
+  function handleConfirm() {
+    handleDelete();
+    toggleModal();
+  }
+
   return (
     <>
       <TopBarArchive title={list.title} id={list.id} />
       <div className={styles.tasks}>
         {showTasks(tasks, handleDone)}
       </div>
-      <DeleteButton className={styles.buttonDelete} onClick={handleDelete} />
+      <DeleteButton className={styles.buttonDelete} onClick={toggleModal} />
+      {showModal &&
+        <Modal
+          onClose={toggleModal}
+          onConfirm={handleConfirm}
+          title='Are yous sure?'
+          yes='Yes'
+          no='No'
+        />
+      }
     </>
   );
 }
