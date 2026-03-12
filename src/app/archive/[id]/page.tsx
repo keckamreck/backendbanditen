@@ -49,7 +49,7 @@ export default function ArchivePage() {
         <Modal
           onClose={toggleModal}
           onConfirm={handleConfirm}
-          title='Are yous sure?'
+          title='Are you sure?'
           yes='Yes'
           no='No'
         />
