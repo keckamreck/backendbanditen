@@ -35,7 +35,6 @@ body{
 }
 
 .input {
-    font-family: "Avenir Next", sans-serif;
     border-style: solid;
     border-width: 1px;
     border-color: black;
@@ -63,7 +62,6 @@ body{
 
 .stringDate {
     margin: 0 0 0 0;
-    font-family: "Avenir Next", sans-serif;
     font-size: 16px;
     border-style: none;
     background-color: transparent;
