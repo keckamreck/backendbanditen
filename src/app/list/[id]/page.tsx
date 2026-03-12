@@ -6,16 +6,16 @@ import { getList } from "@/app/_models/function";
 import { getTaskofList } from "@/app/_models/function";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
-// import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { DeleteButton } from "@/app/_components/button";
+import { ArchiveButton, DeleteButton } from "@/app/_components/button";
+import { useRouter } from "next/navigation";
 
 function List({ ListId }: { ListId: number }) {
+  const router = useRouter();
   const list = getList(ListId);
   const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
@@ -42,14 +42,13 @@ function List({ ListId }: { ListId: number }) {
         </div>
         <button
           className={styles.buttonAdd}
-          onClick={() => console.log("new task")}
+          onClick={() => router.push(`/createTodo/`)}
         >
           <FontAwesomeIcon icon={faCirclePlus} />
         </button>
       </div>
       <div className={styles.tasks}>
         {sortedTasks
-          // .filter((task) => !task.done)
           .filter((task) => !task.done || fadingTaskIds.has(task.id))
           .map((task) => (
             <div
@@ -59,7 +58,7 @@ function List({ ListId }: { ListId: number }) {
               <TaskCard
                 key={task.id}
                 task={task}
-                onPencilClick={() => console.log("Pencil clicked")}
+                onPencilClick={() => router.push(`/editTodo/${task.id}`)}
                 onDoneClick={() => {
                   setFadingTaskIds((prev) => new Set(prev).add(task.id));
                   setTasks((prev) =>
@@ -79,7 +78,11 @@ function List({ ListId }: { ListId: number }) {
             </div>
           ))}
       </div>
-      <DeleteButton className={styles.buttonDelete}></DeleteButton>
+      {/* <DeleteButton className={styles.buttonDelete} onClick={}></DeleteButton> */}
+      <ArchiveButton
+        className={styles.buttonArchive}
+        onClick={() => router.push(`/archive/${ListId}`)}
+      ></ArchiveButton>
     </div>
   );
 }
