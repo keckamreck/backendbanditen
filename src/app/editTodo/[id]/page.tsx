@@ -3,7 +3,7 @@
 import Editor from "@/app/_components/editor";
 import { getLists, getTasks } from "@/app/_lib/demo";
 import { Priority, saveTodo, Task } from "@/app/_models/task";
-import { Ref, RefObject, useRef } from "react";
+import { RefObject, useRef } from "react";
 import { useParams } from "next/navigation";
 import { editTask, deleteTask } from "@/app/_lib/demo";
 import { List } from "@/app/_models/list";
@@ -23,26 +23,22 @@ export default function Page() {
   );
   const lists: RefObject<List[]> = useRef(getLists());
   const task: RefObject<Task> = useRef(getTask(parseInt(id.id.toString())));
-  console.log("task", task);
   const defaultValue: saveTodo = {
     title: task.current.title,
-    enterDeadline: task.current.deadline !== undefined,
+    enterDeadline: task.current.deadline !== null,
     deadline:
-      task.current.deadline === undefined
+      task.current.deadline === null
         ? defaultDate.current
         : task.current.deadline,
     idSelectedList: task.current.listKey,
     selectedPriority: task.current.priority,
-    notes: task.current.note === undefined ? "" : task.current.note,
+    notes: task.current.note === null ? "" : task.current.note,
   };
-
-  console.log(defaultValue["title"]);
-  console.log(task);
 
   function handleSave(todo: saveTodo): void {}
 
   function handleDelete(): void {
-    deleteTask(parseInt(id.toString()));
+    deleteTask(parseInt(id.id));
   }
 
   return (

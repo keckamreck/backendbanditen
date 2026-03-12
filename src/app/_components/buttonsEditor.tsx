@@ -9,9 +9,10 @@ type PropsPriority = {
 };
 type PropsButton = {
   className?: string;
-  action: () => void;
+  action?: () => void;
   disabled?: boolean;
   task: "save" | "delete";
+  typeOfButton: "submit" | "button";
 };
 
 export function PriorityButton({
@@ -71,11 +72,22 @@ export function PriorityButton({
     </div>
   );
 }
-export function Button({ className, action, disabled, task }: PropsButton) {
+export function Button({
+  className,
+  disabled,
+  task,
+  typeOfButton,
+  action,
+}: PropsButton) {
   return (
     <button
       className={`${styles[task]} ${styles.button} ${className}`}
-      onClick={(): void => action()}
+      onClick={(): void => {
+        if (action !== undefined) {
+          action();
+        }
+      }}
+      type={typeOfButton}
       disabled={disabled}
     >
       {task === "save" ? "speichern" : "löschen"}

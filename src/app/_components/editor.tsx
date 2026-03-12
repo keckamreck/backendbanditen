@@ -16,15 +16,7 @@ import Calendar from "@/app/_components/calendar";
 import { PriorityButton } from "@/app/_components/buttonsEditor";
 import { Priority } from "@/app/_models/task";
 import { Button } from "@/app/_components/buttonsEditor";
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { List } from "@/app/_models/list";
 import { saveTodo } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
@@ -187,7 +179,7 @@ export default function Editor({
       deadline: date,
       idSelectedList: idSelectedList,
       selectedPriority: priority,
-      notes: notes.trim(),
+      notes: notes === undefined ? notes : notes.trim(),
     };
     saveAction(currentValues);
     router.push(`/list/${idSelectedList}`);
@@ -204,7 +196,10 @@ export default function Editor({
     <>
       <form
         className={styles.form}
-        onSubmit={(e: FormEvent<HTMLFormElement>) => e.preventDefault()}
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          saveToDo();
+        }}
       >
         <div className={`${styles.dflexRow} ${styles.titleComponent}`}>
           <FontAwesomeIcon
@@ -226,6 +221,7 @@ export default function Editor({
           <div className={`${styles.dflexRow} ${styles.labelDeadline}`}>
             <button
               className={`${styles.buttonShowDeadline}`}
+              type="button"
               onClick={() => {
                 setVisibilityClassForDeadline(
                   visibilityClassForCalendar === "hideElement"
@@ -367,11 +363,12 @@ export default function Editor({
         <div className={`${styles.saveDeleteButtons} ${styles.dflexRow}`}>
           <Button
             className={deleteButtonVisible ? "" : styles.hideElement}
+            typeOfButton={"button"}
             action={deleteToDo}
             task={"delete"}
           />
           <Button
-            action={saveToDo}
+            typeOfButton="submit"
             disabled={saveButtonDisabled}
             task={"save"}
           />

@@ -9,8 +9,8 @@ export enum Priority {
 export interface Task {
   id: number;
   title: string;
-  note?: string;
-  deadline?: Date;
+  note: string | null;
+  deadline: Date | null;
   priority: Priority;
   listKey: number;
   done: boolean;

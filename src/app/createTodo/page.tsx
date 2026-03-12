@@ -40,16 +40,12 @@ export default function Page() {
     let result: Task = {
       id: highestId + 1,
       title: todo.title,
+      deadline: todo.enterDeadline ? todo.deadline : null,
       priority: todo.selectedPriority,
       listKey: todo.idSelectedList,
       done: false,
+      note: todo.notes === "" ? null : todo.notes,
     };
-    if (todo.notes !== "") {
-      result.note = todo.notes;
-    }
-    if (todo.enterDeadline) {
-      result.deadline = todo.deadline;
-    }
     addTask(result);
   }
 
