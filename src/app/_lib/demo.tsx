@@ -9,6 +9,7 @@ let tasks: Task[] = [
     priority: Priority.High,
     listKey: 1,
     done: false,
+    note: null,
   },
   {
     id: 1,
@@ -17,6 +18,7 @@ let tasks: Task[] = [
     priority: Priority.Medium,
     listKey: 2,
     done: false,
+    note: null,
   },
   {
     id: 2,
