@@ -9,19 +9,32 @@
     flex-direction: column;
 }
 
+body{
+    background-color: #e9ccaa;
+    margin: 0 0 0 0;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    margin: 10px 10px 10px 10px;
+}
+
 .bodyForm {
     padding: 2vw 4vw 2vw 4vw;
     box-sizing: border-box;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
-    border-radius: 8px;
-    width: 95vw;
-    margin-top: 3rem;
+    border-style: none;
+    border-radius: 10px;
+    width: 90vw;
+    margin-top: 2rem;
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 0 0 20px -10px black;
 }
 
 .input {
-    font-family: "Avenir Next", sans-serif;
     border-style: solid;
     border-width: 1px;
     border-color: black;
@@ -32,11 +45,6 @@
 
 .input:focus {
     outline: none;
-}
-
-.list {
-    margin-top: 3vw;
-    margin-bottom: 2vw;
 }
 
 .selectList {
@@ -54,14 +62,12 @@
 
 .stringDate {
     margin: 0 0 0 0;
-    font-family: "Avenir Next", sans-serif;
     font-size: 16px;
     border-style: none;
     background-color: transparent;
 }
 
 .date {
-    display: flex;
     margin-bottom: 3vw;
     margin-top: 2vw;
 }
@@ -107,8 +113,7 @@
 }
 
 .priorityButton {
-    margin-top: 1vw;
-    margin-bottom: 2vw;
+    margin-top: 8px;
     display: flex;
     flex-direction: row;
     align-self: center;
@@ -121,5 +126,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 95vw;
+    width: 90vw;
+}
+
+.title{
+    box-shadow: 0 0 20px -10px black;
+}
+
+.notes{
+    padding: 5px 5px 0 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.separator{
+    border: none;
+    border-top: 1px solid #bcbcbc;
+    border-top-width: 3px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.labelDeadline{
+    align-items: center;
+}
+.labelList{
+    margin-bottom: 8px;
+}
+.iconGoBack{
+    color: black
 }

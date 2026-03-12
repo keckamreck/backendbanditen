@@ -16,29 +16,20 @@ import Calendar from "@/app/_components/calendar";
 import { PriorityButton } from "@/app/_components/buttonsEditor";
 import { Priority } from "@/app/_models/task";
 import { Button } from "@/app/_components/buttonsEditor";
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { List } from "@/app/_models/list";
 import { saveTodo } from "@/app/_models/task";
+import { useRouter } from "next/navigation";
 
 type Props = {
   defaultTitle: string;
   defaultEnterDeadline: boolean;
-  defaultDate: Date;
-  defaultTimeHours: number;
-  defaultTimeMinutes: number;
+  defaultDeadline: Date;
   lists: List[];
-  defaultIndexSelectedList: number;
+  defaultIdSelectedList: number;
   defaultSelectedPriority: Priority;
   defaultNotes: string;
-  saveAction: () => void;
+  saveAction: (todo: saveTodo) => void;
   deleteButtonVisible: boolean;
   deleteAction?: () => void;
 };
@@ -46,17 +37,16 @@ type Props = {
 export default function Editor({
   defaultTitle,
   defaultEnterDeadline,
-  defaultDate,
-  defaultTimeHours,
-  defaultTimeMinutes,
+  defaultDeadline,
   lists,
-  defaultIndexSelectedList,
+  defaultIdSelectedList,
   defaultSelectedPriority,
   defaultNotes,
   deleteButtonVisible,
   saveAction,
   deleteAction,
 }: Props) {
+  const router = useRouter();
   const [title, setTitle] = useState<string>(defaultTitle);
   const [enterDeadline, setEnterDeadline] =
     useState<boolean>(defaultEnterDeadline);
@@ -66,27 +56,19 @@ export default function Editor({
   const [visibilityClassForCalendar, setVisibilityClassForCalendar] = useState<
     "" | "hideElement"
   >(enterDeadline ? "" : "hideElement");
-  const [date, setDate] = useState<Date>(
-    new Date(
-      defaultDate.getFullYear(),
-      defaultDate.getMonth(),
-      defaultDate.getDate(),
-    ),
-  );
-  const [timeHour, setTimeHour] = useState<number>(defaultTimeHours);
+  const [date, setDate] = useState<Date>(defaultDeadline);
   const inputHour = useRef<HTMLInputElement | null>(null);
-  const [timeMinutes, setTimeMinutes] = useState<number>(defaultTimeMinutes);
   const inputMinutes = useRef<HTMLInputElement | null>(null);
   const [priority, setPriority] = useState<Priority>(defaultSelectedPriority);
-  const [indexSelectedList, setIndexSelectedList] = useState<number>(
-    defaultIndexSelectedList,
+  const [idSelectedList, setIdSelectedList] = useState<number>(
+    defaultIdSelectedList,
   );
   const [notes, setNotes] = useState<string>(defaultNotes);
 
   const [saveButtonDisabled, setSaveButtonDisabled] = useState<boolean>(false);
 
   useEffect((): void => {
-    if (title !== "") {
+    if (title !== "" && title.trim() !== "") {
       setSaveButtonDisabled(false);
     } else {
       setSaveButtonDisabled(true);
@@ -102,7 +84,15 @@ export default function Editor({
     if (parseInt(newHour) > 23) {
       newHour = "23";
     }
-    setTimeHour(parseInt(newHour));
+    setDate(
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        parseInt(newHour),
+        date.getMinutes(),
+      ),
+    );
   }
 
   function setNewMinute(e: ChangeEvent<HTMLInputElement>): void {
@@ -114,80 +104,124 @@ export default function Editor({
     if (parseInt(newMinute) > 59) {
       newMinute = "59";
     }
-    setTimeMinutes(parseInt(newMinute));
+    setDate(
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        parseInt(newMinute),
+      ),
+    );
   }
 
-  function checkInput(
-    e: ChangeEvent<HTMLInputElement>,
-    defaultValue: number,
-    action: Dispatch<SetStateAction<number>>,
-  ): void {
+  function checkInputHour(e: ChangeEvent<HTMLInputElement>): void {
     if (e.target.value === "") {
-      action(defaultValue);
+      setDate(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          defaultDeadline.getHours(),
+          date.getMinutes(),
+        ),
+      );
     } else if (e.target.value.length === 1) {
-      action(parseInt(e.target.value.toString().padStart(2, "0")));
+      setDate(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          parseInt(e.target.value),
+          date.getMinutes(),
+        ),
+      );
+    }
+  }
+
+  function checkInputMinutes(e: ChangeEvent<HTMLInputElement>): void {
+    if (e.target.value === "") {
+      setDate(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          defaultDeadline.getMinutes(),
+        ),
+      );
+    } else if (e.target.value.length === 1) {
+      setDate(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          parseInt(e.target.value),
+        ),
+      );
     }
   }
 
   function selectList(e: ChangeEvent<HTMLSelectElement>) {
-    for (let i in lists) {
-      if (lists[i].title === e.target.value) {
-        setIndexSelectedList(parseInt(i));
+    for (let list of lists) {
+      if (list.title === e.target.value) {
+        setIdSelectedList(list.id);
         break;
       }
     }
   }
 
   function saveToDo(): void {
-    let result: saveTodo;
-    const initialValues: saveTodo = {
-      title: defaultTitle,
-      enterDeadline: defaultEnterDeadline,
-      date: defaultDate,
-      timeHour: defaultTimeHours,
-      timeMinutes: defaultTimeMinutes,
-      indexSelectedList: defaultIndexSelectedList,
-      selectedPriority: defaultSelectedPriority,
-      notes: defaultNotes,
-    };
     const currentValues: saveTodo = {
-      title: title,
+      title: title.trim(),
       enterDeadline: enterDeadline,
-      date: date,
-      timeHour: timeHour,
-      timeMinutes: timeMinutes,
-      indexSelectedList: indexSelectedList,
+      deadline: date,
+      idSelectedList: idSelectedList,
       selectedPriority: priority,
-      notes: notes,
+      notes: notes === undefined ? notes : notes.trim(),
     };
-
-    saveAction();
+    saveAction(currentValues);
+    router.push(`/list/${idSelectedList}`);
   }
 
   function deleteToDo(): void {
     if (deleteAction !== undefined) {
       deleteAction();
+      router.push(`/list/${idSelectedList}`);
     }
   }
 
   return (
     <>
-      <form onSubmit={(e: FormEvent<HTMLFormElement>) => e.preventDefault()}>
+      <form
+        className={styles.form}
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          saveToDo();
+        }}
+      >
         <div className={`${styles.dflexRow} ${styles.titleComponent}`}>
-          <FontAwesomeIcon size="2x" icon={faChevronLeft} />
+          <FontAwesomeIcon
+            className={styles.iconGoBack}
+            size="2x"
+            icon={faChevronLeft}
+            onClick={() => router.push(`/list/${idSelectedList}`)}
+          />
           <NameTodo
             className={`${styles.title}`}
             value={title}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setTitle(e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setTitle(e.target.value);
+            }}
           />
         </div>
 
         <div className={`${styles.bodyForm} ${styles.dflexCol}`}>
-          <div className={`${styles.dflexRow}`}>
+          <div className={`${styles.dflexRow} ${styles.labelDeadline}`}>
             <button
               className={`${styles.buttonShowDeadline}`}
+              type="button"
               onClick={() => {
                 setVisibilityClassForDeadline(
                   visibilityClassForCalendar === "hideElement"
@@ -211,7 +245,7 @@ export default function Editor({
                 }
               />
             </button>
-            <label>Fälligkeit:</label>
+            <label>Fälligkeit</label>
           </div>
           <div
             className={`${styles.dflexCol} ${styles[visibilityClassForDeadline]}`}
@@ -222,11 +256,8 @@ export default function Editor({
                 size="1x"
                 icon={faCalendar}
               />
-              <input
+              <p
                 className={`${styles.stringDate} ${styles.input}`}
-                type="text"
-                readOnly={true}
-                value={`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`}
                 onClick={() =>
                   setVisibilityClassForCalendar(
                     visibilityClassForCalendar === "hideElement"
@@ -234,7 +265,13 @@ export default function Editor({
                       : "hideElement",
                   )
                 }
-              ></input>
+              >
+                {date.toLocaleDateString("de-DE", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+              </p>
             </div>
             <div
               className={`${styles.dflexCol} ${styles.calendar} ${styles[visibilityClassForCalendar]}`}
@@ -257,12 +294,12 @@ export default function Editor({
                 name="hour"
                 type="text"
                 ref={inputHour}
-                value={timeHour}
+                value={date.getHours().toString().padStart(2, "0")}
                 maxLength={3}
                 pattern="[0-9]*"
                 onChange={setNewHour}
                 onBlur={(e) => {
-                  checkInput(e, defaultTimeHours, setTimeHour);
+                  checkInputHour(e);
                 }}
               ></input>
               :
@@ -272,25 +309,26 @@ export default function Editor({
                 name="minute"
                 type="text"
                 ref={inputMinutes}
-                value={timeMinutes}
+                value={date.getMinutes().toString().padStart(2, "0")}
                 maxLength={3}
                 pattern="[0-9]*"
                 onChange={setNewMinute}
                 onBlur={(e) => {
-                  checkInput(e, defaultTimeMinutes, setTimeMinutes);
+                  checkInputMinutes(e);
                 }}
               ></input>
             </div>
           </div>
-          <div className={`${styles.list} ${styles.dflexRow}`}>
+          <span className={styles.separator}></span>
+          <div className={`${styles.list} ${styles.dflexCol}`}>
             <label className={styles.labelList} htmlFor="list">
-              Liste:
+              Liste
             </label>
             <select
               className={`${styles.selectList} ${styles.input}`}
               id="list"
               name="list"
-              value={lists[indexSelectedList].title}
+              value={lists[idSelectedList].title}
               onChange={selectList}
             >
               {lists.map((list: List) => (
@@ -300,21 +338,22 @@ export default function Editor({
               ))}
             </select>
           </div>
+          <span className={styles.separator}></span>
           <div className={styles.dflexCol}>
-            <label>Priorität: </label>
+            <label>Priorität </label>
             <PriorityButton
               className={styles.priorityButton}
               action={setPriority}
               defaultValue={priority}
             />
           </div>
-
+          <span className={styles.separator}></span>
           <label htmlFor="notes">Notizen </label>
           <textarea
-            className={styles.input}
+            className={`${styles.input} ${styles.notes}`}
             id="notes"
             name="notes"
-            rows={5}
+            rows={4}
             value={notes}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
               setNotes(e.target.value)
@@ -324,11 +363,12 @@ export default function Editor({
         <div className={`${styles.saveDeleteButtons} ${styles.dflexRow}`}>
           <Button
             className={deleteButtonVisible ? "" : styles.hideElement}
+            typeOfButton={"button"}
             action={deleteToDo}
             task={"delete"}
           />
           <Button
-            action={saveToDo}
+            typeOfButton="submit"
             disabled={saveButtonDisabled}
             task={"save"}
           />

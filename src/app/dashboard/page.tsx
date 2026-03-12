@@ -52,18 +52,20 @@ export default function DashboardPage() {
     console.log("Due task updated:", dueTask);
     const getDueTaskTime = () => {
       const timestamp = new Date();
-      if (dueTask?.deadline !== undefined) {
-        console.log("timestamp:", timestamp);
-        console.log("dueTask.deadline:", dueTask.deadline);
-        const timeLeft =
-          (dueTask.deadline?.getTime() - timestamp.getTime()) /
-          (1000 * 60 * 60 * 24);
-        if (timeLeft < 1) {
-          setDueTaskTime("Heute fällig");
-        } else if (timeLeft < 2) {
-          setDueTaskTime("Morgen fällig");
-        } else {
-          setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+      if (dueTask !== null && dueTask != undefined) {
+        if (dueTask.deadline !== null) {
+          console.log("timestamp:", timestamp);
+          console.log("dueTask.deadline:", dueTask.deadline);
+          const timeLeft =
+            (dueTask.deadline.getTime() - timestamp.getTime()) /
+            (1000 * 60 * 60 * 24);
+          if (timeLeft < 1) {
+            setDueTaskTime("Heute fällig");
+          } else if (timeLeft < 2) {
+            setDueTaskTime("Morgen fällig");
+          } else {
+            setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+          }
         }
       }
     };
