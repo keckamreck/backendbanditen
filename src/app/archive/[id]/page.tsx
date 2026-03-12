@@ -40,11 +40,11 @@ export default function ArchivePage() {
 
   return (
     <>
-      <TopBarArchive title={list.title} id={list.id} />
+      <TopBarArchive title={list.title} id={list.id}/>
       <div className={styles.tasks}>
         {showTasks(tasks, handleDone)}
       </div>
-      <DeleteButton className={styles.buttonDelete} onClick={toggleModal} />
+      <DeleteButton className={styles.buttonDelete} onClick={toggleModal}/>
       {showModal &&
         <Modal
           onClose={toggleModal}
