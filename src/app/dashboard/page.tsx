@@ -10,11 +10,15 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { getLists } from "@/app/_lib/demo";
+import { getLists, getTasks } from "@/app/_lib/demo";
+import { Task } from "@/app/_models/task";
 
 export default function DashboardPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [dueTask, setDueTask] = useState<Task | null>(null);
+  const [dueTaskTime, setDueTaskTime] = useState<string>("");
 
   useEffect(() => {
     const initialLists = getLists();
@@ -24,8 +28,49 @@ export default function DashboardPage() {
     };
     initialLists.push(breakfastList);
     setLists(initialLists);
+    const initialTasks = getTasks();
+    setTasks(initialTasks);
     console.log("Lists initialized:", initialLists);
+    console.log("Tasks initialized:", initialTasks);
   }, []);
+
+  useEffect(() => {
+    const getDueTask = () => {
+      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const sortedTasks = [...filteredTasks].sort((a, b) => {
+        return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
+      });
+      setDueTask(sortedTasks[0]);
+    };
+
+    const timer = setInterval(getDueTask, 60000);
+    getDueTask();
+    return () => clearInterval(timer);
+  }, [tasks]);
+
+  useEffect(() => {
+    console.log("Due task updated:", dueTask);
+    const getDueTaskTime = () => {
+      const timestamp = new Date();
+      if (dueTask?.deadline !== undefined) {
+        console.log("timestamp:", timestamp);
+        console.log("dueTask.deadline:", dueTask.deadline);
+        const timeLeft =
+          (dueTask.deadline?.getTime() - timestamp.getTime()) /
+          (1000 * 60 * 60 * 24);
+        if (timeLeft < 1) {
+          setDueTaskTime("Heute fällig");
+        } else if (timeLeft < 2) {
+          setDueTaskTime("Morgen fällig");
+        } else {
+          setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+        }
+      }
+    };
+    const timer = setInterval(getDueTaskTime, 60000);
+    getDueTaskTime();
+    return () => clearInterval(timer);
+  }, [dueTask]);
 
   function newList(name: string) {
     const newListItem: List = {
@@ -69,14 +114,33 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Bereich für heute/nächste fällige Listen */}
+        {/* Section for due Task */}
         <div className={styles.todaySection}>
-          <h3>Heute fällig</h3>
-          <div className={styles.todayContent}>
+          <h3>{dueTaskTime}</h3>
+          <div
+            className={styles.todayContent}
+            onClick={() =>
+              alert(
+                `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
+              )
+            }
+          >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
-                <span className={styles.dueTitle}>Einkaufen</span>
-                <span className={styles.dueDate}>Heute, 15:30</span>
+                <span className={styles.dueTitle}>{dueTask?.title}</span>
+                <span className={styles.dueDate}>
+                  {dueTask?.deadline?.toLocaleDateString("de-DE", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  ,{" "}
+                  {dueTask?.deadline?.toLocaleTimeString("de-DE", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </div>
               <div className={styles.dueIcon}>
                 <FontAwesomeIcon icon={faCalendarWeek} />
