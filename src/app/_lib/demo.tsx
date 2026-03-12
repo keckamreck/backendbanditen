@@ -76,8 +76,16 @@ export function addTask(task: Task): void {
   console.log(tasks);
 }
 
-export function editTask(task: Task) {
-  console.log(task);
+export function editTask(id: number, changes: Partial<Task>) {
+  const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
+  console.log(tasks);
+  for (const key of Object.keys(changes) as (keyof Task)[]) {
+    if (tasks[indexChangedTask][key] !== undefined) {
+      // @ts-ignore
+      tasks[indexChangedTask][key] = changes[key];
+    }
+  }
+  console.log(changes);
 }
 
 export function deleteTask(id: number) {

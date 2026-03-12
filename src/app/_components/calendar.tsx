@@ -241,7 +241,7 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
     <div>
       <div className={styles.headerComponent}>
         <button type="button" className={styles.button} onClick={oneMonthBack}>
-          <FontAwesomeIcon size="1x" icon={faChevronLeft} />
+          <FontAwesomeIcon size="1x" icon={faChevronLeft} color="black" />
         </button>
         <select
           className={styles.selectShownMonth}
@@ -264,7 +264,7 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
           onBlur={checkInputYear}
         ></input>
         <button type="button" className={styles.button} onClick={oneMonthAgo}>
-          <FontAwesomeIcon size="1x" icon={faChevronRight} />
+          <FontAwesomeIcon size="1x" icon={faChevronRight} color="black" />
         </button>
       </div>
       <div className={styles.calendar}>

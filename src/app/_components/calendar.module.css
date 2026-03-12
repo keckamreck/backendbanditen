@@ -28,6 +28,10 @@
     justify-self: center;
 }
 
+.tody, .currentDay, .selectedDay {
+    color: black
+}
+
 .today {
     border-style: solid;
     border-width: 2px;

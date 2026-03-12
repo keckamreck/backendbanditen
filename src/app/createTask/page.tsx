@@ -2,7 +2,7 @@
 
 import Editor from "@/app/_components/editor";
 import { getLists } from "@/app/_lib/demo";
-import { Priority, saveTodo, Task } from "@/app/_models/task";
+import { Priority, TaskFormattedForEditor, Task } from "@/app/_models/task";
 import { List } from "@/app/_models/list";
 import { RefObject, useRef } from "react";
 import { getTasks } from "@/app/_lib/demo";
@@ -21,7 +21,7 @@ export default function Page() {
   );
   const lists: RefObject<List[]> = useRef(getLists());
   const tasks: RefObject<Task[]> = useRef(getTasks());
-  const defaultValue: RefObject<saveTodo> = useRef({
+  const defaultValue: RefObject<TaskFormattedForEditor> = useRef({
     title: "",
     enterDeadline: false,
     deadline: defaultDate.current,
@@ -29,7 +29,7 @@ export default function Page() {
     selectedPriority: Priority.Low,
     notes: "",
   });
-  function handleSave(todo: saveTodo): void {
+  function handleSave(task: TaskFormattedForEditor): void {
     let highestId: number = 0;
     for (const task of tasks.current) {
       if (task.id > highestId) {
@@ -39,12 +39,12 @@ export default function Page() {
 
     let result: Task = {
       id: highestId + 1,
-      title: todo.title,
-      deadline: todo.enterDeadline ? todo.deadline : null,
-      priority: todo.selectedPriority,
-      listKey: todo.idSelectedList,
+      title: task.title,
+      deadline: task.enterDeadline ? task.deadline : null,
+      priority: task.selectedPriority,
+      listKey: task.idSelectedList,
       done: false,
-      note: todo.notes === "" ? null : todo.notes,
+      note: task.notes === "" ? null : task.notes,
     };
     addTask(result);
   }
@@ -58,7 +58,7 @@ export default function Page() {
       defaultIdSelectedList={defaultValue.current.idSelectedList}
       defaultSelectedPriority={defaultValue.current.selectedPriority}
       defaultNotes={defaultValue.current.notes}
-      saveAction={(todo: saveTodo) => handleSave(todo)}
+      saveAction={(task: TaskFormattedForEditor) => handleSave(task)}
       deleteButtonVisible={false}
     ></Editor>
   );

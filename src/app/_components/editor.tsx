@@ -11,14 +11,14 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./editor.module.css";
-import { NameTodo } from "./nameTodo";
+import { NameTask } from "./nameTask";
 import Calendar from "@/app/_components/calendar";
 import { PriorityButton } from "@/app/_components/buttonsEditor";
 import { Priority } from "@/app/_models/task";
 import { Button } from "@/app/_components/buttonsEditor";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { List } from "@/app/_models/list";
-import { saveTodo } from "@/app/_models/task";
+import { TaskFormattedForEditor } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -29,7 +29,7 @@ type Props = {
   defaultIdSelectedList: number;
   defaultSelectedPriority: Priority;
   defaultNotes: string;
-  saveAction: (todo: saveTodo) => void;
+  saveAction: (task: TaskFormattedForEditor) => void;
   deleteButtonVisible: boolean;
   deleteAction?: () => void;
 };
@@ -77,9 +77,13 @@ export default function Editor({
 
   function setNewHour(e: ChangeEvent<HTMLInputElement>): void {
     let newHour: string = e.target.value.replace(/\D/g, "");
+    const newHourArray: string[] = newHour.split("");
     if (newHour.length === 3) {
-      const newHourArray: string[] = newHour.split("");
-      newHour = `${newHourArray[0]}${newHourArray[1]}`;
+      if (newHourArray[0] == "0") {
+        newHour = `${newHourArray[1]}${newHourArray[2]}`;
+      } else {
+        newHour = `${newHourArray[0]}${newHourArray[1]}`;
+      }
     }
     if (parseInt(newHour) > 23) {
       newHour = "23";
@@ -99,7 +103,11 @@ export default function Editor({
     let newMinute: string = e.target.value.replace(/\D/g, "");
     if (newMinute.length === 3) {
       const newHourArray: string[] = newMinute.split("");
-      newMinute = `${newHourArray[0]}${newHourArray[1]}`;
+      if (newHourArray[0] == "0") {
+        newMinute = `${newHourArray[1]}${newHourArray[2]}`;
+      } else {
+        newMinute = `${newHourArray[0]}${newHourArray[1]}`;
+      }
     }
     if (parseInt(newMinute) > 59) {
       newMinute = "59";
@@ -115,54 +123,6 @@ export default function Editor({
     );
   }
 
-  function checkInputHour(e: ChangeEvent<HTMLInputElement>): void {
-    if (e.target.value === "") {
-      setDate(
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          defaultDeadline.getHours(),
-          date.getMinutes(),
-        ),
-      );
-    } else if (e.target.value.length === 1) {
-      setDate(
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          parseInt(e.target.value),
-          date.getMinutes(),
-        ),
-      );
-    }
-  }
-
-  function checkInputMinutes(e: ChangeEvent<HTMLInputElement>): void {
-    if (e.target.value === "") {
-      setDate(
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          date.getHours(),
-          defaultDeadline.getMinutes(),
-        ),
-      );
-    } else if (e.target.value.length === 1) {
-      setDate(
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          date.getHours(),
-          parseInt(e.target.value),
-        ),
-      );
-    }
-  }
-
   function selectList(e: ChangeEvent<HTMLSelectElement>) {
     for (let list of lists) {
       if (list.title === e.target.value) {
@@ -172,8 +132,8 @@ export default function Editor({
     }
   }
 
-  function saveToDo(): void {
-    const currentValues: saveTodo = {
+  function saveTask(): void {
+    const currentValues: TaskFormattedForEditor = {
       title: title.trim(),
       enterDeadline: enterDeadline,
       deadline: date,
@@ -185,7 +145,7 @@ export default function Editor({
     router.push(`/list/${idSelectedList}`);
   }
 
-  function deleteToDo(): void {
+  function deleteTask(): void {
     if (deleteAction !== undefined) {
       deleteAction();
       router.push(`/list/${idSelectedList}`);
@@ -198,7 +158,7 @@ export default function Editor({
         className={styles.form}
         onSubmit={(e: FormEvent<HTMLFormElement>) => {
           e.preventDefault();
-          saveToDo();
+          saveTask();
         }}
       >
         <div className={`${styles.dflexRow} ${styles.titleComponent}`}>
@@ -208,7 +168,7 @@ export default function Editor({
             icon={faChevronLeft}
             onClick={() => router.push(`/list/${idSelectedList}`)}
           />
-          <NameTodo
+          <NameTask
             className={`${styles.title}`}
             value={title}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -282,12 +242,8 @@ export default function Editor({
                 defaultDate={date}
               ></Calendar>
             </div>
-            <div className={`${styles.dflexRow}`}>
-              <FontAwesomeIcon
-                className={styles.iconTime}
-                size="1x"
-                icon={faClock}
-              />
+            <div className={`${styles.dflexRow} ${styles.timePicker}`}>
+              <FontAwesomeIcon size="1x" icon={faClock} />
               <input
                 className={`${styles.input} ${styles.time} ${styles.hours}`}
                 id="time"
@@ -298,9 +254,6 @@ export default function Editor({
                 maxLength={3}
                 pattern="[0-9]*"
                 onChange={setNewHour}
-                onBlur={(e) => {
-                  checkInputHour(e);
-                }}
               ></input>
               :
               <input
@@ -313,10 +266,8 @@ export default function Editor({
                 maxLength={3}
                 pattern="[0-9]*"
                 onChange={setNewMinute}
-                onBlur={(e) => {
-                  checkInputMinutes(e);
-                }}
               ></input>
+              <span className={styles.textTime}>Uhr</span>
             </div>
           </div>
           <span className={styles.separator}></span>
@@ -364,7 +315,7 @@ export default function Editor({
           <Button
             className={deleteButtonVisible ? "" : styles.hideElement}
             typeOfButton={"button"}
-            action={deleteToDo}
+            action={deleteTask}
             task={"delete"}
           />
           <Button
