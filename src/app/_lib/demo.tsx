@@ -1,8 +1,8 @@
 import { List } from '@/app/_models/list';
 import { Priority, Task } from '@/app/_models/task';
 
-export function generateList(id: number) {
-  const list: List[] = [
+export function generateList(lid:number) {
+  const lists: List[] = [
     {
       id: 1,
       title: "Test Liste",
@@ -22,7 +22,7 @@ export function generateList(id: number) {
     },
   ];
 
-  return list;
+  return lists;
 }
 
 export function generateTasks(listKey: number) {
@@ -126,4 +126,54 @@ export function getTasks(listKey: number){
     }
   }
   return match;
+}
+
+let listsData: List[] = [
+  {
+    id: 1,
+    title: "Test Liste",
+    category: "Arbeit"
+  },
+  {
+    id: 2,
+    title: "Test Liste 12345",
+    category: "Freizeit"
+  },
+  {
+    id: 3,
+    title: "Arbeit",
+    category: "Haushalt und Co"
+  },
+  {
+    id: 4,
+    title: "Üble Liste"
+  },
+];
+
+export function getLists() {
+  return listsData;
+}
+
+export function updateListCategory(listId: number, newCategory: string) {
+  const list = listsData.find(l => l.id === listId);
+  if (list) {
+    list.category = newCategory;
+  }
+  return list;
+}
+
+export function getCategories(){
+  const lists: List[] = getLists();
+  const categories: string[] = [];
+  let temp : string = "";
+
+  for(let i=0; i< lists.length; i++){
+    if (lists[i].category){
+      temp = lists[i].category as string;
+    }
+    if(temp != "" && !categories.includes(temp)){
+    categories.push(temp);
+    }
+  }
+  return categories;
 }

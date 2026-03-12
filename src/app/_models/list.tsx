@@ -4,6 +4,7 @@ export interface List{
   id: number;
   title: string;
   isFavourite? : boolean;
+  category?: string;  
 };
 
 export function getList(id: number) {
