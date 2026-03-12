@@ -9,8 +9,8 @@ export enum Priority {
 export interface Task {
   id: number;
   title: string;
-  note?: string;
-  deadline?: Date;
+  note: string | null;
+  deadline: Date | null;
   priority: Priority;
   listKey: number;
   done: boolean;
@@ -19,10 +19,8 @@ export interface Task {
 export interface saveTodo {
   title: string;
   enterDeadline: boolean;
-  indexSelectedList: number;
+  idSelectedList: number;
   selectedPriority: Priority;
-  date?: Date;
-  timeHour?: number;
-  timeMinutes?: number;
-  notes?: string;
+  deadline: Date;
+  notes: string;
 }

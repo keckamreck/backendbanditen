@@ -17,7 +17,8 @@ export default function DashboardPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [todayTask, setTodayTask] = useState<Task | null>(null);
+  const [dueTask, setDueTask] = useState<Task | null>(null);
+  const [dueTaskTime, setDueTaskTime] = useState<string>("");
 
   useEffect(() => {
     const initialLists = getLists();
@@ -34,16 +35,44 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    const getTodayTask = () => {
+    const getDueTask = () => {
       const filteredTasks = tasks.filter((task) => task.deadline != undefined);
       const sortedTasks = [...filteredTasks].sort((a, b) => {
         return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
       });
-      setTodayTask(sortedTasks[0]);
+      setDueTask(sortedTasks[0]);
     };
 
-    getTodayTask();
+    const timer = setInterval(getDueTask, 60000);
+    getDueTask();
+    return () => clearInterval(timer);
   }, [tasks]);
+
+  useEffect(() => {
+    console.log("Due task updated:", dueTask);
+    const getDueTaskTime = () => {
+      const timestamp = new Date();
+      if (dueTask !== null && dueTask != undefined) {
+        if (dueTask.deadline !== null) {
+          console.log("timestamp:", timestamp);
+          console.log("dueTask.deadline:", dueTask.deadline);
+          const timeLeft =
+            (dueTask.deadline.getTime() - timestamp.getTime()) /
+            (1000 * 60 * 60 * 24);
+          if (timeLeft < 1) {
+            setDueTaskTime("Heute fällig");
+          } else if (timeLeft < 2) {
+            setDueTaskTime("Morgen fällig");
+          } else {
+            setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+          }
+        }
+      }
+    };
+    const timer = setInterval(getDueTaskTime, 60000);
+    getDueTaskTime();
+    return () => clearInterval(timer);
+  }, [dueTask]);
 
   function newList(name: string) {
     const newListItem: List = {
@@ -87,20 +116,32 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Bereich für heute/nächste fällige Listen */}
+        {/* Section for due Task */}
         <div className={styles.todaySection}>
-          <h3>Heute fällig</h3>
+          <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
             onClick={() =>
-              alert(`Open Detail View for task with id: ${todayTask?.id}  `)
+              alert(
+                `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
+              )
             }
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
-                <span className={styles.dueTitle}>{todayTask?.title}</span>
+                <span className={styles.dueTitle}>{dueTask?.title}</span>
                 <span className={styles.dueDate}>
-                  Heute, 15:30 {todayTask?.id}
+                  {dueTask?.deadline?.toLocaleDateString("de-DE", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  ,{" "}
+                  {dueTask?.deadline?.toLocaleTimeString("de-DE", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
               <div className={styles.dueIcon}>
