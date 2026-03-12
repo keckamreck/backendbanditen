@@ -11,14 +11,16 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 // import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
+import { DeleteButton } from "@/app/_components/button";
 
 function List({ ListId }: { ListId: number }) {
   const list = getList(ListId);
   const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
   const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
+  const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
@@ -46,22 +48,38 @@ function List({ ListId }: { ListId: number }) {
         </button>
       </div>
       <div className={styles.tasks}>
-        {sortedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onPencilClick={() => console.log("Pencil clicked")}
-            onDoneClick={() => {
-              setTasks(
-                tasks.map((t) =>
-                  t.id === task.id ? { ...t, done: !t.done } : t,
-                ),
-              );
-              console.log("Done clicked");
-            }}
-          />
-        ))}
+        {sortedTasks
+          // .filter((task) => !task.done)
+          .filter((task) => !task.done || fadingTaskIds.has(task.id))
+          .map((task) => (
+            <div
+              key={task.id}
+              className={fadingTaskIds.has(task.id) ? styles.fading : ""}
+            >
+              <TaskCard
+                key={task.id}
+                task={task}
+                onPencilClick={() => console.log("Pencil clicked")}
+                onDoneClick={() => {
+                  setFadingTaskIds((prev) => new Set(prev).add(task.id));
+                  setTasks((prev) =>
+                    prev.map((t) =>
+                      t.id === task.id ? { ...t, done: true } : t,
+                    ),
+                  );
+                  setTimeout(() => {
+                    setFadingTaskIds((prev) => {
+                      const next = new Set(prev);
+                      next.delete(task.id);
+                      return next;
+                    });
+                  }, 1500);
+                }}
+              />
+            </div>
+          ))}
       </div>
+      <DeleteButton className={styles.buttonDelete}></DeleteButton>
     </div>
   );
 }
