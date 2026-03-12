@@ -240,7 +240,7 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
   return (
     <div>
       <div className={styles.headerComponent}>
-        <button className={styles.button} onClick={oneMonthBack}>
+        <button type="button" className={styles.button} onClick={oneMonthBack}>
           <FontAwesomeIcon size="1x" icon={faChevronLeft} />
         </button>
         <select
@@ -263,7 +263,7 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
           onChange={setNewYear}
           onBlur={checkInputYear}
         ></input>
-        <button className={styles.button} onClick={oneMonthAgo}>
+        <button type="button" className={styles.button} onClick={oneMonthAgo}>
           <FontAwesomeIcon size="1x" icon={faChevronRight} />
         </button>
       </div>
@@ -276,6 +276,7 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
         {days?.map((item: number[], index: number) =>
           item.map((day: number) => (
             <button
+              type="button"
               className={getClassDay(index, day)}
               key={day}
               onClick={(): void => setNewDeadline(day, index)}

@@ -52,18 +52,21 @@ export function PriorityButton({
   return (
     <div className={className}>
       <button
+        type="button"
         className={`${styles.low} ${styles.priority} ${styles[lowActive]}`}
         onClick={(): void => setPriority("Low")}
       >
         niedrig
       </button>
       <button
+        type="button"
         className={`${styles.medium} ${styles.priority} ${styles[mediumActive]}`}
         onClick={(): void => setPriority("Medium")}
       >
         mittel
       </button>
       <button
+        type="button"
         className={`${styles.high} ${styles.priority} ${styles[highActive]}`}
         onClick={(): void => setPriority("High")}
       >
