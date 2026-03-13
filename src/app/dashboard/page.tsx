@@ -12,6 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
+// import { useNavigate } from "react-router-dom";
+// import { us } from "next/navigation";
 
 export default function DashboardPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -117,14 +119,47 @@ export default function DashboardPage() {
         </div>
 
         {/* Section for due Task */}
+        <DueTaskSection />
+      </main>
+    </div>
+  );
+
+  function SearchBar() {
+    return (
+      <form
+        className={styles.searchForm}
+        onSubmit={(e) => handleSearchSubmit(e)}
+      >
+        <div className={styles.searchInputWrapper}>
+          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+          <input
+            id="searchInput"
+            className={styles.searchBar}
+            type="search"
+            placeholder="Listen durchsuchen..."
+          />
+        </div>
+      </form>
+    );
+  }
+
+  function gotoTask() {
+    //mach ein routing zu /editTodo/ + id von dueTask
+    // return <Navigate to={`/editTodo/${dueTask?.id}`} />;
+  }
+
+  function DueTaskSection() {
+    if (dueTask) {
+      return (
         <div className={styles.todaySection}>
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={() =>
-              alert(
-                `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
-              )
+            onClick={
+              () => gotoTask()
+              // alert(
+              //   `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
+              // )
             }
           >
             <div className={styles.dueItem}>
@@ -150,27 +185,8 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
-  );
-
-  function SearchBar() {
-    return (
-      <form
-        className={styles.searchForm}
-        onSubmit={(e) => handleSearchSubmit(e)}
-      >
-        <div className={styles.searchInputWrapper}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-          <input
-            id="searchInput"
-            className={styles.searchBar}
-            type="search"
-            placeholder="Listen durchsuchen..."
-          />
-        </div>
-      </form>
-    );
+      );
+    }
   }
 
   function searchLists(s: string) {
