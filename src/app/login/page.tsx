@@ -2,9 +2,8 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { useRouter, redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { signIn } from '@/app/_lib/auth';
-import { useActionState } from 'react';
 import styles from './page.module.css'
 
 export default function Login() {

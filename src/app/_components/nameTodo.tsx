@@ -3,7 +3,7 @@ import styles from "./nameTodo.module.css";
 
 type Props = {
   className?: string;
-  value: string;
+  value?: string;
   onChange: (value: ChangeEvent<HTMLInputElement>) => void;
 };
 

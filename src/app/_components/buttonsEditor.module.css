@@ -1,7 +1,6 @@
 .priority {
     border-style: solid;
     border-color: transparent;
-    font-family: "Avenir Next", sans-serif;
     font-size: 14px;
     width: 25vw;
     height: 30px;
@@ -15,7 +14,7 @@
 .medium{
     border-left-style: none;
     border-right-style: none;
-    background-color: #f2d2a6;
+    background-color: #e9ccaa;
 }
 .high{
     border-bottom-right-radius: 25px;
@@ -44,11 +43,12 @@
     background-color: transparent;
     font-weight: bold;
     width: 40vw;
+    box-shadow: 0 0 20px -10px black;
 
 }
 .save {
-    background-color: #dafde5;
-    color: #159c56;
+    background-color: white;
+    color: #c49965;
 }
 .delete {
     color: #d05e65;
@@ -58,8 +58,8 @@
     background-color: #eaeaea;
 }
 .button:disabled {
-    border-color: #bcbcbc;
     color: #bcbcbc;
-    background-color: transparent;
+    background-color: #eaeaea;
     cursor: unset;
+    box-shadow: 0 0 20px -8px white;
 }

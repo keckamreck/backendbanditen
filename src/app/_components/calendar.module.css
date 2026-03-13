@@ -19,7 +19,6 @@
 }
 
 .today, .currentDays, .selectedDay, .remainingDays, .remainingDaysSelected {
-    font-family: "Avenir Next", sans-serif;
     font-size: 13px;
     border-style: none;
     background-color: transparent;
@@ -53,13 +52,16 @@
     transition: transform 0.2s ease;
 }
 
+.button:active{
+    background-color: #eaeaea;
+}
+
 .button:not(:active) {
     background-color: white;
     border-style: none;
 }
 
 .selectShownMonth {
-    font-family: "Avenir Next", sans-serif;
     font-size: 13px;
     background-color: transparent;
     border-style: solid;
