@@ -5,7 +5,7 @@ let tasks: Task[] = [
   {
     id: 0,
     title: "This is a task",
-    deadline: new Date("2025-02-01T10:01:00"),
+    deadline: new Date("2028-02-01T10:01:00"),
     priority: Priority.High,
     listKey: 1,
     done: false,
@@ -14,7 +14,7 @@ let tasks: Task[] = [
   {
     id: 1,
     title: "This is another task",
-    deadline: new Date("2025-03-01T11:00:00"),
+    deadline: new Date("2028-03-01T11:00:00"),
     priority: Priority.Medium,
     listKey: 2,
     done: false,
@@ -24,7 +24,7 @@ let tasks: Task[] = [
     id: 2,
     title: "This is another task",
     note: "das ist eine Notiz",
-    deadline: new Date("2025-04-01T22:00:00"),
+    deadline: new Date("2028-04-01T22:00:00"),
     priority: Priority.Low,
     listKey: 1,
     done: false,
