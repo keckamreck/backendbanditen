@@ -21,6 +21,8 @@ export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [dueTask, setDueTask] = useState<Task | null>(null);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<List[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const initialLists = getLists();
@@ -101,21 +103,54 @@ export default function DashboardPage() {
         onClose={() => setIsPopupOpen(false)}
         onSubmitting={(name) => newList(name)}
       />
+      {isSearchOpen && (
+        <div
+          className={styles.searchBackdrop}
+          onClick={() => setIsSearchOpen(false)}
+        />
+      )}
       <main className={styles.main}>
-        {/* Header mit Suchleiste links und Add-Button rechts */}
-        <div className={styles.header}>
-          <div className={styles.searchSection}>
-            <SearchBar />
+        <div className={styles.pageContainer}>
+          {/* Header mit Suchleiste links und Add-Button rechts */}
+          <div className={styles.header}>
+            <div className={styles.searchSection}>
+              <SearchBar />
+            </div>
+            <div className={styles.addButtonSection}>
+              <button
+                title="addList"
+                className={styles.addIcon}
+                onClick={() => setIsPopupOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
           </div>
-          <div className={styles.addButtonSection}>
-            <button
-              title="addList"
-              className={styles.addIcon}
-              onClick={() => setIsPopupOpen(true)}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </div>
+
+          {/* Search Dropdown */}
+          {isSearchOpen && (
+            <div className={styles.searchDropdown}>
+              {searchResults.length > 0 ? (
+                <div className={styles.searchResultsContainer}>
+                  {searchResults.map((list) => (
+                    <div
+                      key={list.id}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        gotoList(list.id);
+                        setIsSearchOpen(false);
+                        setSearchResults([]);
+                      }}
+                    >
+                      <span>{list.title}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.noResults}>Keine Listen gefunden</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Section for due Task */}
@@ -187,12 +222,8 @@ export default function DashboardPage() {
     const results = lists.filter((list) =>
       list.title.toLowerCase().includes(s.toLowerCase()),
     );
-
-    if (results.length > 0) {
-      alert(`Gefundene Listen:\n${results.map((r) => r.title).join("\n")}`);
-    } else {
-      alert("Keine Listen gefunden!");
-    }
+    setSearchResults(results);
+    setIsSearchOpen(true);
   }
 
   function handleSearchSubmit(e: FormEvent) {
