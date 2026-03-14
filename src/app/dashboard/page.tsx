@@ -2,6 +2,7 @@
 import styles from "./page.module.css";
 import Head from "next/head";
 import { useState, useEffect, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { List } from "@/app/_models/list";
 import PopupWithInput from "@/app/_components/popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,11 +15,14 @@ import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [dueTask, setDueTask] = useState<Task | null>(null);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<List[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const initialLists = getLists();
@@ -99,33 +103,93 @@ export default function DashboardPage() {
         onClose={() => setIsPopupOpen(false)}
         onSubmitting={(name) => newList(name)}
       />
+      {isSearchOpen && (
+        <div
+          className={styles.searchBackdrop}
+          onClick={() => setIsSearchOpen(false)}
+        />
+      )}
       <main className={styles.main}>
-        {/* Header mit Suchleiste links und Add-Button rechts */}
-        <div className={styles.header}>
-          <div className={styles.searchSection}>
-            <SearchBar />
+        <div className={styles.pageContainer}>
+          {/* Header mit Suchleiste links und Add-Button rechts */}
+          <div className={styles.header}>
+            <div className={styles.searchSection}>
+              <SearchBar />
+            </div>
+            <div className={styles.addButtonSection}>
+              <button
+                title="addList"
+                className={styles.addIcon}
+                onClick={() => setIsPopupOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
           </div>
-          <div className={styles.addButtonSection}>
-            <button
-              title="addList"
-              className={styles.addIcon}
-              onClick={() => setIsPopupOpen(true)}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </div>
+
+          {/* Search Dropdown */}
+          {isSearchOpen && (
+            <div className={styles.searchDropdown}>
+              {searchResults.length > 0 ? (
+                <div className={styles.searchResultsContainer}>
+                  {searchResults.map((list) => (
+                    <div
+                      key={list.id}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        gotoList(list.id);
+                        setIsSearchOpen(false);
+                        setSearchResults([]);
+                      }}
+                    >
+                      <span>{list.title}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.noResults}>Keine Listen gefunden</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Section for due Task */}
+        <DueTaskSection />
+      </main>
+    </div>
+  );
+
+  function SearchBar() {
+    return (
+      <form
+        className={styles.searchForm}
+        onSubmit={(e) => handleSearchSubmit(e)}
+      >
+        <div className={styles.searchInputWrapper}>
+          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+          <input
+            id="searchInput"
+            className={styles.searchBar}
+            type="search"
+            placeholder="Listen durchsuchen..."
+          />
+        </div>
+      </form>
+    );
+  }
+
+  function gotoList(listKey: number) {
+    router.push("/list/" + listKey);
+  }
+
+  function DueTaskSection() {
+    if (dueTask) {
+      return (
         <div className={styles.todaySection}>
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={() =>
-              alert(
-                `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
-              )
-            }
+            onClick={() => gotoList(dueTask?.listKey)}
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
@@ -150,39 +214,16 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
-  );
-
-  function SearchBar() {
-    return (
-      <form
-        className={styles.searchForm}
-        onSubmit={(e) => handleSearchSubmit(e)}
-      >
-        <div className={styles.searchInputWrapper}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-          <input
-            id="searchInput"
-            className={styles.searchBar}
-            type="search"
-            placeholder="Listen durchsuchen..."
-          />
-        </div>
-      </form>
-    );
+      );
+    }
   }
 
   function searchLists(s: string) {
     const results = lists.filter((list) =>
       list.title.toLowerCase().includes(s.toLowerCase()),
     );
-
-    if (results.length > 0) {
-      alert(`Gefundene Listen:\n${results.map((r) => r.title).join("\n")}`);
-    } else {
-      alert("Keine Listen gefunden!");
-    }
+    setSearchResults(results);
+    setIsSearchOpen(true);
   }
 
   function handleSearchSubmit(e: FormEvent) {
