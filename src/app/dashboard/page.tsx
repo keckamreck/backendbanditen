@@ -2,6 +2,7 @@
 import styles from "./page.module.css";
 import Head from "next/head";
 import { useState, useEffect, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { List } from "@/app/_models/list";
 import PopupWithInput from "@/app/_components/popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,10 +13,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
-// import { useNavigate } from "react-router-dom";
-// import { us } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -143,9 +143,8 @@ export default function DashboardPage() {
     );
   }
 
-  function gotoTask() {
-    //mach ein routing zu /editTodo/ + id von dueTask
-    // return <Navigate to={`/editTodo/${dueTask?.id}`} />;
+  function gotoList(listKey: number) {
+    router.push("/list/" + listKey);
   }
 
   function DueTaskSection() {
@@ -155,12 +154,7 @@ export default function DashboardPage() {
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={
-              () => gotoTask()
-              // alert(
-              //   `Open Detail View for task with id: ${dueTask?.id} \n title: ${dueTask?.title} \n notes: ${dueTask?.note} \n listKey: ${dueTask?.listKey}`,
-              // )
-            }
+            onClick={() => gotoList(dueTask?.listKey)}
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
