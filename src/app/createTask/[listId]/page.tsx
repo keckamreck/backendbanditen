@@ -7,8 +7,10 @@ import { List } from "@/app/_models/list";
 import { RefObject, useRef } from "react";
 import { getTasks } from "@/app/_lib/demo";
 import { addTask } from "@/app/_lib/demo";
+import { useParams } from "next/navigation";
 
 export default function Page() {
+  const listId: { listId: string } = useParams<{ listId: string }>();
   const dateToday: RefObject<Date> = useRef(new Date());
   const defaultDate: RefObject<Date> = useRef(
     new Date(
@@ -25,7 +27,7 @@ export default function Page() {
     title: "",
     enterDeadline: false,
     deadline: defaultDate.current,
-    idSelectedList: lists.current[0].id,
+    idSelectedList: parseInt(listId.listId.toString()),
     selectedPriority: Priority.Low,
     notes: "",
   });

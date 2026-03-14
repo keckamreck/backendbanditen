@@ -22,7 +22,7 @@ export default function Page() {
   );
   const lists: RefObject<List[]> = useRef(getLists());
   const task: RefObject<Task> = useRef(getTask(parseInt(id.id.toString())));
-  const defaultValue: TaskFormattedForEditor = {
+  const defaultValue: RefObject<TaskFormattedForEditor> = useRef({
     title: task.current.title,
     deadline:
       task.current.deadline === null
@@ -32,7 +32,7 @@ export default function Page() {
     selectedPriority: task.current.priority,
     notes: task.current.note === null ? "" : task.current.note,
     enterDeadline: task.current.deadline !== null,
-  };
+  });
 
   function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
     let editedTask: Partial<Task> = {
@@ -69,13 +69,13 @@ export default function Page() {
 
   return (
     <Editor
-      defaultTitle={defaultValue.title}
-      defaultEnterDeadline={defaultValue.enterDeadline}
-      defaultDeadline={defaultValue.deadline}
+      defaultTitle={defaultValue.current.title}
+      defaultEnterDeadline={defaultValue.current.enterDeadline}
+      defaultDeadline={defaultValue.current.deadline}
       lists={lists.current}
-      defaultIdSelectedList={defaultValue.idSelectedList}
-      defaultSelectedPriority={defaultValue.selectedPriority}
-      defaultNotes={defaultValue.notes}
+      defaultIdSelectedList={defaultValue.current.idSelectedList}
+      defaultSelectedPriority={defaultValue.current.selectedPriority}
+      defaultNotes={defaultValue.current.notes}
       saveAction={(todo: TaskFormattedForEditor) => handleSave(todo)}
       deleteButtonVisible={true}
       deleteAction={() => handleDelete()}

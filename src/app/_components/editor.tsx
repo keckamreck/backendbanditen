@@ -279,7 +279,7 @@ export default function Editor({
               className={`${styles.selectList} ${styles.input}`}
               id="list"
               name="list"
-              value={lists[idSelectedList].title}
+              value={lists.find((list) => list.id === idSelectedList)?.title}
               onChange={selectList}
             >
               {lists.map((list: List) => (
