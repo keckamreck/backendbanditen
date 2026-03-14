@@ -1,0 +1,22 @@
+body{
+    background-color: white;
+}
+
+.buttonAdd {
+  background-color: transparent;
+  border: none;
+  font-size: x-large;
+  padding: 1em;
+}
+
+.up {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.list {
+  /* z-index: 100; */
+  height: 100vh;
+  overflow-y: auto;
+}

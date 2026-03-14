@@ -2,20 +2,22 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
+import localFont from 'next/font/local';
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// hier eigenen Font einfügen
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const AvenirNext = localFont({
+  src: [
+    {
+      path: '../../public/AvenirNext-Regular.woff2',
+    },
+    {
+      path: '../../public/AvenirNext-Bold.woff2',
+      weight: 'bold',
+    },
+  ],
+})
 
 export const metadata: Metadata = {
   title: "ToDo-Liste",
@@ -29,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         {children}
       </body>
     </html>

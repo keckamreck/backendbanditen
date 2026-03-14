@@ -1,157 +1,90 @@
-import { List } from '@/app/_models/list';
-import { Priority, Task } from '@/app/_models/task';
+import { List } from "@/app/_models/list";
+import { Priority, Task } from "@/app/_models/task";
 
-export function generateList(lid:number) {
-  const lists: List[] = [
-    {
-      id: 1,
-      title: "Test Liste",
-
-    },
-    {
-      id: 2,
-      title: "Test Liste 12345",
-    },
-    {
-      id: 3,
-      title: "Arbeit",
-    },
-    {
-      id: 4,
-      title: "Üble Liste",
-    },
-  ];
-
-  return lists;
-}
-
-export function generateTasks(listKey: number) {
-  let tasks: Task[] = [
-    { 
-      id: 0,
-      title: "This is a task",
-      note: "none",
-      deadline: new Date("2025-02-01T10:01:00"),
-      priority: Priority.High,
-      listKey: listKey,
-      done: false
-    },
-    { 
-      id: 1,
-      title: "This is another task",
-      note: "none",
-      deadline: new Date("2025-03-01T11:00:00"),
-      priority: Priority.Medium,
-      listKey: listKey,
-      done: false
-    },
-    { 
-      id: 2,
-      title: "This is another task",
-      note: "none",
-      deadline: new Date("2025-04-01T22:00:00"),
-      priority: Priority.Low,
-      listKey: listKey,
-      done: false
-    },
-  ];
-
-  return tasks;
-}
-
-export function getTasks(listKey: number){
-
-  const listId: number = listKey;
-
-  let tasks: Task[] = [
-    { 
-      id: 1,
-      title: "This is a task",
-      note: "none",
-      deadline: new Date("2025-02-01T10:01:00"),
-      priority: Priority.High,
-      listKey: 1,
-      done: false
-    },
-    { 
-      id: 2,
-      title: "This is another task",
-      note: "none",
-      deadline: new Date("2025-03-01T11:00:00"),
-      priority: Priority.Medium,
-      listKey: 1,
-      done: false
-    },
-    { 
-      id: 3,
-      title: "This is again another task",
-      note: "none",
-      deadline: new Date("2025-04-01T22:00:00"),
-      priority: Priority.Low,
-      listKey: 2,
-      done: false
-    },
-    { 
-      id: 4,
-      title: "test Task",
-      note: "none",
-      deadline: new Date("2025-03-01T11:00:00"),
-      priority: Priority.Medium,
-      listKey: 1,
-      done: false
-    },
-    { 
-      id: 5,
-      title: "nother test Task",
-      note: "none",
-      deadline: new Date("2025-04-01T22:00:00"),
-      priority: Priority.Low,
-      listKey: 3,
-      done: false
-    },
-    { 
-      id: 6,
-      title: "nother test Task",
-      note: "none",
-      deadline: new Date("2025-04-01T22:00:00"),
-      priority: Priority.Low,
-      listKey: 3,
-      done: false
-    },
-  ];
-  let match : number = 0;
-  for(let i=0; i<tasks.length; i++){
-    if(tasks[i].listKey == listId){
-      match++;
-    }
-  }
-  return match;
-}
-
-let listsData: List[] = [
+let tasks: Task[] = [
+  {
+    id: 0,
+    title: "This is a task",
+    deadline: new Date("2028-02-01T10:01:00"),
+    priority: Priority.High,
+    listKey: 1,
+    done: false,
+    note: null,
+  },
   {
     id: 1,
-    title: "Test Liste",
-    category: "Arbeit"
+    title: "This is another task",
+    deadline: new Date("2028-03-01T11:00:00"),
+    priority: Priority.Medium,
+    listKey: 2,
+    done: false,
+    note: null,
   },
   {
     id: 2,
-    title: "Test Liste 12345",
-    category: "Freizeit"
+    title: "This is another task",
+    note: "das ist eine Notiz",
+    deadline: new Date("2028-04-01T22:00:00"),
+    priority: Priority.Low,
+    listKey: 1,
+    done: false,
   },
   {
     id: 3,
+    title: "Milch kaufen",
+    note: "- Haltbare Milch (1,5% Fett)\n- 2 Packungen\n- Sonderangebot nutzen",
+    deadline: new Date("2026-03-17T12:14:00"),
+    priority: Priority.High,
+    listKey: 4,
+    done: false,
+  },
+];
+
+let list: List[] = [
+  {
+    id: 0,
     title: "Arbeit",
-    category: "Haushalt und Co"
+    category: "Duales Studium",
+  },
+  {
+    id: 1,
+    title: "Privat",
+  },
+  {
+    id: 2,
+    title: "Studium",
+    category: "Duales Studium",
+  },
+  {
+    id: 3,
+    title: "sonstiges",
   },
   {
     id: 4,
-    title: "Üble Liste"
+    title: "Haushalt",
   },
 ];
 
 export function getLists() {
-  return listsData;
+  return list;
+}
+
+export function getTasks() {
+  return tasks;
+}
+
+export function addTask(task: Task): void {
+  tasks.push(task);
+  console.log(tasks);
+}
+
+export function editTask(task: Task) {
+  console.log(task);
+}
+
+export function deleteTask(id: number) {
+  const index: number = tasks.findIndex((task) => task.id === id);
+  tasks.splice(index, 1);
 }
 
 export function updateListCategory(listId: number, newCategory: string) {

@@ -1,65 +1,243 @@
 "use client";
-import styles from "./page.module.scss";
+import styles from "./page.module.css";
 import Head from "next/head";
-import { useState } from 'react';
-import Image from "next/image";
-// import { newList } ;
-
-
+import { useState, useEffect, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { List } from "@/app/_models/list";
+import PopupWithInput from "@/app/_components/popup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faSearch,
+  faCalendarWeek,
+} from "@fortawesome/free-solid-svg-icons";
+import { getLists, getTasks } from "@/app/_lib/demo";
+import { Task } from "@/app/_models/task";
 
 export default function DashboardPage() {
-    const [like, setLikes] = useState(0);
-    return(
+  const router = useRouter();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [lists, setLists] = useState<List[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [dueTask, setDueTask] = useState<Task | null>(null);
+  const [dueTaskTime, setDueTaskTime] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<List[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-        <div className={styles.page}>
-            <Head>
-                <meta charSet="utf-8" />
-                <title>Dashboard</title>
-            </Head>
-            <main className={styles.main}>
-                <div>
-                    <div>
-                        <SearchBar />
+  useEffect(() => {
+    const initialLists = getLists();
+    const breakfastList: List = {
+      id: initialLists.length + 1,
+      title: "Frühstück",
+    };
+    initialLists.push(breakfastList);
+    setLists(initialLists);
+    const initialTasks = getTasks();
+    setTasks(initialTasks);
+    console.log("Lists initialized:", initialLists);
+    console.log("Tasks initialized:", initialTasks);
+  }, []);
+
+  useEffect(() => {
+    const getDueTask = () => {
+      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const sortedTasks = [...filteredTasks].sort((a, b) => {
+        return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
+      });
+      setDueTask(sortedTasks[0]);
+    };
+
+    const timer = setInterval(getDueTask, 60000);
+    getDueTask();
+    return () => clearInterval(timer);
+  }, [tasks]);
+
+  useEffect(() => {
+    console.log("Due task updated:", dueTask);
+    const getDueTaskTime = () => {
+      const timestamp = new Date();
+      if (dueTask !== null && dueTask != undefined) {
+        if (dueTask.deadline !== null) {
+          console.log("timestamp:", timestamp);
+          console.log("dueTask.deadline:", dueTask.deadline);
+          const timeLeft =
+            (dueTask.deadline.getTime() - timestamp.getTime()) /
+            (1000 * 60 * 60 * 24);
+          if (timeLeft < 1) {
+            setDueTaskTime("Heute fällig");
+          } else if (timeLeft < 2) {
+            setDueTaskTime("Morgen fällig");
+          } else {
+            setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+          }
+        }
+      }
+    };
+    const timer = setInterval(getDueTaskTime, 60000);
+    getDueTaskTime();
+    return () => clearInterval(timer);
+  }, [dueTask]);
+
+  function newList(name: string) {
+    const newListItem: List = {
+      id: lists.length + 1,
+      title: name,
+    };
+
+    setLists((prevLists) => [...prevLists, newListItem]);
+    console.log("New list added:", name);
+  }
+
+  return (
+    <div className={styles.page}>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+        />
+        <title>Dashboard</title>
+      </Head>
+      <PopupWithInput
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onSubmitting={(name) => newList(name)}
+      />
+      {isSearchOpen && (
+        <div
+          className={styles.searchBackdrop}
+          onClick={() => setIsSearchOpen(false)}
+        />
+      )}
+      <main className={styles.main}>
+        <div className={styles.pageContainer}>
+          {/* Header mit Suchleiste links und Add-Button rechts */}
+          <div className={styles.header}>
+            <div className={styles.searchSection}>
+              <SearchBar />
+            </div>
+            <div className={styles.addButtonSection}>
+              <button
+                title="addList"
+                className={styles.addIcon}
+                onClick={() => setIsPopupOpen(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+          </div>
+
+          {/* Search Dropdown */}
+          {isSearchOpen && (
+            <div className={styles.searchDropdown}>
+              {searchResults.length > 0 ? (
+                <div className={styles.searchResultsContainer}>
+                  {searchResults.map((list) => (
+                    <div
+                      key={list.id}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        gotoList(list.id);
+                        setIsSearchOpen(false);
+                        setSearchResults([]);
+                      }}
+                    >
+                      <span>{list.title}</span>
                     </div>
-                    <div>
-                        <button title="addList" onClick={()=>newList()}>
-                            +
-                        </button>
-                    </div>
-
+                  ))}
                 </div>
-                <div>
-                    <Biber />
-
-                </div>
-                <div className={styles.todayButton}>
-                    <button id="todayButton" >
-                        Einkaufen
-                    </button>
-                </div>
-            </main>
+              ) : (
+                <div className={styles.noResults}>Keine Listen gefunden</div>
+              )}
+            </div>
+          )}
         </div>
 
-    )
+        {/* Section for due Task */}
+        <DueTaskSection />
+      </main>
+    </div>
+  );
 
-    function SearchBar(){
+  function SearchBar() {
+    return (
+      <form
+        className={styles.searchForm}
+        onSubmit={(e) => handleSearchSubmit(e)}
+      >
+        <div className={styles.searchInputWrapper}>
+          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+          <input
+            id="searchInput"
+            className={styles.searchBar}
+            type="search"
+            placeholder="Listen durchsuchen..."
+          />
+        </div>
+      </form>
+    );
+  }
 
-        return(
-            <form>
-                <input id="search-bar" type="search"/>
-            </form>
-        )
+  function gotoList(listKey: number) {
+    router.push("/list/" + listKey);
+  }
 
+  function DueTaskSection() {
+    if (dueTask) {
+      return (
+        <div className={styles.todaySection}>
+          <h3>{dueTaskTime}</h3>
+          <div
+            className={styles.todayContent}
+            onClick={() => gotoList(dueTask?.listKey)}
+          >
+            <div className={styles.dueItem}>
+              <div className={styles.dueInfo}>
+                <span className={styles.dueTitle}>{dueTask?.title}</span>
+                <span className={styles.dueDate}>
+                  {dueTask?.deadline?.toLocaleDateString("de-DE", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  ,{" "}
+                  {dueTask?.deadline?.toLocaleTimeString("de-DE", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+              <div className={styles.dueIcon}>
+                <FontAwesomeIcon icon={faCalendarWeek} />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     }
-    function Biber(){
-        let biber= title("Kneser")
-        return(
-            <h1>{biber}</h1>
-        )
+  }
 
-    }
-    function title(title: string){
-        return(title);
-    }
+  function searchLists(s: string) {
+    const results = lists.filter((list) =>
+      list.title.toLowerCase().includes(s.toLowerCase()),
+    );
+    setSearchResults(results);
+    setIsSearchOpen(true);
+  }
 
+  function handleSearchSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    const input = document.getElementById("searchInput") as HTMLInputElement;
+
+    if (input && input.value.trim()) {
+      // console.log("Form submitted with name:", input.value);
+
+      searchLists(input.value.trim());
+      input.value = "";
+    } else {
+      alert("Bitte geben Sie einen Namen ein!");
+    }
+  }
 }

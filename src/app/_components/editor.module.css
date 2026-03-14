@@ -1,0 +1,156 @@
+.dflexRow {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw
+}
+
+.dflexCol {
+    display: flex;
+    flex-direction: column;
+}
+
+body{
+    background-color: #e9ccaa;
+    margin: 0 0 0 0;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    margin: 10px 10px 10px 10px;
+}
+
+.bodyForm {
+    padding: 2vw 4vw 2vw 4vw;
+    box-sizing: border-box;
+    border-style: none;
+    border-radius: 10px;
+    width: 90vw;
+    margin-top: 2rem;
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 0 0 20px -10px black;
+}
+
+.input {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 5px;
+    background-color: transparent;
+    font-size: 16px;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.selectList {
+    width: 100%;
+}
+
+.hideElement {
+    display: none;
+}
+
+.time {
+    width: 20px;
+    text-align: center;
+}
+
+.stringDate {
+    margin: 0 0 0 0;
+    font-size: 16px;
+    border-style: none;
+    background-color: transparent;
+}
+
+.date {
+    margin-bottom: 3vw;
+    margin-top: 2vw;
+}
+
+.calendar {
+    align-items: center;
+    height: 280px;
+}
+
+.iconDate {
+    padding-top: 3px;
+}
+
+.iconTime {
+    padding-top: 4px;
+}
+
+.buttonShowDeadline {
+    display: flex;
+    width: 23px;
+    background-color: transparent;
+    border-style: none;
+    padding-left: 0;
+}
+.buttonShowDeadline:active {
+    transform: scale(0.96);
+    transition: transform 0.2s ease;
+}
+
+.iconShowDeadline {
+    display: flex;
+    font-size: 23px;
+    color: darkgray;
+}
+.minutes{
+    margin-left: -5px;
+}
+.hours {
+    margin-right: -5px;
+}
+.labelList {
+    align-content: center;
+}
+
+.priorityButton {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+}
+.saveDeleteButtons{
+    margin-top: 3vw;
+    justify-content: center;
+}
+.titleComponent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90vw;
+}
+
+.title{
+    box-shadow: 0 0 20px -10px black;
+}
+
+.notes{
+    padding: 5px 5px 0 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.separator{
+    border: none;
+    border-top: 1px solid #bcbcbc;
+    border-top-width: 3px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.labelDeadline{
+    align-items: center;
+}
+.labelList{
+    margin-bottom: 8px;
+}
+.iconGoBack{
+    color: black
+}
