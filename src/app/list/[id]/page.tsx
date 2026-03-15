@@ -60,7 +60,7 @@ function List({ ListId }: { ListId: number }) {
         </div>
         <button
           className={styles.buttonAdd}
-          onClick={() => router.push(`/createTodo/`)}
+          onClick={() => router.push(`/createTask/`)}
         >
           <FontAwesomeIcon icon={faCirclePlus} />
         </button>
@@ -76,7 +76,7 @@ function List({ ListId }: { ListId: number }) {
               <TaskCard
                 key={task.id}
                 task={task}
-                onPencilClick={() => router.push(`/editTodo/${task.id}`)}
+                onPencilClick={() => router.push(`/editTask/${task.id}`)}
                 onDoneClick={() => {
                   setFadingTaskIds((prev) => new Set(prev).add(task.id));
                   setTasks((prev) =>
