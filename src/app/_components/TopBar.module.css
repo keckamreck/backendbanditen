@@ -1,7 +1,7 @@
 .container {
   z-index: 100;
   position: sticky;
-  background-color: white;
+  background-color: #e9ccaa;
   top: 0;
 }
 
@@ -10,7 +10,6 @@
   flex-direction: row;
   height: min-content;
   justify-content: stretch;
-  /* border-bottom: 1px solid black; */
   padding: 0.5em;
   padding-bottom: 0;
   gap: 1em;
@@ -25,6 +24,7 @@
   align-items: center;
   margin: 0;
   justify-content: space-between;
+  background-color: white;
 }
 
 .container .topBar .listName > div {
