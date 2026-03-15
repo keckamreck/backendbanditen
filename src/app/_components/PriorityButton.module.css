@@ -1,0 +1,32 @@
+.button {
+    border-style: solid;
+    border-color: transparent;
+    font-size: 14px;
+    color: black;
+    width: 25vw;
+    height: 30px;
+    justify-self: center;
+}
+
+.low {
+    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+    background-color: #b6d6f0;
+}
+
+.medium {
+    background-color: #e9ccaa;
+}
+
+.high {
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
+    background-color: #f2a68e;
+}
+
+.focus {
+    font-weight: bold;
+    border-width: 1px;
+    border-color: black;
+}
+

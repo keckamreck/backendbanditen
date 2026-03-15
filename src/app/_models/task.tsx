@@ -16,7 +16,7 @@ export interface Task {
   done: boolean;
 }
 
-export interface saveTodo {
+export interface TaskFormattedForEditor {
   title: string;
   enterDeadline: boolean;
   idSelectedList: number;

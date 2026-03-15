@@ -1,7 +1,7 @@
 .dflexRow {
     display: flex;
     flex-direction: row;
-    gap: 2vw
+    gap: 8px
 }
 
 .dflexCol {
@@ -81,10 +81,6 @@ body{
     padding-top: 3px;
 }
 
-.iconTime {
-    padding-top: 4px;
-}
-
 .buttonShowDeadline {
     display: flex;
     width: 23px;
@@ -153,4 +149,12 @@ body{
 }
 .iconGoBack{
     color: black
+}
+.timePicker{
+    align-items: center;
+}
+.buttonGoBack{
+    background-color: transparent;
+    border-style: none;
+    padding: 0 0 0 0;
 }
