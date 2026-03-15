@@ -1,0 +1,11 @@
+.buttonDelete {
+  position: fixed;
+  right: 4px;
+  bottom: 40px;
+}
+
+.buttonArchive {
+  position: fixed;
+  left: 4px;
+  bottom: 40px;
+}

@@ -13,14 +13,32 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ArchiveButton, DeleteButton } from "@/app/_components/button";
 import { useRouter } from "next/navigation";
+import { Modal } from "@/app/_components/modal";
+import { deleteList } from "@/app/_lib/demo";
+import { Footer } from "@/app/_components/footer";
 
 function List({ ListId }: { ListId: number }) {
   const router = useRouter();
-  const list = getList(ListId);
+  const [list, setList] = useState(getList(ListId));
   const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
   const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
   const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
+  const [showModal, setShowModal] = useState(false);
+
+  function handleDelete() {
+    deleteList(ListId);
+    router.push(`/dashboard/`);
+  }
+
+  function toggleModal() {
+    setShowModal(!showModal);
+  }
+
+  function handleConfirm() {
+    handleDelete();
+    toggleModal();
+  }
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
@@ -78,11 +96,7 @@ function List({ ListId }: { ListId: number }) {
             </div>
           ))}
       </div>
-      {/* <DeleteButton className={styles.buttonDelete} onClick={}></DeleteButton> */}
-      <ArchiveButton
-        className={styles.buttonArchive}
-        onClick={() => router.push(`/archive/${ListId}`)}
-      ></ArchiveButton>
+      <Footer ListId={ListId}></Footer>
     </div>
   );
 }
