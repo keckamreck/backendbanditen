@@ -1,6 +1,6 @@
 "use client";
 
-import Editor from "@/app/_components/editor";
+import EditorForm from "@/app/_components/EditorForm";
 import { getLists, editTask, deleteTask } from "@/app/_lib/demo";
 import { TaskFormattedForEditor, Task } from "@/app/_models/task";
 import { RefObject, useRef } from "react";
@@ -21,8 +21,8 @@ export default function Page() {
     ),
   );
   const lists: RefObject<List[]> = useRef(getLists());
-  const task: RefObject<Task> = useRef(getTask(parseInt(id.id.toString())));
-  const defaultValue: RefObject<TaskFormattedForEditor> = useRef({
+  const task: RefObject<Task> = useRef(getTask(parseInt(id.id)));
+  const initialTask: RefObject<TaskFormattedForEditor> = useRef({
     title: task.current.title,
     deadline:
       task.current.deadline === null
@@ -35,32 +35,33 @@ export default function Page() {
   });
 
   function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
-    let editedTask: Partial<Task> = {
+    const editedTask: Partial<Task> = {
       title: editedTaskFromEditor.title,
-      deadline: editedTaskFromEditor.deadline,
+      deadline: editedTaskFromEditor.enterDeadline
+        ? editedTaskFromEditor.deadline
+        : null,
       listKey: editedTaskFromEditor.idSelectedList,
       priority: editedTaskFromEditor.selectedPriority,
-      note: editedTaskFromEditor.notes,
+      note: editedTaskFromEditor.notes === "" ? "" : editedTaskFromEditor.notes,
     };
-    if (!editedTaskFromEditor.enterDeadline) {
-      editedTask.deadline = null;
-    }
-    const defaultValuesArray: [
-      string,
-      string | number | boolean | Date | null,
-    ][] = Object.entries(defaultValue);
-    const editedTaskArray: [string, string | number | boolean | Date | null][] =
-      Object.entries(editedTask);
+    const updatedFields: Partial<Task> = {};
 
-    for (let i = 0; i < editedTaskArray.length; i++) {
-      if (
-        editedTaskArray[i][0] === defaultValuesArray[i][0] &&
-        editedTaskArray[i][1] === defaultValuesArray[i][1]
-      ) {
-        editedTaskArray.splice(i, 1);
-      }
+    if (editedTask.title !== initialTask.current.title) {
+      updatedFields.title = editedTask.title;
     }
-    editTask(task.current.id, Object.fromEntries(editedTaskArray));
+    if (editedTask.deadline !== initialTask.current.deadline) {
+      updatedFields.deadline = editedTask.deadline;
+    }
+    if (editedTask.listKey !== initialTask.current.idSelectedList) {
+      updatedFields.listKey = editedTask.listKey;
+    }
+    if (editedTask.priority !== initialTask.current.selectedPriority) {
+      updatedFields.priority = editedTask.priority;
+    }
+    if (editedTask.note !== initialTask.current.notes) {
+      updatedFields.note = editedTask.note;
+    }
+    editTask(task.current.id, updatedFields);
   }
 
   function handleDelete(): void {
@@ -68,17 +69,12 @@ export default function Page() {
   }
 
   return (
-    <Editor
-      defaultTitle={defaultValue.current.title}
-      defaultEnterDeadline={defaultValue.current.enterDeadline}
-      defaultDeadline={defaultValue.current.deadline}
+    <EditorForm
+      initialValues={initialTask.current}
       lists={lists.current}
-      defaultIdSelectedList={defaultValue.current.idSelectedList}
-      defaultSelectedPriority={defaultValue.current.selectedPriority}
-      defaultNotes={defaultValue.current.notes}
-      saveAction={(todo: TaskFormattedForEditor) => handleSave(todo)}
+      saveAction={handleSave}
       deleteButtonVisible={true}
-      deleteAction={() => handleDelete()}
-    ></Editor>
+      deleteAction={handleDelete}
+    />
   );
 }

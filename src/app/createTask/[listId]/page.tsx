@@ -1,12 +1,10 @@
 "use client";
 
-import Editor from "@/app/_components/editor";
-import { getLists } from "@/app/_lib/demo";
+import EditorForm from "@/app/_components/EditorForm";
+import { getLists, getTasks, addTask } from "@/app/_lib/demo";
 import { Priority, TaskFormattedForEditor, Task } from "@/app/_models/task";
 import { List } from "@/app/_models/list";
 import { RefObject, useRef } from "react";
-import { getTasks } from "@/app/_lib/demo";
-import { addTask } from "@/app/_lib/demo";
 import { useParams } from "next/navigation";
 
 export default function Page() {
@@ -23,45 +21,40 @@ export default function Page() {
   );
   const lists: RefObject<List[]> = useRef(getLists());
   const tasks: RefObject<Task[]> = useRef(getTasks());
-  const defaultValue: RefObject<TaskFormattedForEditor> = useRef({
+  const initialTask: RefObject<TaskFormattedForEditor> = useRef({
     title: "",
     enterDeadline: false,
     deadline: defaultDate.current,
-    idSelectedList: parseInt(listId.listId.toString()),
+    idSelectedList: parseInt(listId.listId),
     selectedPriority: Priority.Low,
     notes: "",
   });
   function handleSave(task: TaskFormattedForEditor): void {
     let highestId: number = 0;
-    for (const task of tasks.current) {
-      if (task.id > highestId) {
-        highestId = task.id;
+    for (const element of tasks.current) {
+      if (element.id > highestId) {
+        highestId = element.id;
       }
     }
 
-    let result: Task = {
+    const result: Task = {
       id: highestId + 1,
       title: task.title,
       deadline: task.enterDeadline ? task.deadline : null,
       priority: task.selectedPriority,
       listKey: task.idSelectedList,
       done: false,
-      note: task.notes === "" ? null : task.notes,
+      note: task.notes ?? "",
     };
     addTask(result);
   }
 
   return (
-    <Editor
-      defaultTitle={defaultValue.current.title}
-      defaultEnterDeadline={defaultValue.current.enterDeadline}
-      defaultDeadline={defaultValue.current.deadline}
+    <EditorForm
+      initialValues={initialTask.current}
       lists={lists.current}
-      defaultIdSelectedList={defaultValue.current.idSelectedList}
-      defaultSelectedPriority={defaultValue.current.selectedPriority}
-      defaultNotes={defaultValue.current.notes}
-      saveAction={(task: TaskFormattedForEditor) => handleSave(task)}
+      saveAction={handleSave}
       deleteButtonVisible={false}
-    ></Editor>
+    />
   );
 }

@@ -5,7 +5,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import styles from "./calendar.module.css";
+import styles from "./Calendar.module.css";
 import {
   ChangeEvent,
   Dispatch,
@@ -14,77 +14,66 @@ import {
   useState,
 } from "react";
 
-type Props = {
-  action: Dispatch<SetStateAction<Date>>;
+type CalendarProps = {
+  onDateChangeAction: Dispatch<SetStateAction<Date>>;
   dateToday: Date;
-  defaultDate: Date;
+  initialDate: Date;
 };
 
-export default function Calendar({ action, dateToday, defaultDate }: Props) {
+const weekday: string[] = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+const months: string[] = [
+  "Januar",
+  "Februar",
+  "März",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Dezember",
+];
+const minYear: number = -271821;
+const maxYear: number = 275760;
+
+export default function Calendar({
+  onDateChangeAction,
+  dateToday,
+  initialDate,
+}: CalendarProps) {
   const [year, setYear] = useState<number | "">(dateToday.getFullYear());
-  const [month, setMonth] = useState<number>(dateToday.getMonth() + 1);
-  const [selectedDate, setSelectedDate] = useState<Date>(defaultDate);
+  const [month, setMonth] = useState<number>(dateToday.getMonth());
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
   const [days, setDays] = useState<number[][]>([]);
-  const weekday: string[] = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-  const months: string[] = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ];
 
   useEffect((): void => {
     getDays();
   }, [year, month]);
 
   function getDaysOfMonth(month: number, year: number): number {
-    const daysPerMonth: number[] = [
-      31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-    ];
-    let numberOfDays: number;
-    if (month === 1) {
-      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
-        numberOfDays = 29;
-      } else {
-        numberOfDays = 28;
-      }
-    } else {
-      numberOfDays = daysPerMonth[month];
-    }
-    return numberOfDays;
+    return new Date(year, month + 1, 0).getDate();
   }
 
-  function getDaysCurrentMonth(month: number, year: number): number[] {
-    let numberOfDays: number = getDaysOfMonth(month - 1, year);
+  function getDaysOfCurrentMonth(month: number, year: number): number[] {
+    const numberOfDays: number = getDaysOfMonth(month, year);
     let daysCurrentMonth: number[] = [];
-    for (let i = 1; i <= numberOfDays; i++) {
+    for (let i: number = 1; i <= numberOfDays; i++) {
       daysCurrentMonth.push(i);
     }
     return daysCurrentMonth;
   }
 
-  function getDaysLastMonth(month: number, year: number): number[] {
-    let numberOfDaysLastMonth: number;
+  function getDaysOfPreviousMonth(month: number, year: number): number[] {
+    const numberOfDaysLastMonth: number = getDaysOfMonth(month - 1, year);
     let daysLastMonth: number[] = [];
-    let firstDay: number = new Date(year, month - 1, 1).getDay();
-    if (firstDay === 0) {
-      firstDay = 7;
-    }
-    if (month - 1 === 0) {
-      numberOfDaysLastMonth = getDaysOfMonth(11, year - 1);
-    } else {
-      numberOfDaysLastMonth = getDaysOfMonth(month - 2, year);
+    let firstDayCurrentMonth: number = new Date(year, month, 1).getDay();
+    if (firstDayCurrentMonth === 0) {
+      firstDayCurrentMonth = 7;
     }
     for (
-      let i: number = numberOfDaysLastMonth - (firstDay - 2);
+      let i: number = numberOfDaysLastMonth - (firstDayCurrentMonth - 2);
       i <= numberOfDaysLastMonth;
       i++
     ) {
@@ -93,79 +82,70 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
     return daysLastMonth;
   }
 
-  function getDaysNextMonth(month: number, year: number): number[] {
-    let numberOfDaysLastMonth: number[] = [];
-    let numberOfDaysCurrentMonth: number = getDaysOfMonth(month - 1, year);
-    let lastDay: number = new Date(
+  function getDaysOfNextMonth(month: number, year: number): number[] {
+    let numberOfDaysNextMonth: number[] = [];
+    const numberOfDaysCurrentMonth: number = getDaysOfMonth(month, year);
+    let lastDayOfCurrentMonth: number = new Date(
       year,
-      month - 1,
+      month,
       numberOfDaysCurrentMonth,
     ).getDay();
-    if (lastDay === 0) {
-      lastDay = 7;
+    if (lastDayOfCurrentMonth === 0) {
+      lastDayOfCurrentMonth = 7;
     }
-    for (let i: number = 1; i <= 7 - lastDay; i++) {
-      numberOfDaysLastMonth.push(i);
+    for (let i: number = 1; i <= 7 - lastDayOfCurrentMonth; i++) {
+      numberOfDaysNextMonth.push(i);
     }
-    return numberOfDaysLastMonth;
+    return numberOfDaysNextMonth;
   }
 
   function getDays(): void {
     let result: number[][] = [];
-    if (year !== "" && year > -271821 && year < 275760) {
-      result.push(getDaysLastMonth(month, year));
-      result.push(getDaysCurrentMonth(month, year));
-      result.push(getDaysNextMonth(month, year));
+    if (year !== "" && year > minYear && year < maxYear) {
+      result.push(getDaysOfPreviousMonth(month, year));
+      result.push(getDaysOfCurrentMonth(month, year));
+      result.push(getDaysOfNextMonth(month, year));
     }
     setDays(result);
   }
 
-  function setNewYear(e: ChangeEvent<HTMLInputElement>): void {
-    if (e.target.value !== "") {
-      const newYear: string = e.target.value.replace(/\./g, "");
-      setYear(parseInt(newYear));
-    } else {
-      setYear("");
-    }
-  }
-
-  function oneMonthBack(): void {
-    if (month === 1) {
+  function goToPreviousMonth(): void {
+    if (month === 0) {
       if (year !== "") {
         setYear(year - 1);
       }
-      setMonth(12);
+      setMonth(11);
     } else {
       setMonth(month - 1);
     }
   }
 
-  function oneMonthAgo(): void {
-    if (month === 12) {
+  function goToNextMonth(): void {
+    if (month === 11) {
       if (year !== "") {
         setYear(year + 1);
       }
-      setMonth(1);
+      setMonth(0);
     } else {
       setMonth(month + 1);
     }
   }
 
-  function getClassDay(index: number, day: number): string {
+  function getDayClassName(index: number, day: number): string {
     if (year !== "") {
       let y: number;
       let m: number;
       if (index === 0) {
-        if (month === 1) {
-          m = 12;
+        if (month === 0) {
+          m = 11;
           y = year - 1;
         } else {
           m = month - 1;
           y = year;
         }
       } else if (index === 2) {
-        if (month === 12) {
-          m = 1;
+        if (month === 11) {
+          m = 0;
           y = year + 1;
         } else {
           m = month + 1;
@@ -178,22 +158,24 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
 
       if (
         day === selectedDate.getDate() &&
-        m === selectedDate.getMonth() + 1 &&
+        m === selectedDate.getMonth() &&
         y === selectedDate.getFullYear()
       ) {
         if (index === 0 || index === 2) {
-          console.log("hier");
           return styles.remainingDaysSelected;
         } else {
           return styles.selectedDay;
         }
       } else if (
-        index === 1 &&
         day === dateToday.getDate() &&
-        month === dateToday.getMonth() + 1 &&
-        year === dateToday.getFullYear()
+        m === dateToday.getMonth() &&
+        y === dateToday.getFullYear()
       ) {
-        return styles.today;
+        if (index === 0 || index === 2) {
+          return styles.remainingDayToday;
+        } else {
+          return styles.currentDayToday;
+        }
       } else {
         if (index === 0 || index === 2) {
           return styles.remainingDays;
@@ -206,26 +188,35 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
     }
   }
 
-  function setNewDeadline(day: number, index: number): void {
+  function handleChangeYear(e: ChangeEvent<HTMLInputElement>): void {
+    if (e.target.value !== "") {
+      const newYear: string = e.target.value.replace(/\./g, "");
+      setYear(parseInt(newYear));
+    } else {
+      setYear("");
+    }
+  }
+
+  function handleChangeDeadline(day: number, index: number): void {
     let m: number;
     if (year !== "") {
       if (index === 0) {
-        m = month - 2;
-        oneMonthBack();
-      } else if (index === 2) {
-        m = month;
-        oneMonthAgo();
-      } else {
         m = month - 1;
+        goToPreviousMonth();
+      } else if (index === 2) {
+        m = month + 1;
+        goToNextMonth();
+      } else {
+        m = month;
       }
       setSelectedDate(new Date(year, m, day));
-      action(
+      onDateChangeAction(
         new Date(
           year,
           m,
           day,
-          defaultDate.getHours(),
-          defaultDate.getMinutes(),
+          initialDate.getHours(),
+          initialDate.getMinutes(),
         ),
       );
     }
@@ -240,14 +231,18 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
   return (
     <div>
       <div className={styles.headerComponent}>
-        <button type="button" className={styles.button} onClick={oneMonthBack}>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={goToPreviousMonth}
+        >
           <FontAwesomeIcon size="1x" icon={faChevronLeft} color="black" />
         </button>
         <select
           className={styles.selectShownMonth}
-          value={months[month - 1]}
+          value={months[month]}
           onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            setMonth(months.indexOf(e.target.value) + 1)
+            setMonth(months.indexOf(e.target.value))
           }
         >
           {months.map((month: string) => (
@@ -260,10 +255,10 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
           type="number"
           className={`${styles.selectShownMonth} ${styles.selectYear}`}
           value={year}
-          onChange={setNewYear}
+          onChange={handleChangeYear}
           onBlur={checkInputYear}
         ></input>
-        <button type="button" className={styles.button} onClick={oneMonthAgo}>
+        <button type="button" className={styles.button} onClick={goToNextMonth}>
           <FontAwesomeIcon size="1x" icon={faChevronRight} color="black" />
         </button>
       </div>
@@ -277,9 +272,9 @@ export default function Calendar({ action, dateToday, defaultDate }: Props) {
           item.map((day: number) => (
             <button
               type="button"
-              className={getClassDay(index, day)}
-              key={day}
-              onClick={(): void => setNewDeadline(day, index)}
+              className={getDayClassName(index, day)}
+              key={`${index}-${day}`}
+              onClick={(): void => handleChangeDeadline(day, index)}
             >
               {day}
             </button>
