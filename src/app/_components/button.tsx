@@ -17,7 +17,7 @@ export function DeleteButton(props: ButtonProps) {
 
 export function ArchiveButton(props: ButtonProps) {
   return (
-    <button className={styles.button}>
+    <button onClick={props.onClick} className={`${styles.button} ${props.className}`}>
       <FontAwesomeIcon size="2x" icon={faBoxArchive}/>
     </button>
   );
