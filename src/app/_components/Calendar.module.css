@@ -28,7 +28,7 @@
     justify-self: center;
 }
 
-.currentDayToday, .currentDay, .selectedDay {
+.currentDayToday, .currentDays, .selectedDay {
     color: black
 }
 
