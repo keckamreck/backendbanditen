@@ -23,6 +23,7 @@ body {
   align-items: center;
   min-height: 50px;
   gap: 0;
+  background-color: white;
 }
 
 .card > .row {

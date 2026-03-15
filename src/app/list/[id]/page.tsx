@@ -60,7 +60,7 @@ function List({ ListId }: { ListId: number }) {
         </div>
         <button
           className={styles.buttonAdd}
-          onClick={() => router.push(`/createTask/`)}
+          onClick={() => router.push(`/createTask/${list.id}`)}
         >
           <FontAwesomeIcon icon={faCirclePlus} />
         </button>
