@@ -67,6 +67,11 @@ export function getLists() {
   return list;
 }
 
+export function deleteList(id: number) {
+  const index: number = list.findIndex((list) => list.id === id);
+  list.splice(index, 1);
+}
+
 export function getTasks() {
   return tasks;
 }

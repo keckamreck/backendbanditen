@@ -1,5 +1,5 @@
-body{
-    background-color: white;
+body {
+  background-color: white;
 }
 
 .buttonAdd {
@@ -7,6 +7,19 @@ body{
   border: none;
   font-size: x-large;
   padding: 1em;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fading {
+  animation: fadeOut 1s forwards;
 }
 
 .up {
@@ -19,4 +32,16 @@ body{
   /* z-index: 100; */
   height: 100vh;
   overflow-y: auto;
+}
+
+.buttonDelete {
+  position: fixed;
+  right: 4px;
+  bottom: 40px;
+}
+
+.buttonArchive {
+  position: fixed;
+  left: 4px;
+  bottom: 40px;
 }

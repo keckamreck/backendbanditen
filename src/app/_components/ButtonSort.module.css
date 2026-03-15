@@ -8,4 +8,6 @@
   margin: 1em;
   padding: 5px;
   min-width: 12em;
+  border-color: black;
+  border-width: 1px;
 }
