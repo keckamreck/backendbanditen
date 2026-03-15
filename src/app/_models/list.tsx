@@ -12,7 +12,3 @@ export interface List {
   isFavourite? : boolean;
   category?: string;  
 };
-
-export function getList(id: number) {
-  return generateList(id);
-}

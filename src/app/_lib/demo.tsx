@@ -88,11 +88,11 @@ export function deleteTask(id: number) {
 }
 
 export function updateListCategory(listId: number, newCategory: string) {
-  const list = listsData.find(l => l.id === listId);
-  if (list) {
-    list.category = newCategory;
+  const lists = list.find(l => l.id === listId);
+  if (lists) {
+    lists.category = newCategory;
   }
-  return list;
+  return lists;
 }
 
 export function getCategories(){

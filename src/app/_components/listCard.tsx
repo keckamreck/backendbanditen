@@ -9,13 +9,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { getTasks, updateListCategory } from "../_lib/demo";
 import CategoryPopup from "./categoryPopup";
+import { getTaskofList } from "../_models/function";
 export interface ListProps {
   list: List;
   onToggleFavorite?: (updatedList: List) => void;
 }
 
 export function ListCard({ list, onToggleFavorite }: ListProps) {
-  const dueTasks = getTasks(list.id);
+  const dueTasks = getTaskofList(list.id).filter(task => !task.done);
   const [currentList, setCurrentList] = useState(list);
   const [isFavourite, setIsFavorite] = useState(currentList.isFavourite ?? false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -45,7 +46,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
 
   return (
     <>
-      <Link href={"/dashboard/"} className={styles.link}>
+      <Link href={"/lists/" + currentList.id} className={styles.link}>
         <div className={styles.card}>
           <div className={styles.topRow}>
             <p className={styles.title}>{currentList.title}</p>
@@ -65,7 +66,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
               onClick={openPopup} > {currentList.category}</p>}
           </div>
           <div className={styles.row}>
-            <h1 className={styles.taskAmount}>{dueTasks}</h1>
+            <h1 className={styles.taskAmount}>{dueTasks.length}</h1>
             <p className={styles.dueTasks}>noch fällig</p>
           </div>
         </div>
