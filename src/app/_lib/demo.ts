@@ -1,6 +1,5 @@
 import { List } from "@/app/_models/list";
 import { Priority, Task } from "@/app/_models/task";
-import exp from "constants";
 
 let tasks: Task[] = [
   {
@@ -124,6 +123,15 @@ export function deleteTask(id: number) {
   tasks.splice(index, 1);
 }
 
+export function deleteTasks(listKey: number) {
+  tasks.forEach((task) => {
+    if (task.listKey === listKey) {
+      let index = tasks.indexOf(task);
+      tasks.splice(index, 1);
+    }
+  });
+}
+
 export function updateListisFavourite(listId: number, isFavourite: boolean) {
   const lists = list.find((l) => l.id === listId);
   if (lists) {
@@ -154,4 +162,46 @@ export function getCategories() {
     }
   }
   return categories;
+}
+
+export function getTaskofList(listKey: number) {
+  const tasks = getTasks();
+  let tasksofList = [];
+  for (let e of tasks) {
+    if (e.listKey === listKey) {
+      tasksofList.push(e);
+    }
+  }
+  return tasksofList;
+}
+
+export function getDoneTasks(listKey: number) {
+  const tasks = getTaskofList(listKey);
+  let doneTasks = [];
+  for (let e of tasks) {
+    if (e.done) {
+      doneTasks.push(e);
+    }
+  }
+  return doneTasks;
+}
+
+export function getTask(id: number) {
+  const tasks: Task[] = getTasks();
+  for (let e of tasks) {
+    if (e.id === id) {
+      return e;
+    }
+  }
+  return tasks[0];
+}
+
+export function getList(id: number) {
+  const lists: List[] = getLists();
+  for (let e of lists) {
+    if (e.id === id) {
+      return e;
+    }
+  }
+  return lists[0];
 }

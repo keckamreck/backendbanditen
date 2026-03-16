@@ -44,11 +44,13 @@
 }
 
 .starIcon{
+  /*color: orange;*/
   font-size: 1.25em;
   margin: 0.5em 0.2em 0.5em 1em;
 }
 
 .flagIcon{
+  color: orange;
   font-size: 1.25em;
   margin: 0.5em 0.1em 0.5em 1em;
 }

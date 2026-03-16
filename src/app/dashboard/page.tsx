@@ -75,8 +75,6 @@ export default function DashboardPage() {
           console.log("dueTask.deadline:", dueTask.deadline);
           if (timestamp.getDay() === dueTask.deadline.getDay()) {
             setDueTaskTime("Heute fällig");
-
-            setDueTaskTime("Morgen fällig");
           } else if (timestamp.getDay() + 1 === dueTask.deadline.getDay()) {
             setDueTaskTime("Morgen fällig");
           } else {
@@ -277,7 +275,7 @@ export default function DashboardPage() {
   }
 
   function handleSearchSubmit(e: FormEvent) {
-    e.preventDefault();
+    // e.preventDefault();
 
     const input = document.getElementById("searchInput") as HTMLInputElement;
 

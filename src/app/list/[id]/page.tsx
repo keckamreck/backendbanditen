@@ -2,8 +2,8 @@
 
 import { TopBar } from "@/app/_components/TopBar";
 import { Sort } from "@/app/_models/list";
-import { getList } from "@/app/_models/function";
-import { getTaskofList } from "@/app/_models/function";
+import { getList } from "@/app/_lib/demo";
+import { getTaskofList } from "@/app/_lib/demo";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
