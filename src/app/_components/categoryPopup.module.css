@@ -1,0 +1,99 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 85%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1.5px solid #eee;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: orange;
+}
+
+.existingCategoriesRow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* remove wrap so buttons stack vertically */
+  width: 100%;
+  padding: 0.7em;
+  border: 1px solid #666;
+  border-radius: 6px;
+  height: 7em;
+  /* only scroll vertically */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.existingCategoryBtn {
+  width: 100%;
+  background: none;  
+  cursor: pointer;
+  font-weight: 500;
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+}
+
+.buttonRow {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: end;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.cancelBtn {
+  background: none;
+  border: 1px solid #666;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #666;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.saveBtn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
