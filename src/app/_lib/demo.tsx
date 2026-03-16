@@ -1,6 +1,5 @@
 import { List } from "@/app/_models/list";
 import { Priority, Task } from "@/app/_models/task";
-import exp from "constants";
 
 let tasks: Task[] = [
   {
@@ -71,6 +70,15 @@ let list: List[] = [
 
 export function getLists() {
   return list;
+}
+export function newList(name: string) {
+  const newListItem: List = {
+    id: list.length + 1,
+    title: name,
+  };
+
+  list.push(newListItem);
+  console.log("New list added:", name);
 }
 
 export function setListTitle(id: number, newTitle: string) {
