@@ -2,11 +2,11 @@ import styles from "./PriorityButton.module.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Priority } from "@/app/_models/task";
 
-type PriorityButtonProps = {
+interface PriorityButtonProps {
   className?: string;
   onChangePriorityAction: Dispatch<SetStateAction<Priority>>;
   defaultValue: Priority;
-};
+}
 
 const priorities: Priority[] = [Priority.Low, Priority.Medium, Priority.High];
 

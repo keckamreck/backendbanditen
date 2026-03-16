@@ -14,11 +14,11 @@ import {
   useState,
 } from "react";
 
-type CalendarProps = {
+interface CalendarProps {
   onDateChangeAction: Dispatch<SetStateAction<Date>>;
   dateToday: Date;
   initialDate: Date;
-};
+}
 
 const weekday: string[] = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const months: string[] = [

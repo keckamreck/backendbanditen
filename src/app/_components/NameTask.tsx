@@ -1,11 +1,11 @@
 import { ChangeEvent } from "react";
 import styles from "./NameTask.module.css";
 
-type NameTaskProps = {
+interface NameTaskProps {
   className?: string;
   value?: string;
   onChange: (value: ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
 export function NameTask({ className, value, onChange }: NameTaskProps) {
   return (
