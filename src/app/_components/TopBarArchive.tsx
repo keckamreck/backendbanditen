@@ -1,6 +1,6 @@
 "use client";
 
-import { ArchiveButton, ChevronButton } from './button';
+import { ArchiveButton, ChevronButton } from './ButtonsIcon';
 import { useRouter } from 'next/navigation';
 import styles from './TopBarArchive.module.css'
 

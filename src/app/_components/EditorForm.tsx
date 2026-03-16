@@ -124,7 +124,7 @@ export default function EditorForm({
       notes: notes.trim(),
     };
     saveAction(currentValues);
-    router.push(`/list/${idSelectedList}`);
+     router.push(`/list/${idSelectedList}`);
   }
 
   function deleteTask(): void {

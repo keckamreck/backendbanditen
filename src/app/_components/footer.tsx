@@ -4,7 +4,7 @@ import styles from "./footer.module.css";
 import { getList } from "@/app/_lib/demo";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { ArchiveButton, DeleteButton } from "@/app/_components/button";
+import { ArchiveButton, DeleteButton } from "@/app/_components/ButtonsIcon";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 import { deleteList } from "@/app/_lib/demo";

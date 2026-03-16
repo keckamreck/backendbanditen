@@ -8,7 +8,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { ButtonHTMLAttributes } from "react";
-import styles from "./button.module.css";
+import styles from "./ButtonsIcon.module.css";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
