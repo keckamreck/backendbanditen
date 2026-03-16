@@ -37,7 +37,7 @@ export function Footer({ ListId }: { ListId: number }) {
         <Modal
           onClose={toggleModal}
           onConfirm={handleConfirm}
-          title="Möchtest du wirklich die gesamte Liste löschen?"
+          title="Möchten Sie wirklich die gesamte Liste löschen?"
           yes="Ja"
           no="Nein"
         />

@@ -49,9 +49,9 @@ export default function ArchivePage() {
         <Modal
           onClose={toggleModal}
           onConfirm={handleConfirm}
-          title='Are you sure?'
-          yes='Yes'
-          no='No'
+          title='Möchten Sie alle erledigten Aufgaben wirklich löschen?'
+          yes='Ja'
+          no='Nein'
         />
       }
     </>
