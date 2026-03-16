@@ -4,7 +4,7 @@ import { getList, getDoneTasks } from "@/app/_lib/demo";
 import { deleteTasks, editTaskDone } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 import { TaskCard } from "@/app/_components/TaskCard";
-import { DeleteButton } from "@/app/_components/button";
+import { DeleteButton } from "@/app/_components/ButtonsIcon";
 import { TopBarArchive } from "@/app/_components/TopBarArchive";
 import { Modal } from "@/app/_components/modal";
 import { useParams, useRouter } from "next/navigation";
