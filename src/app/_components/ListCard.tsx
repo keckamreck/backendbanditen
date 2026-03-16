@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./listCard.module.css";
+import styles from "./ListCard.module.css";
 import { List } from "@/app/_models/list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as emptyStar, faFlag } from "@fortawesome/free-regular-svg-icons";
@@ -8,7 +8,7 @@ import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Link from "next/link";
 import { getTasks, updateListCategory, updateListisFavourite } from "../_lib/demo";
-import CategoryPopup from "./categoryPopup";
+import CategoryPopup from "./CategoryPopup";
 import { getTaskofList } from "../_models/function";
 export interface ListProps {
   list: List;

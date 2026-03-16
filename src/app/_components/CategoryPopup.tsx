@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./categoryPopup.module.css";
+import styles from "./CategoryPopup.module.css";
 import { getCategories } from "../_lib/demo";
 
 interface CategoryPopupProps {

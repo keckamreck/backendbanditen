@@ -13,9 +13,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
-import { ListCard } from "../_components/listCard";
+import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/expandBtn";
-import CategorySort from "../_components/categorySort";
+import CategorySort from "../_components/CategorySort";
 
 export default function DashboardPage() {
   const router = useRouter();

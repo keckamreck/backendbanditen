@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import styles from "./categorySort.module.css";
+import styles from "./CategorySort.module.css";
 import { getCategories } from "@/app/_lib/demo";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

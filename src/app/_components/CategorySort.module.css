@@ -52,6 +52,7 @@
 .dropdownItem {
   padding: 0.8rem 1rem;
   border-bottom: 1px solid #eee;
+  border-image: linear-gradient(to right, transparent 0%, #eee 20%, #eee 80%, transparent 95%) 1;
   cursor: pointer;
   font-size: 1rem;
   overflow: hidden;

@@ -1,5 +1,5 @@
 import { List } from "@/app/_models/list";
-import { ListCard } from "../../_components/listCard";
+import { ListCard } from "../../_components/ListCard";
 import styles from "@/app/_components/listCard.module.css";
 import { getLists } from "@/app/_lib/demo";
 
