@@ -1,6 +1,5 @@
 import { List } from "@/app/_models/list";
 import { Priority, Task } from "@/app/_models/task";
-import exp from "constants";
 
 let tasks: Task[] = [
   {
@@ -122,6 +121,15 @@ export function editTask(id: number, changes: Partial<Task>) {
 export function deleteTask(id: number) {
   const index: number = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
+}
+
+export function deleteTasks(listKey: number) {
+  tasks.forEach(task => {
+    if(task.listKey === listKey){
+      let index = tasks.indexOf(task);
+      tasks.splice(index, 1);
+    }
+  });
 }
 
 export function updateListisFavourite(listId: number, isFavourite: boolean) {

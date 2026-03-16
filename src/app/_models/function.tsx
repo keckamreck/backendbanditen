@@ -14,6 +14,17 @@ export function getTaskofList(listKey: number) {
   return tasksofList;
 }
 
+export function getDoneTasks(listKey: number) {
+  const tasks = getTaskofList(listKey);
+  let doneTasks = [];
+  for (let e of tasks) {
+    if (e.done) {
+      doneTasks.push(e);
+    }
+  }
+  return doneTasks;
+}
+
 export function getTask(id: number) {
   const tasks: Task[] = getTasks();
   for (let e of tasks) {
