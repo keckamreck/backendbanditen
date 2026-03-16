@@ -26,11 +26,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const initialLists = getLists();
-    const breakfastList: List = {
-      id: initialLists.length + 1,
-      title: "Frühstück",
-    };
-    initialLists.push(breakfastList);
     setLists(initialLists);
     const initialTasks = getTasks();
     setTasks(initialTasks);
@@ -60,14 +55,16 @@ export default function DashboardPage() {
         if (dueTask.deadline !== null) {
           console.log("timestamp:", timestamp);
           console.log("dueTask.deadline:", dueTask.deadline);
-          const timeLeft =
-            (dueTask.deadline.getTime() - timestamp.getTime()) /
-            (1000 * 60 * 60 * 24);
-          if (timeLeft < 1) {
+          if (timestamp.getDay() === dueTask.deadline.getDay()) {
             setDueTaskTime("Heute fällig");
-          } else if (timeLeft < 2) {
+
+            setDueTaskTime("Morgen fällig");
+          } else if (timestamp.getDay() + 1 === dueTask.deadline.getDay()) {
             setDueTaskTime("Morgen fällig");
           } else {
+            const timeLeft =
+              (dueTask.deadline.getTime() - timestamp.getTime()) /
+              (1000 * 60 * 60 * 24);
             setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
           }
         }
