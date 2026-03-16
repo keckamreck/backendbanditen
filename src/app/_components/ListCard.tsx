@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./listCard.module.css";
+import styles from "./ListCard.module.css";
 import { List } from "@/app/_models/list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,8 +10,8 @@ import {
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Link from "next/link";
-import { getTasks, updateListCategory } from "../_lib/demo";
-import CategoryPopup from "./categoryPopup";
+import { getTasks, updateListCategory, updateListisFavourite } from "../_lib/demo";
+import CategoryPopup from "./CategoryPopup";
 import { getTaskofList } from "../_lib/demo";
 export interface ListProps {
   list: List;
@@ -34,6 +34,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
     setIsFavorite(nextState);
 
     if (onToggleFavorite) {
+      updateListisFavourite(currentList.id, nextState);
       onToggleFavorite({ ...currentList, isFavourite: nextState });
     }
   };

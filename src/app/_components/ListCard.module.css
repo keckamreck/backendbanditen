@@ -1,7 +1,7 @@
 .card {
   display: flex;
   flex-direction: column;
-  width: 10rem;
+  width: 9em;
   padding: 1.25em;
   background: white;
   border-radius: 12px;
@@ -9,7 +9,16 @@
   overflow: hidden;
   aspect-ratio: 1/1;
   padding: 0.5em;
- /* box-shadow: 0 0 14px -5px black; */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.listCard:nth-child(even) {
+  justify-self: end;
+}
+
+.card:active {
+  transform: scale(0.98);
+  transition: transform 0.25s ease;
 }
 
 .topRow {
@@ -18,33 +27,33 @@
   align-items: center;
 }
 
-.categoryRow{ 
+.categoryRow {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: start; 
+  justify-content: start;
   align-items: end;
 }
 
-.row{
+.row {
   display: flex;
   flex-direction: column;
-  justify-content: end; 
+  justify-content: end;
   align-items: center;
 }
 
-.title{
+.title {
   font-size: 1.15em;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block; 
+  display: block;
   width: 100%;
 }
 
-.starIcon{
-  /*color: orange;*/
+.starIcon {
+  color: orange;
   font-size: 1.25em;
   margin: 0.5em 0.2em 0.5em 1em;
 }
@@ -55,7 +64,7 @@
   margin: 0.5em 0.1em 0.5em 1em;
 }
 
-.category{
+.category {
   max-width: 50%;
   font-size: 1em;
   color: white;
@@ -66,20 +75,20 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block; 
+  display: block;
 }
 
-.taskAmount{
+.taskAmount {
   font-size: 1.25em;
   margin: 0;
 }
 
-.dueTasks{
+.dueTasks {
   font-size: 1em;
   margin: 0;
 }
 
-.link{
+.link {
   text-decoration: none;
   color: inherit;
 }
