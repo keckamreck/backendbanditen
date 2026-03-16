@@ -48,16 +48,19 @@ let list: List[] = [
   },
   {
     id: 1,
+    isFavourite: true,
     title: "Privat",
   },
   {
     id: 2,
     title: "Studium",
+    isFavourite: true,
     category: "Duales Studium",
   },
   {
     id: 3,
     title: "sonstiges",
+    isFavourite: true,
   },
   {
     id: 4,
@@ -97,6 +100,14 @@ export function editTask(id: number, changes: Partial<Task>) {
 export function deleteTask(id: number) {
   const index: number = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
+}
+
+export function updateListisFavourite(listId: number, isFavourite: boolean) {
+  const lists = list.find(l => l.id === listId);
+  if (lists) {
+    lists.isFavourite = isFavourite;
+  }
+  return lists;
 }
 
 export function updateListCategory(listId: number, newCategory: string) {
