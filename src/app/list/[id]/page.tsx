@@ -8,12 +8,12 @@ import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import styles from "./page.module.css";
-import { ButtonSort } from "@/app/_components/buttonSort";
+import { ButtonSort } from "@/app/_components/ButtonSort";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { deleteList } from "@/app/_lib/demo";
-import { Footer } from "@/app/_components/footer";
+import { Footer } from "@/app/_components/Footer";
 import { editTaskDone } from "@/app/_lib/demo";
 
 function List({ ListId }: { ListId: number }) {

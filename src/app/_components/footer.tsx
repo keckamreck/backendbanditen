@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./footer.module.css";
+import styles from "./Footer.module.css";
 import { getList } from "@/app/_lib/demo";
 import { useState } from "react";
 import { useParams } from "next/navigation";
