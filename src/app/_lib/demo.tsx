@@ -66,6 +66,15 @@ let list: List[] = [
 export function getLists() {
   return list;
 }
+export function newList(name: string) {
+  const newListItem: List = {
+    id: list.length + 1,
+    title: name,
+  };
+
+  list.push(newListItem);
+  console.log("New list added:", name);
+}
 
 export function getTasks() {
   return tasks;

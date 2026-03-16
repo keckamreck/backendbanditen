@@ -11,7 +11,7 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { getLists, getTasks } from "@/app/_lib/demo";
+import { getLists, getTasks, newList } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 
 export default function DashboardPage() {
@@ -50,6 +50,15 @@ export default function DashboardPage() {
   }, [tasks]);
 
   useEffect(() => {
+    const getListsFromDemo = () => {
+      setLists(getLists());
+    };
+
+    const timer = setInterval(getListsFromDemo, 60000);
+    return () => clearInterval(timer);
+  }, [lists]);
+
+  useEffect(() => {
     console.log("Due task updated:", dueTask);
     const getDueTaskTime = () => {
       const timestamp = new Date();
@@ -76,16 +85,6 @@ export default function DashboardPage() {
     getDueTaskTime();
     return () => clearInterval(timer);
   }, [dueTask]);
-
-  function newList(name: string) {
-    const newListItem: List = {
-      id: lists.length + 1,
-      title: name,
-    };
-
-    setLists((prevLists) => [...prevLists, newListItem]);
-    console.log("New list added:", name);
-  }
 
   return (
     <div className={styles.page}>
