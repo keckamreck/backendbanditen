@@ -6,7 +6,7 @@ import { TaskFormattedForEditor, Task } from "@/app/_models/task";
 import { RefObject, useRef } from "react";
 import { useParams } from "next/navigation";
 import { List } from "@/app/_models/list";
-import { getTask } from "@/app/_models/function";
+import { getTask } from "@/app/_lib/demo";
 
 export default function Page() {
   const id: { id: string } = useParams<{ id: string }>();

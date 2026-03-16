@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./footer.module.css";
-import { getList } from "@/app/_models/function";
+import { getList } from "@/app/_lib/demo";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ArchiveButton, DeleteButton } from "@/app/_components/button";

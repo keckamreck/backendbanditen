@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { getList, getDoneTasks } from '@/app/_models/function';
-import { deleteTasks } from '@/app/_lib/demo';
-import { Task } from '@/app/_models/task';
-import { TaskCard } from '@/app/_components/TaskCard';
-import { DeleteButton } from '@/app/_components/button';
-import { TopBarArchive } from '@/app/_components/TopBarArchive';
-import { Modal } from '@/app/_components/modal';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
-import styles from './page.module.css';
+import { getList, getDoneTasks } from "@/app/_lib/demo";
+import { deleteTasks } from "@/app/_lib/demo";
+import { Task } from "@/app/_models/task";
+import { TaskCard } from "@/app/_components/TaskCard";
+import { DeleteButton } from "@/app/_components/button";
+import { TopBarArchive } from "@/app/_components/TopBarArchive";
+import { Modal } from "@/app/_components/modal";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import styles from "./page.module.css";
 
 export default function ArchivePage() {
   const params = useParams<{ id: string }>();
@@ -42,20 +42,18 @@ export default function ArchivePage() {
 
   return (
     <>
-      <TopBarArchive title={list.title} id={list.id}/>
-      <div className={styles.tasks}>
-        {showTasks(tasks, handleDone)}
-      </div>
-      <DeleteButton className={styles.buttonDelete} onClick={toggleModal}/>
-      {showModal &&
+      <TopBarArchive title={list.title} id={list.id} />
+      <div className={styles.tasks}>{showTasks(tasks, handleDone)}</div>
+      <DeleteButton className={styles.buttonDelete} onClick={toggleModal} />
+      {showModal && (
         <Modal
           onClose={toggleModal}
           onConfirm={handleConfirm}
-          title='Möchten Sie alle erledigten Aufgaben wirklich löschen?'
-          yes='Ja'
-          no='Nein'
+          title="Möchten Sie alle erledigten Aufgaben wirklich löschen?"
+          yes="Ja"
+          no="Nein"
         />
-      }
+      )}
     </>
   );
 }
@@ -67,7 +65,9 @@ function showTasks(tasks: Task[], handler: (id: number) => void) {
         key={task.id}
         task={task}
         onPencilClick={() => console.log("Pencil clicked")}
-        onDoneClick={() => { handler(task.id) }}
+        onDoneClick={() => {
+          handler(task.id);
+        }}
       />
     );
   });
