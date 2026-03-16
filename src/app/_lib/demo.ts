@@ -125,7 +125,7 @@ export function deleteTask(id: number) {
 
 export function deleteTasks(listKey: number) {
   tasks.forEach((task) => {
-    if (task.listKey === listKey) {
+    if (task.listKey === listKey && task.done === true) {
       let index = tasks.indexOf(task);
       tasks.splice(index, 1);
     }
