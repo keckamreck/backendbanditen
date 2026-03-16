@@ -124,13 +124,13 @@ export default function EditorForm({
       notes: notes.trim(),
     };
     saveAction(currentValues);
-    router.push(`/list/${idSelectedList}`);
+    router.back();
   }
 
   function deleteTask(): void {
     if (deleteAction !== undefined) {
       deleteAction();
-      router.push(`/list/${idSelectedList}`);
+      router.back();
     }
   }
 
@@ -159,7 +159,7 @@ export default function EditorForm({
             onClose={(): void => {
               setShowModalConfirmGoBack(false);
             }}
-            onConfirm={() => router.push(`/list/${idSelectedList}`)}
+            onConfirm={() => router.back()}
             title={
               "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
             }
