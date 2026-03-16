@@ -9,13 +9,12 @@ type NameTaskProps = {
 
 export function NameTask({ className, value, onChange }: NameTaskProps) {
   return (
-    <>
-      <input
-        className={`${styles.input} ${className}`}
-        type="text"
-        value={value}
-        onChange={onChange}
-      ></input>
-    </>
+    <input
+      className={`${styles.input} ${className}`}
+      type="text"
+      value={value}
+      onChange={onChange}
+      placeholder={"Titel"}
+    ></input>
   );
 }
