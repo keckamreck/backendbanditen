@@ -9,12 +9,14 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setListTitle } from "@/app/_lib/demo";
 
 export function TopBar({ ListId }: { ListId: number }) {
   const list = getList(ListId);
   const [editmode, setEditmode] = useState(false);
   const [listname, setlistname] = useState(list.title);
   const router = useRouter();
+
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
@@ -39,7 +41,10 @@ export function TopBar({ ListId }: { ListId: number }) {
           <button
             id="ButtonEditName"
             className={styles.buttonEdit}
-            onClick={() => setEditmode(!editmode)}
+            onClick={() => {
+              setEditmode(!editmode);
+              setListTitle(ListId, listname);
+            }}
           >
             <FontAwesomeIcon
               color="black"

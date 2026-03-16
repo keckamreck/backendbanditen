@@ -1,5 +1,6 @@
 import { List } from "@/app/_models/list";
 import { Priority, Task } from "@/app/_models/task";
+import exp from "constants";
 
 let tasks: Task[] = [
   {
@@ -81,6 +82,12 @@ export function newList(name: string) {
   console.log("New list added:", name);
 }
 
+export function setListTitle(id: number, newTitle: string) {
+  const indexChangedList: number = list.findIndex((list) => list.id === id);
+  list[indexChangedList].title = newTitle;
+  console.log(list[indexChangedList]);
+}
+
 export function deleteList(id: number) {
   const index: number = list.findIndex((list) => list.id === id);
   list.splice(index, 1);
@@ -118,7 +125,7 @@ export function deleteTask(id: number) {
 }
 
 export function updateListisFavourite(listId: number, isFavourite: boolean) {
-  const lists = list.find(l => l.id === listId);
+  const lists = list.find((l) => l.id === listId);
   if (lists) {
     lists.isFavourite = isFavourite;
   }
