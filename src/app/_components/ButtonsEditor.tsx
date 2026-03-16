@@ -1,13 +1,13 @@
 import styles from "./ButtonsEditor.module.css";
 
-type ButtonProps = {
+interface ButtonProps {
   className?: string;
   onClickAction?: () => void;
   disabled: boolean;
   text: string;
-  styleType: "save" | "delete";
+  styleType: "save" | "delete" | "yes" | "no";
   buttonType: "submit" | "button";
-};
+}
 
 export function Button({
   className,

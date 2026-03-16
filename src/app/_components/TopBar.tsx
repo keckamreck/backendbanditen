@@ -2,19 +2,21 @@
 
 import styles from "./TopBar.module.css";
 import { List } from "../_models/list";
-import { getList } from "@/app/_models/function";
+import { getList } from "@/app/_lib/demo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setListTitle } from "@/app/_lib/demo";
 
 export function TopBar({ ListId }: { ListId: number }) {
   const list = getList(ListId);
   const [editmode, setEditmode] = useState(false);
   const [listname, setlistname] = useState(list.title);
   const router = useRouter();
+
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
@@ -23,7 +25,7 @@ export function TopBar({ ListId }: { ListId: number }) {
           className={styles.buttonBack}
           onClick={() => router.push(`/dashboard`)}
         >
-          <FontAwesomeIcon icon={faX} />
+          <FontAwesomeIcon color="black" icon={faX} />
         </button>
         <div className={styles.listName}>
           <div>
@@ -39,9 +41,15 @@ export function TopBar({ ListId }: { ListId: number }) {
           <button
             id="ButtonEditName"
             className={styles.buttonEdit}
-            onClick={() => setEditmode(!editmode)}
+            onClick={() => {
+              setEditmode(!editmode);
+              setListTitle(ListId, listname);
+            }}
           >
-            <FontAwesomeIcon icon={editmode ? faCheck : faPencil} />
+            <FontAwesomeIcon
+              color="black"
+              icon={editmode ? faCheck : faPencil}
+            />
           </button>
         </div>
       </div>

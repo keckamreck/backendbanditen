@@ -11,7 +11,7 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { getLists, getTasks } from "@/app/_lib/demo";
+import { getLists, getTasks, newList } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/expandBtn";
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [update, triggerUpdate] = useState(false);
 
   const filteredLists = selectedCategory ? lists.filter((l) => l.category === selectedCategory) : lists;
   const favourites = filteredLists.filter((l) => l.isFavourite);
@@ -35,11 +36,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const initialLists = getLists();
-    const breakfastList: List = {
-      id: initialLists.length + 1,
-      title: "Frühstück",
-    };
-    initialLists.push(breakfastList);
     setLists(initialLists);
     const initialTasks = getTasks();
     setTasks(initialTasks);
@@ -49,7 +45,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const getDueTask = () => {
-      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const filteredTasks = tasks.filter(
+        (task) => task.deadline != undefined && !task.done,
+      );
       const sortedTasks = [...filteredTasks].sort((a, b) => {
         return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
       });
@@ -62,6 +60,15 @@ export default function DashboardPage() {
   }, [tasks]);
 
   useEffect(() => {
+    const getListsFromDemo = () => {
+      setLists(getLists());
+    };
+
+    const timer = setInterval(getListsFromDemo, 60000);
+    return () => clearInterval(timer);
+  }, [lists, update]);
+
+  useEffect(() => {
     console.log("Due task updated:", dueTask);
     const getDueTaskTime = () => {
       const timestamp = new Date();
@@ -69,14 +76,14 @@ export default function DashboardPage() {
         if (dueTask.deadline !== null) {
           console.log("timestamp:", timestamp);
           console.log("dueTask.deadline:", dueTask.deadline);
-          const timeLeft =
-            (dueTask.deadline.getTime() - timestamp.getTime()) /
-            (1000 * 60 * 60 * 24);
-          if (timeLeft < 1) {
+          if (timestamp.getDay() === dueTask.deadline.getDay()) {
             setDueTaskTime("Heute fällig");
-          } else if (timeLeft < 2) {
+          } else if (timestamp.getDay() + 1 === dueTask.deadline.getDay()) {
             setDueTaskTime("Morgen fällig");
           } else {
+            const timeLeft =
+              (dueTask.deadline.getTime() - timestamp.getTime()) /
+              (1000 * 60 * 60 * 24);
             setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
           }
         }
@@ -86,16 +93,6 @@ export default function DashboardPage() {
     getDueTaskTime();
     return () => clearInterval(timer);
   }, [dueTask]);
-
-  function newList(name: string) {
-    const newListItem: List = {
-      id: lists.length + 1,
-      title: name,
-    };
-
-    setLists((prevLists) => [...prevLists, newListItem]);
-    console.log("New list added:", name);
-  }
 
   function handleToggleFavourite(updatedList: List) {
     setLists((prevLists) =>
@@ -120,7 +117,7 @@ export default function DashboardPage() {
       <PopupWithInput
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
-        onSubmitting={(name) => newList(name)}
+        onSubmitting={(name) => handleNewListButton(name)}
       />
       {isSearchOpen && (
         <div
@@ -171,6 +168,8 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+
+        {/* Section for due Task */}
         <DueTaskSection />
         <CategorySort onCategorySelect={setSelectedCategory} />
         <div className={styles.cardContainer}>
@@ -227,6 +226,13 @@ export default function DashboardPage() {
   function gotoList(listKey: number) {
     router.push("/list/" + listKey);
   }
+  function handleNewListButton(name: string) {
+    newList(name);
+    if (update) {
+      triggerUpdate(false);
+    }
+    triggerUpdate(true);
+  }
 
   function DueTaskSection() {
     if (dueTask) {
@@ -273,7 +279,7 @@ export default function DashboardPage() {
   }
 
   function handleSearchSubmit(e: FormEvent) {
-    e.preventDefault();
+    // e.preventDefault();
 
     const input = document.getElementById("searchInput") as HTMLInputElement;
 

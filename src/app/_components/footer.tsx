@@ -1,10 +1,10 @@
 "use client";
 
 import styles from "./footer.module.css";
-import { getList } from "@/app/_models/function";
+import { getList } from "@/app/_lib/demo";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { ArchiveButton, DeleteButton } from "@/app/_components/button";
+import { ArchiveButton, DeleteButton } from "@/app/_components/ButtonsIcon";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 import { deleteList } from "@/app/_lib/demo";
@@ -37,7 +37,7 @@ export function Footer({ ListId }: { ListId: number }) {
         <Modal
           onClose={toggleModal}
           onConfirm={handleConfirm}
-          title="Möchtest du wirklich die gesamte Liste löschen?"
+          title="Möchten Sie wirklich die gesamte Liste löschen?"
           yes="Ja"
           no="Nein"
         />

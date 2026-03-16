@@ -21,13 +21,13 @@ import { TaskFormattedForEditor, Priority } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 
-type EditorFormProps = {
+interface EditorFormProps {
   initialValues: TaskFormattedForEditor;
   lists: List[];
   saveAction: (task: TaskFormattedForEditor) => void;
   deleteButtonVisible: boolean;
   deleteAction?: () => void;
-};
+}
 
 export default function EditorForm({
   initialValues,
@@ -124,7 +124,7 @@ export default function EditorForm({
       notes: notes.trim(),
     };
     saveAction(currentValues);
-    router.push(`/list/${idSelectedList}`);
+     router.push(`/list/${idSelectedList}`);
   }
 
   function deleteTask(): void {
