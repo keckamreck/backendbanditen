@@ -9,4 +9,6 @@ export enum Sort {
 export interface List {
   id: number;
   title: string;
-}
+  isFavourite? : boolean;
+  category?: string;  
+};

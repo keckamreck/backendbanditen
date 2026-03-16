@@ -6,18 +6,40 @@ import { getList } from "@/app/_models/function";
 import { getTaskofList } from "@/app/_models/function";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
-// import { faX } from "@fortawesome/free-solid-svg-icons";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
-import { use, useState } from "react";
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { ArchiveButton, DeleteButton } from "@/app/_components/button";
+import { useRouter } from "next/navigation";
+import { Modal } from "@/app/_components/modal";
+import { deleteList } from "@/app/_lib/demo";
+import { Footer } from "@/app/_components/footer";
+import { editTaskDone } from "@/app/_lib/demo";
 
 function List({ ListId }: { ListId: number }) {
-  const list = getList(ListId);
+  const router = useRouter();
+  const [list, setList] = useState(getList(ListId));
   const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
   const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
+  const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
+  const [showModal, setShowModal] = useState(false);
+
+  function handleDelete() {
+    deleteList(ListId);
+    router.push(`/dashboard/`);
+  }
+
+  function toggleModal() {
+    setShowModal(!showModal);
+  }
+
+  function handleConfirm() {
+    handleDelete();
+    toggleModal();
+  }
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
@@ -39,32 +61,45 @@ function List({ ListId }: { ListId: number }) {
         </div>
         <button
           className={styles.buttonAdd}
-          onClick={() => console.log("new task")}
+          onClick={() => router.push(`/createTask/${list.id}`)}
         >
-          <FontAwesomeIcon icon={faCirclePlus} />
+          <FontAwesomeIcon color="black" icon={faCirclePlus} />
         </button>
       </div>
       <div className={styles.tasks}>
-        {sortedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onPencilClick={() => console.log("Pencil clicked")}
-            onDoneClick={() => {
-              setTasks(
-                tasks.map((t) =>
-                  t.id === task.id ? { ...t, done: !t.done } : t,
-                ),
-              );
-              console.log("Done clicked");
-            }}
-          />
-        ))}
+        {sortedTasks
+          .filter((task) => !task.done || fadingTaskIds.has(task.id))
+          .map((task) => (
+            <div
+              key={task.id}
+              className={fadingTaskIds.has(task.id) ? styles.fading : ""}
+            >
+              <TaskCard
+                key={task.id}
+                task={task}
+                onPencilClick={() => router.push(`/editTask/${task.id}`)}
+                onDoneClick={() => {
+                  setFadingTaskIds((prev) => new Set(prev).add(task.id));
+                  editTaskDone(task.id, true);
+                  setTimeout(() => {
+                    setFadingTaskIds((prev) => {
+                      const next = new Set(prev);
+                      next.delete(task.id);
+                      return next;
+                    });
+                  }, 1500);
+                }}
+              />
+            </div>
+          ))}
       </div>
+      <Footer ListId={ListId}></Footer>
     </div>
   );
 }
 
 export default function Page() {
-  return <List ListId={1} />;
+  const parms = useParams();
+  const id = parms.id;
+  return <List ListId={Number(id)} />;
 }

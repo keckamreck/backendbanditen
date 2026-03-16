@@ -1,0 +1,83 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  padding: 1.25em;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid black;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  padding: 0.5em;
+ /* box-shadow: 0 0 14px -5px black; */
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryRow{ 
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start; 
+  align-items: end;
+}
+
+.row{
+  display: flex;
+  flex-direction: column;
+  justify-content: end; 
+  align-items: center;
+}
+
+.title{
+  font-size: 1.15em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; 
+  width: 100%;
+}
+
+.starIcon{
+  font-size: 1.25em;
+  margin: 0.5em 0.2em 0.5em 1em;
+}
+
+.flagIcon{
+  font-size: 1.25em;
+  margin: 0.5em 0.1em 0.5em 1em;
+}
+
+.category{
+  max-width: 50%;
+  font-size: 1em;
+  color: white;
+  background-color: orange;
+  border-radius: 6px;
+  padding: 2px;
+  margin: 0.5em 0.1em 0.5em 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; 
+}
+
+.taskAmount{
+  font-size: 1.25em;
+  margin: 0;
+}
+
+.dueTasks{
+  font-size: 1em;
+  margin: 0;
+}
+
+.link{
+  text-decoration: none;
+  color: inherit;
+}

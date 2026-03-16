@@ -1,0 +1,28 @@
+.button{
+    font-size: 18px;
+    border-style: none;
+    border-radius: 5px;
+    height: 30px;
+    background-color: transparent;
+    font-weight: bold;
+    width: 40vw;
+    box-shadow: 0 0 20px -10px black;
+
+}
+.save {
+    background-color: white;
+    color: #c49965;
+}
+.delete {
+    color: #d05e65;
+    background-color: #ffcac7;
+}
+.button:active {
+    background-color: #eaeaea;
+}
+.button:disabled {
+    color: #bcbcbc;
+    background-color: #eaeaea;
+    cursor: unset;
+    box-shadow: 0 0 20px -8px white;
+}
