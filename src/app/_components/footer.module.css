@@ -1,11 +1,34 @@
+.footer {
+  z-index: 100;
+  position: sticky;
+  background-color: #e9ccaa;
+  bottom: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  min-height: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e9ccaa;
+  width: 100%;
+}
+
 .buttonDelete {
   position: fixed;
+  background-color: #e9ccaa;
   right: 4px;
   bottom: 40px;
 }
 
 .buttonArchive {
   position: fixed;
+  background-color: #e9ccaa;
   left: 4px;
   bottom: 40px;
 }

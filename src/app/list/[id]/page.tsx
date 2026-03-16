@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { deleteList } from "@/app/_lib/demo";
-import { Footer } from "@/app/_components/Footer";
+import { Footer } from "@/app/_components/footer";
 import { editTaskDone } from "@/app/_lib/demo";
 
 function List({ ListId }: { ListId: number }) {

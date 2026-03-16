@@ -34,6 +34,10 @@ body {
   overflow-y: auto;
 }
 
+.tasks {
+  padding-bottom: 75px;
+}
+
 .buttonDelete {
   position: fixed;
   right: 4px;
