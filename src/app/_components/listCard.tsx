@@ -7,7 +7,7 @@ import { faStar as emptyStar, faFlag } from "@fortawesome/free-regular-svg-icons
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Link from "next/link";
-import { getTasks, updateListCategory } from "../_lib/demo";
+import { getTasks, updateListCategory, updateListisFavourite } from "../_lib/demo";
 import CategoryPopup from "./categoryPopup";
 import { getTaskofList } from "../_models/function";
 export interface ListProps {
@@ -29,6 +29,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
     setIsFavorite(nextState);
 
     if (onToggleFavorite) {
+      updateListisFavourite(currentList.id, nextState);
       onToggleFavorite({ ...currentList, isFavourite: nextState });
     }
   };

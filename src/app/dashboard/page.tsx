@@ -15,6 +15,7 @@ import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 import { ListCard } from "../_components/listCard";
 import ExpandButton from "../_components/expandBtn";
+import CategorySort from "../_components/categorySort";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -26,9 +27,11 @@ export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const favourites = lists.filter((l) => l.isFavourite);
-  const others = lists.filter((l) => !l.isFavourite);
+  const filteredLists = selectedCategory ? lists.filter((l) => l.category === selectedCategory) : lists;
+  const favourites = filteredLists.filter((l) => l.isFavourite);
+  const others = filteredLists.filter((l) => !l.isFavourite);
 
   useEffect(() => {
     const initialLists = getLists();
@@ -169,6 +172,7 @@ export default function DashboardPage() {
           )}
         </div>
         <DueTaskSection />
+        <CategorySort onCategorySelect={setSelectedCategory} />
         <div className={styles.cardContainer}>
           {favourites.map((list) => (
             <ListCard

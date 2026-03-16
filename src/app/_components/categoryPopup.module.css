@@ -4,7 +4,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,24 +50,23 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  /* remove wrap so buttons stack vertically */
   width: 100%;
   padding: 0.7em;
   border: 1px solid #666;
   border-radius: 6px;
   height: 7em;
-  /* only scroll vertically */
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .existingCategoryBtn {
   width: 100%;
-  background: none;  
+  background: none;
   cursor: pointer;
   font-weight: 500;
   text-align: left;
   padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 .buttonRow {
