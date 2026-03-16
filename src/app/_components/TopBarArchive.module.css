@@ -1,3 +1,7 @@
+body {
+  background-color: #e9ccaa;
+}
+
 .container {
   padding: 0.5em;
   display: flex;
@@ -8,6 +12,17 @@
   justify-content: space-between;
   border: 1px solid black;
   border-radius: 15px;
-  padding: 0px 1em 0px 4em;
+  padding: 0em 1em 0em 0em;
   width: 100%;
+  background-color: white;
+}
+
+.card h1 {
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0.4em;
+  font-size: x-large;
+  font-weight: normal;
+  display: inline-block;
 }
