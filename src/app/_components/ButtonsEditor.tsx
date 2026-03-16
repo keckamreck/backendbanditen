@@ -5,7 +5,7 @@ type ButtonProps = {
   onClickAction?: () => void;
   disabled: boolean;
   text: string;
-  styleType: "save" | "delete";
+  styleType: "save" | "delete" | "yes" | "no";
   buttonType: "submit" | "button";
 };
 

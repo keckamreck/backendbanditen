@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { CloseButton } from '@/app/_components/button';
-import { useState } from 'react';
-import styles from './modal.module.css';
+import { CloseButton } from "@/app/_components/button";
+import { useState } from "react";
+import styles from "./modal.module.css";
+import { Button } from "./ButtonsEditor";
 
 export interface ModalProps {
-  onClose: () => void,
-  onConfirm: () => void,
-  title: string,
-  yes: string,
-  no: string
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  yes: string;
+  no: string;
 }
 
 export function Modal(props: ModalProps) {
@@ -27,24 +28,29 @@ export function Modal(props: ModalProps) {
   }
 
   return (
-    <div style={{display: (isVisible) ? 'block' : 'none'}} className={styles.modal}>
+    <div
+      style={{ display: isVisible ? "block" : "none" }}
+      className={styles.modal}
+    >
       <div className={styles.content}>
-        <CloseButton onClick={handleClose} className={styles.closeButton}/>
+        <CloseButton onClick={handleClose} className={styles.closeButton} />
         <p>{props.title}</p>
-        <button
-          onClick={handleConfirm}
-          type="button"
-          className={styles.yesButton}
-        >
-          {props.yes}
-        </button>
-        <button
-          onClick={handleClose}
-          type="button"
+        <Button
+          buttonType={"button"}
+          text={props.no}
+          onClickAction={handleClose}
+          disabled={false}
+          styleType={"no"}
           className={styles.noButton}
-        >
-          {props.no}
-        </button>
+        />
+        <Button
+          buttonType={"button"}
+          text={props.yes}
+          onClickAction={handleConfirm}
+          disabled={false}
+          styleType={"yes"}
+          className={styles.yesButton}
+        />
       </div>
     </div>
   );
