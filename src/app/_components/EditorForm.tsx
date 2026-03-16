@@ -23,6 +23,7 @@ import { Modal } from "@/app/_components/modal";
 
 interface EditorFormProps {
   initialValues: TaskFormattedForEditor;
+  taskDone: boolean;
   lists: List[];
   saveAction: (task: TaskFormattedForEditor) => void;
   deleteButtonVisible: boolean;
@@ -31,6 +32,7 @@ interface EditorFormProps {
 
 export default function EditorForm({
   initialValues,
+  taskDone,
   lists,
   deleteButtonVisible,
   saveAction,
@@ -124,13 +126,21 @@ export default function EditorForm({
       notes: notes.trim(),
     };
     saveAction(currentValues);
-    router.push(`/list/${idSelectedList}`);
+    handleBackNavigation(idSelectedList);
   }
 
   function deleteTask(): void {
     if (deleteAction !== undefined) {
       deleteAction();
-      router.push(`/list/${idSelectedList}`);
+      handleBackNavigation(initialValues.idSelectedList);
+    }
+  }
+
+  function handleBackNavigation(listIdToNavigate: number): void {
+    if (taskDone) {
+      router.push(`/archive/${listIdToNavigate}`);
+    } else {
+      router.push(`/list/${listIdToNavigate}`);
     }
   }
 
@@ -159,7 +169,7 @@ export default function EditorForm({
             onClose={(): void => {
               setShowModalConfirmGoBack(false);
             }}
-            onConfirm={() => router.push(`/list/${idSelectedList}`)}
+            onConfirm={() => handleBackNavigation(initialValues.idSelectedList)}
             title={
               "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
             }

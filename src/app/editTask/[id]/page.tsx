@@ -3,35 +3,32 @@
 import EditorForm from "@/app/_components/EditorForm";
 import { getLists, editTask, deleteTask } from "@/app/_lib/demo";
 import { TaskFormattedForEditor, Task } from "@/app/_models/task";
-import { RefObject, useRef } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { List } from "@/app/_models/list";
 import { getTask } from "@/app/_lib/demo";
 
 export default function Page() {
   const id: { id: string } = useParams<{ id: string }>();
-  const dateToday: RefObject<Date> = useRef(new Date());
-  const defaultDate: RefObject<Date> = useRef(
+  const [dateToday] = useState<Date>(new Date());
+  const [defaultDate] = useState<Date>(
     new Date(
-      dateToday.current.getFullYear(),
-      dateToday.current.getMonth(),
-      dateToday.current.getDate() + 1,
+      dateToday.getFullYear(),
+      dateToday.getMonth(),
+      dateToday.getDate() + 1,
       12,
       30,
     ),
   );
-  const lists: RefObject<List[]> = useRef(getLists());
-  const task: RefObject<Task> = useRef(getTask(parseInt(id.id)));
-  const initialTask: RefObject<TaskFormattedForEditor> = useRef({
-    title: task.current.title,
-    deadline:
-      task.current.deadline === null
-        ? defaultDate.current
-        : task.current.deadline,
-    idSelectedList: task.current.listKey,
-    selectedPriority: task.current.priority,
-    notes: task.current.note === null ? "" : task.current.note,
-    enterDeadline: task.current.deadline !== null,
+  const [lists] = useState<List[]>(getLists());
+  const [task] = useState<Task>(getTask(parseInt(id.id)));
+  const [initialTask] = useState<TaskFormattedForEditor>({
+    title: task.title,
+    deadline: task.deadline === null ? defaultDate : task.deadline,
+    idSelectedList: task.listKey,
+    selectedPriority: task.priority,
+    notes: task.note === null ? "" : task.note,
+    enterDeadline: task.deadline !== null,
   });
 
   function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
@@ -46,22 +43,22 @@ export default function Page() {
     };
     const updatedFields: Partial<Task> = {};
 
-    if (editedTask.title !== initialTask.current.title) {
+    if (editedTask.title !== initialTask.title) {
       updatedFields.title = editedTask.title;
     }
-    if (editedTask.deadline !== initialTask.current.deadline) {
+    if (editedTask.deadline !== initialTask.deadline) {
       updatedFields.deadline = editedTask.deadline;
     }
-    if (editedTask.listKey !== initialTask.current.idSelectedList) {
+    if (editedTask.listKey !== initialTask.idSelectedList) {
       updatedFields.listKey = editedTask.listKey;
     }
-    if (editedTask.priority !== initialTask.current.selectedPriority) {
+    if (editedTask.priority !== initialTask.selectedPriority) {
       updatedFields.priority = editedTask.priority;
     }
-    if (editedTask.note !== initialTask.current.notes) {
+    if (editedTask.note !== initialTask.notes) {
       updatedFields.note = editedTask.note;
     }
-    editTask(task.current.id, updatedFields);
+    editTask(task.id, updatedFields);
   }
 
   function handleDelete(): void {
@@ -70,8 +67,9 @@ export default function Page() {
 
   return (
     <EditorForm
-      initialValues={initialTask.current}
-      lists={lists.current}
+      initialValues={initialTask}
+      taskDone={task.done}
+      lists={lists}
       saveAction={handleSave}
       deleteButtonVisible={true}
       deleteAction={handleDelete}
