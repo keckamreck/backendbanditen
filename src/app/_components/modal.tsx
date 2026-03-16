@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseButton } from "@/app/_components/button";
+import { CloseButton } from "@/app/_components/ButtonsIcon";
 import { useState } from "react";
 import styles from "./modal.module.css";
 import { Button } from "./ButtonsEditor";
