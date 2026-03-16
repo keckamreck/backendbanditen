@@ -3,3 +3,7 @@
   right: 4px;
   bottom: 40px;
 }
+
+.tasks h1{
+  text-decoration: line-through;
+}
