@@ -62,7 +62,7 @@ function List({ ListId }: { ListId: number }) {
           className={styles.buttonAdd}
           onClick={() => router.push(`/createTask/${list.id}`)}
         >
-          <FontAwesomeIcon icon={faCirclePlus} />
+          <FontAwesomeIcon color="black" icon={faCirclePlus} />
         </button>
       </div>
       <div className={styles.tasks}>

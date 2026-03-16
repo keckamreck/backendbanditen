@@ -23,7 +23,7 @@ export function TopBar({ ListId }: { ListId: number }) {
           className={styles.buttonBack}
           onClick={() => router.push(`/dashboard`)}
         >
-          <FontAwesomeIcon icon={faX} />
+          <FontAwesomeIcon color="black" icon={faX} />
         </button>
         <div className={styles.listName}>
           <div>
@@ -41,7 +41,10 @@ export function TopBar({ ListId }: { ListId: number }) {
             className={styles.buttonEdit}
             onClick={() => setEditmode(!editmode)}
           >
-            <FontAwesomeIcon icon={editmode ? faCheck : faPencil} />
+            <FontAwesomeIcon
+              color="black"
+              icon={editmode ? faCheck : faPencil}
+            />
           </button>
         </div>
       </div>
