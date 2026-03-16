@@ -14,7 +14,7 @@ import styles from "./EditorForm.module.css";
 import { NameTask } from "./NameTask";
 import Calendar from "@/app/_components/Calendar";
 import { PriorityButton } from "@/app/_components/PriorityButton";
-import { Button } from "@/app/_components/ButtonsEditor";
+import { Button } from "@/app/_components/Buttons";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { List } from "@/app/_models/list";
 import { TaskFormattedForEditor, Priority } from "@/app/_models/task";

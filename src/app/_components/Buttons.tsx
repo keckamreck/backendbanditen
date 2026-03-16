@@ -1,4 +1,4 @@
-import styles from "./ButtonsEditor.module.css";
+import styles from "./Buttons.module.css";
 
 interface ButtonProps {
   className?: string;
