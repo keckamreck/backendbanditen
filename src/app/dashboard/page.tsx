@@ -35,7 +35,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const getDueTask = () => {
-      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const filteredTasks = tasks.filter(
+        (task) => task.deadline != undefined && !task.done,
+      );
       const sortedTasks = [...filteredTasks].sort((a, b) => {
         return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
       });
