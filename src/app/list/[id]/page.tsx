@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 import { deleteList } from "@/app/_lib/demo";
 import { Footer } from "@/app/_components/footer";
+import { editTaskDone } from "@/app/_lib/demo";
 
 function List({ ListId }: { ListId: number }) {
   const router = useRouter();
@@ -79,11 +80,7 @@ function List({ ListId }: { ListId: number }) {
                 onPencilClick={() => router.push(`/editTask/${task.id}`)}
                 onDoneClick={() => {
                   setFadingTaskIds((prev) => new Set(prev).add(task.id));
-                  setTasks((prev) =>
-                    prev.map((t) =>
-                      t.id === task.id ? { ...t, done: true } : t,
-                    ),
-                  );
+                  editTaskDone(task.id, true);
                   setTimeout(() => {
                     setFadingTaskIds((prev) => {
                       const next = new Set(prev);
