@@ -130,7 +130,6 @@ export function getTasks() {
 
 export function addTask(task: Task): void {
   tasks.push(task);
-  console.log(tasks);
 }
 
 export function editTaskDone(id: number, done: boolean) {
@@ -147,7 +146,6 @@ export function editTask(id: number, changes: Partial<Task>) {
       tasks[indexChangedTask][key] = changes[key];
     }
   }
-  console.log(tasks[indexChangedTask]);
 }
 
 export function deleteTask(id: number) {
