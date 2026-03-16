@@ -6,17 +6,18 @@
   gap: 15px;
   background-color: white;
   border: 2px solid #d1d1d1;
-  border-radius: 25px; 
+  border-radius: 25px;
   padding: 10px;
   cursor: pointer;
-  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.button:hover {
-  background-color: #f9f9f9;
+.button:active {
+  transform: scale(0.98);
+  transition: transform 0.25s ease;
 }
-
 .icon {
   color: #666;
   font-size: 1.2rem;
