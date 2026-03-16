@@ -13,7 +13,7 @@ export default function Login() {
     const response = await signIn(formData)
 
     if (response.ok) {
-      router.push('/home')
+      router.push('/dashboard')
       alert("Login successful!");
     } else {
       alert("WRONG PASSWORD!");
