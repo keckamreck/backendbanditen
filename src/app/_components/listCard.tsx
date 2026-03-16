@@ -46,7 +46,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
 
   return (
     <>
-      <Link href={"/lists/" + currentList.id} className={styles.link}>
+      <Link href={"/list/" + currentList.id} className={styles.link}>
         <div className={styles.card}>
           <div className={styles.topRow}>
             <p className={styles.title}>{currentList.title}</p>
