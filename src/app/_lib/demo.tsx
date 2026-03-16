@@ -8,7 +8,7 @@ let tasks: Task[] = [
     deadline: new Date("2028-02-01T10:01:00"),
     priority: Priority.High,
     listKey: 1,
-    done: false,
+    done: true,
     note: null,
   },
   {
@@ -83,6 +83,12 @@ export function addTask(task: Task): void {
   console.log(tasks);
 }
 
+export function editTaskDone(id: number, done: boolean) {
+  const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
+  tasks[indexChangedTask].done = done;
+  console.log(tasks[indexChangedTask]);
+}
+
 export function editTask(id: number, changes: Partial<Task>) {
   const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
   for (const key of Object.keys(changes) as (keyof Task)[]) {
@@ -100,24 +106,24 @@ export function deleteTask(id: number) {
 }
 
 export function updateListCategory(listId: number, newCategory: string) {
-  const lists = list.find(l => l.id === listId);
+  const lists = list.find((l) => l.id === listId);
   if (lists) {
     lists.category = newCategory;
   }
   return lists;
 }
 
-export function getCategories(){
+export function getCategories() {
   const lists: List[] = getLists();
   const categories: string[] = [];
-  let temp : string = "";
+  let temp: string = "";
 
-  for(let i=0; i< lists.length; i++){
-    if (lists[i].category){
+  for (let i = 0; i < lists.length; i++) {
+    if (lists[i].category) {
       temp = lists[i].category as string;
     }
-    if(temp != "" && !categories.includes(temp)){
-    categories.push(temp);
+    if (temp != "" && !categories.includes(temp)) {
+      categories.push(temp);
     }
   }
   return categories;
