@@ -17,6 +17,27 @@
     color: #d05e65;
     background-color: #ffcac7;
 }
+
+.yes {
+    width: 6em;
+    height: 2em;
+    margin: 5em 0 0 0;
+    background-color: white;
+    color: #c49965;
+    border-style: solid;
+    border-color: #c49965;
+}
+
+.no {
+    width: 6em;
+    height: 2em;
+    margin: 5em 0 0 0;
+    background-color: white;
+    color: #d05e65;
+    border-style: solid;
+    border-color: #d05e65;
+}
+
 .button:active {
     background-color: #eaeaea;
 }
