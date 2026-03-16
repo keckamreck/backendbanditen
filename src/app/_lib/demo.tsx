@@ -44,6 +44,7 @@ let list: List[] = [
   {
     id: 0,
     title: "Arbeit",
+    category: "Duales Studium",
   },
   {
     id: 1,
@@ -52,6 +53,7 @@ let list: List[] = [
   {
     id: 2,
     title: "Studium",
+    category: "Duales Studium",
   },
   {
     id: 3,
@@ -95,4 +97,28 @@ export function editTask(id: number, changes: Partial<Task>) {
 export function deleteTask(id: number) {
   const index: number = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
+}
+
+export function updateListCategory(listId: number, newCategory: string) {
+  const lists = list.find(l => l.id === listId);
+  if (lists) {
+    lists.category = newCategory;
+  }
+  return lists;
+}
+
+export function getCategories(){
+  const lists: List[] = getLists();
+  const categories: string[] = [];
+  let temp : string = "";
+
+  for(let i=0; i< lists.length; i++){
+    if (lists[i].category){
+      temp = lists[i].category as string;
+    }
+    if(temp != "" && !categories.includes(temp)){
+    categories.push(temp);
+    }
+  }
+  return categories;
 }
