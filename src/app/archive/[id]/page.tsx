@@ -1,6 +1,7 @@
 'use client';
 
-import { getList, getTaskofList } from '@/app/_models/function';
+import { getList, getDoneTasks } from '@/app/_models/function';
+import { deleteTasks } from '@/app/_lib/demo';
 import { Task } from '@/app/_models/task';
 import { TaskCard } from '@/app/_components/TaskCard';
 import { DeleteButton } from '@/app/_components/button';
@@ -14,11 +15,12 @@ export default function ArchivePage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const list = getList(id);
-  const [tasks, handleTasks] = useState(getTaskofList(list.id));
+  const [tasks, handleTasks] = useState(getDoneTasks(list.id));
   const [showModal, setShowModal] = useState(false);
 
   function handleDelete() {
     handleTasks([]);
+    deleteTasks(list.id);
   }
 
   function handleDone(id: number) {

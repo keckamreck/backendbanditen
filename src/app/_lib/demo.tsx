@@ -108,6 +108,15 @@ export function deleteTask(id: number) {
   tasks.splice(index, 1);
 }
 
+export function deleteTasks(listKey: number) {
+  tasks.forEach(task => {
+    if(task.listKey === listKey){
+      let index = tasks.indexOf(task);
+      tasks.splice(index, 1);
+    }
+  });
+}
+
 export function updateListisFavourite(listId: number, isFavourite: boolean) {
   const lists = list.find(l => l.id === listId);
   if (lists) {
