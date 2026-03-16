@@ -13,10 +13,10 @@ export function getPriority(priority: Priority) {
 export function getColor(priority: Priority) {
   switch(priority) {
     case Priority.High:
-      return "red";
+      return "#f2a68e";
     case Priority.Medium:
-      return "orange";
+      return "#e9ccaa";
     case Priority.Low:
-      return "green";
+      return "#b6d6f0";
   }
 }
