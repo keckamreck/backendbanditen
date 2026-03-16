@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [update, triggerUpdate] = useState(false);
 
   const favourites = lists.filter((l) => l.isFavourite);
   const others = lists.filter((l) => !l.isFavourite);
@@ -62,7 +63,7 @@ export default function DashboardPage() {
 
     const timer = setInterval(getListsFromDemo, 60000);
     return () => clearInterval(timer);
-  }, [lists]);
+  }, [lists, update]);
 
   useEffect(() => {
     console.log("Due task updated:", dueTask);
@@ -92,7 +93,6 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
-
   function handleToggleFavourite(updatedList: List) {
     setLists((prevLists) =>
       prevLists.map((list) =>
@@ -116,7 +116,7 @@ export default function DashboardPage() {
       <PopupWithInput
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
-        onSubmitting={(name) => newList(name)}
+        onSubmitting={(name) => handleNewListButton(name)}
       />
       {isSearchOpen && (
         <div
@@ -223,6 +223,13 @@ export default function DashboardPage() {
 
   function gotoList(listKey: number) {
     router.push("/list/" + listKey);
+  }
+  function handleNewListButton(name: string) {
+    newList(name);
+    if (update) {
+      triggerUpdate(false);
+    }
+    triggerUpdate(true);
   }
 
   function DueTaskSection() {

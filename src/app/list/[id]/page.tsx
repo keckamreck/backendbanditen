@@ -11,9 +11,7 @@ import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { ArchiveButton, DeleteButton } from "@/app/_components/button";
 import { useRouter } from "next/navigation";
-import { Modal } from "@/app/_components/modal";
 import { deleteList } from "@/app/_lib/demo";
 import { Footer } from "@/app/_components/footer";
 import { editTaskDone } from "@/app/_lib/demo";
@@ -23,7 +21,7 @@ function List({ ListId }: { ListId: number }) {
   const [list, setList] = useState(getList(ListId));
   const initialTasks = getTaskofList(ListId);
   const [tasks, setTasks] = useState(initialTasks);
-  const [sort, setSort] = useState<Sort>(Sort.Fälligkeitsdatum);
+  const [sort, setSort] = useState<Sort>(Sort.dueDate);
   const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
   const [showModal, setShowModal] = useState(false);
 
@@ -43,9 +41,9 @@ function List({ ListId }: { ListId: number }) {
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
-      case Sort.Fälligkeitsdatum:
+      case Sort.dueDate:
         return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
-      case Sort.Priorität:
+      case Sort.priority:
         return a.priority - b.priority;
       case Sort.Alphabetisch:
         return a.title.localeCompare(b.title);
