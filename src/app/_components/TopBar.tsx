@@ -14,6 +14,7 @@ import { setListTitle } from "@/app/_lib/demo";
 export function TopBar({ ListId }: { ListId: number }) {
   const list = getList(ListId);
   const [editmode, setEditmode] = useState(false);
+  const [listname, setlistname] = useState(list.title);
   const router = useRouter();
 
   return (
@@ -30,17 +31,20 @@ export function TopBar({ ListId }: { ListId: number }) {
           <div>
             {editmode ? (
               <input
-                value={list.title}
-                onChange={(e) => setListTitle(ListId, e.target.value)}
+                value={listname}
+                onChange={(e) => setlistname(e.target.value)}
               />
             ) : (
-              <h1>{list.title} </h1>
+              <h1>{listname} </h1>
             )}
           </div>
           <button
             id="ButtonEditName"
             className={styles.buttonEdit}
-            onClick={() => setEditmode(!editmode)}
+            onClick={() => {
+              setEditmode(!editmode);
+              setListTitle(ListId, listname);
+            }}
           >
             <FontAwesomeIcon
               color="black"
