@@ -8,7 +8,7 @@ import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import styles from "./page.module.css";
-import { ButtonSort } from "@/app/_components/ButtonSort";
+import { ButtonSort } from "@/app/_components/buttonSort";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
