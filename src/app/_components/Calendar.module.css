@@ -18,7 +18,7 @@
     margin-bottom: 0;
 }
 
-.today, .currentDays, .selectedDay, .remainingDays, .remainingDaysSelected {
+.currentDayToday, .currentDays, .selectedDay, .remainingDayToday, .remainingDays, .remainingDaysSelected {
     font-size: 13px;
     border-style: none;
     background-color: transparent;
@@ -28,19 +28,30 @@
     justify-self: center;
 }
 
-.today {
+.currentDayToday, .currentDays, .selectedDay {
+    color: black
+}
+
+.currentDayToday {
     border-style: solid;
     border-width: 2px;
     border-color: #bcbcbc;
 }
 
+
 .selectedDay {
     background-color: #bcbcbc;
 }
 
-.remainingDays {
+.remainingDays, .remainingDayToday {
     color: #cecece;
 }
+.remainingDayToday{
+    border-style: solid;
+    border-width: 2px;
+    border-color: #cecece;
+}
+
 
 .remainingDaysSelected {
     color: white;

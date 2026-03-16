@@ -13,6 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getLists, getTasks, newList } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
+import { ListCard } from "../_components/listCard";
+import ExpandButton from "../_components/expandBtn";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,6 +25,10 @@ export default function DashboardPage() {
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const favourites = lists.filter((l) => l.isFavourite);
+  const others = lists.filter((l) => !l.isFavourite);
 
   useEffect(() => {
     const initialLists = getLists();
@@ -85,6 +91,17 @@ export default function DashboardPage() {
     getDueTaskTime();
     return () => clearInterval(timer);
   }, [dueTask]);
+
+
+  function handleToggleFavourite(updatedList: List) {
+    setLists((prevLists) =>
+      prevLists.map((list) =>
+        list.id === updatedList.id
+          ? { ...list, isFavourite: updatedList.isFavourite }
+          : list,
+      ),
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -153,6 +170,34 @@ export default function DashboardPage() {
 
         {/* Section for due Task */}
         <DueTaskSection />
+        <div className={styles.cardContainer}>
+          {favourites.map((list) => (
+            <ListCard
+              key={list.id}
+              list={list}
+              onToggleFavorite={handleToggleFavourite}
+            />
+          ))}
+        </div>
+
+        {/* Der Toggle-Button */}
+        <ExpandButton
+          isExpanded={isExpanded}
+          onToggle={() => setIsExpanded(!isExpanded)}
+        />
+
+        {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
+        {isExpanded && (
+          <div className={styles.cardContainer}>
+            {others.map((list) => (
+              <ListCard
+                key={list.id}
+                list={list}
+                onToggleFavorite={handleToggleFavourite}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

@@ -1,5 +1,6 @@
 .button {
   background-color: white;
+  border: 1px solid black;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -8,4 +9,10 @@
   margin: 1em;
   padding: 5px;
   min-width: 12em;
+  color: black;
+}
+
+.button:active {
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
 }
