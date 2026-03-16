@@ -9,6 +9,7 @@
   margin: 1em;
   padding: 5px;
   min-width: 12em;
+  color: black;
 }
 
 .button:active {

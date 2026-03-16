@@ -13,6 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getLists, getTasks } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
+import { ListCard } from "../_components/listCard";
+import ExpandButton from "../_components/expandBtn";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,14 +25,13 @@ export default function DashboardPage() {
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const favourites = lists.filter((l) => l.isFavourite);
+  const others = lists.filter((l) => !l.isFavourite);
 
   useEffect(() => {
     const initialLists = getLists();
-    const breakfastList: List = {
-      id: initialLists.length + 1,
-      title: "Frühstück",
-    };
-    initialLists.push(breakfastList);
     setLists(initialLists);
     const initialTasks = getTasks();
     setTasks(initialTasks);
@@ -40,7 +41,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const getDueTask = () => {
-      const filteredTasks = tasks.filter((task) => task.deadline != undefined);
+      const filteredTasks = tasks.filter(
+        (task) => task.deadline != undefined && !task.done,
+      );
       const sortedTasks = [...filteredTasks].sort((a, b) => {
         return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
       });
@@ -60,14 +63,16 @@ export default function DashboardPage() {
         if (dueTask.deadline !== null) {
           console.log("timestamp:", timestamp);
           console.log("dueTask.deadline:", dueTask.deadline);
-          const timeLeft =
-            (dueTask.deadline.getTime() - timestamp.getTime()) /
-            (1000 * 60 * 60 * 24);
-          if (timeLeft < 1) {
+          if (timestamp.getDay() === dueTask.deadline.getDay()) {
             setDueTaskTime("Heute fällig");
-          } else if (timeLeft < 2) {
+
+            setDueTaskTime("Morgen fällig");
+          } else if (timestamp.getDay() + 1 === dueTask.deadline.getDay()) {
             setDueTaskTime("Morgen fällig");
           } else {
+            const timeLeft =
+              (dueTask.deadline.getTime() - timestamp.getTime()) /
+              (1000 * 60 * 60 * 24);
             setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
           }
         }
@@ -86,6 +91,16 @@ export default function DashboardPage() {
 
     setLists((prevLists) => [...prevLists, newListItem]);
     console.log("New list added:", name);
+  }
+
+  function handleToggleFavourite(updatedList: List) {
+    setLists((prevLists) =>
+      prevLists.map((list) =>
+        list.id === updatedList.id
+          ? { ...list, isFavourite: updatedList.isFavourite }
+          : list,
+      ),
+    );
   }
 
   return (
@@ -152,9 +167,35 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-
-        {/* Section for due Task */}
         <DueTaskSection />
+        <div className={styles.cardContainer}>
+          {favourites.map((list) => (
+            <ListCard
+              key={list.id}
+              list={list}
+              onToggleFavorite={handleToggleFavourite}
+            />
+          ))}
+        </div>
+
+        {/* Der Toggle-Button */}
+        <ExpandButton
+          isExpanded={isExpanded}
+          onToggle={() => setIsExpanded(!isExpanded)}
+        />
+
+        {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
+        {isExpanded && (
+          <div className={styles.cardContainer}>
+            {others.map((list) => (
+              <ListCard
+                key={list.id}
+                list={list}
+                onToggleFavorite={handleToggleFavourite}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

@@ -36,7 +36,10 @@ export function TaskCard(props: TaskProps) {
     <div className={styles.container}>
       <div className={styles.check}>
         <button id="ButtonDone" onClick={props.onDoneClick}>
-          <FontAwesomeIcon icon={task.done ? faCheckCircle : faCircle} />
+          <FontAwesomeIcon
+            color="black"
+            icon={task.done ? faCheckCircle : faCircle}
+          />
         </button>
       </div>
       <div className={styles.card}>
@@ -46,7 +49,7 @@ export function TaskCard(props: TaskProps) {
           className={styles.buttonEdit}
           onClick={props.onPencilClick}
         >
-          <FontAwesomeIcon icon={faPencil} />
+          <FontAwesomeIcon color="black" icon={faPencil} />
         </button>
         <div className={styles.row}>
           <h3>{deadline}</h3>
