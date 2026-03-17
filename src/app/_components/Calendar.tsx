@@ -94,7 +94,7 @@ export default function Calendar({
   const [month, setMonth] = useState<number>(dateToday.getMonth());
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
 
-  const days = useMemo(() => {
+  const days: number[][] = useMemo(() => {
     const result: number[][] = [];
     if (year !== "" && year > minYear && year < maxYear) {
       result.push(getDaysOfPreviousMonth(month, year));
