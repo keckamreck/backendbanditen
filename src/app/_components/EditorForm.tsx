@@ -107,7 +107,7 @@ export default function EditorForm({
     );
   }
 
-  function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>) {
+  function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>): void {
     const selectedList: List | undefined = lists.find(
       (list: List) => list.title === e.target.value,
     );
@@ -156,7 +156,7 @@ export default function EditorForm({
         <button
           type="button"
           className={styles.buttonGoBack}
-          onClick={() => setShowModalConfirmGoBack(true)}
+          onClick={(): void => setShowModalConfirmGoBack(true)}
         >
           <FontAwesomeIcon
             className={styles.iconGoBack}
@@ -169,7 +169,9 @@ export default function EditorForm({
             onClose={(): void => {
               setShowModalConfirmGoBack(false);
             }}
-            onConfirm={() => handleBackNavigation(initialValues.idSelectedList)}
+            onConfirm={(): void =>
+              handleBackNavigation(initialValues.idSelectedList)
+            }
             title={
               "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
             }
@@ -191,7 +193,7 @@ export default function EditorForm({
           <button
             className={`${styles.buttonShowDeadline}`}
             type="button"
-            onClick={() => {
+            onClick={(): void => {
               setEnterDeadline(!enterDeadline);
               setCalendarVisible(!enterDeadline);
             }}
@@ -214,7 +216,7 @@ export default function EditorForm({
             />
             <p
               className={`${styles.stringDate} ${styles.input}`}
-              onClick={() => setCalendarVisible(!calendarVisible)}
+              onClick={(): void => setCalendarVisible(!calendarVisible)}
             >
               {date.toLocaleDateString("de-DE", {
                 day: "2-digit",
@@ -267,7 +269,9 @@ export default function EditorForm({
             className={`${styles.selectList} ${styles.input}`}
             id="list"
             name="list"
-            value={lists.find((list) => list.id === idSelectedList)?.title}
+            value={
+              lists.find((list: List) => list.id === idSelectedList)?.title
+            }
             onChange={handleChangeSelectedList}
           >
             {lists.map((list: List) => (
