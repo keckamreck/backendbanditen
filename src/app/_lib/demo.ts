@@ -106,8 +106,10 @@ export function editTaskDone(id: number, done: boolean) {
   console.log(tasks[indexChangedTask]);
 }
 
-export function editTask(id: number, changes: Partial<Task>) {
-  const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
+export function editTask(id: number, changes: Partial<Task>): void {
+  const indexChangedTask: number = tasks.findIndex(
+    (task: Task) => task.id === id,
+  );
   for (const key of Object.keys(changes) as (keyof Task)[]) {
     if (tasks[indexChangedTask][key] !== undefined) {
       // @ts-ignore
@@ -116,7 +118,7 @@ export function editTask(id: number, changes: Partial<Task>) {
   }
 }
 
-export function deleteTask(id: number) {
+export function deleteTask(id: number): void {
   const index: number = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
 }
