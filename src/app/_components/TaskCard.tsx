@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { PriorityBadge } from "./badge";
+import { PriorityBadge } from "@/app/_components/PriorityBadge";
 import { Task } from "@/app/_models/task";
 import styles from "./TaskCard.module.css";
 
