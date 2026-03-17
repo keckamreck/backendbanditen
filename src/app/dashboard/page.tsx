@@ -14,7 +14,7 @@ import {
 import { getLists, getTasks, newList } from "@/app/_lib/demo";
 import { Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
-import ExpandButton from "../_components/expandBtn";
+import ExpandButton from "../_components/ExpandBtn";
 import CategorySort from "../_components/CategorySort";
 
 export default function DashboardPage() {

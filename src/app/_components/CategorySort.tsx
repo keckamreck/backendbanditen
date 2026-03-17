@@ -31,7 +31,7 @@ export default function CategorySort({ onCategorySelect }: CategorySortProps) {
 
   return (
     <div className={styles.container}>
-      <button className={styles.sortButton} onClick={handleToggle}>
+      <button className={isOpen ? styles.sortButtonActive : styles.sortButton} onClick={handleToggle}>
         <FontAwesomeIcon icon={faSort} className={styles.sortIcon} />
         Nach Kategorie sortieren{" "}
         {selectedCategory ? `(${selectedCategory})` : ""}
