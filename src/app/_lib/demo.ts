@@ -98,7 +98,6 @@ export function getTasks() {
 
 export function addTask(task: Task): void {
   tasks.push(task);
-  console.log(tasks);
 }
 
 export function editTaskDone(id: number, done: boolean) {
@@ -107,18 +106,19 @@ export function editTaskDone(id: number, done: boolean) {
   console.log(tasks[indexChangedTask]);
 }
 
-export function editTask(id: number, changes: Partial<Task>) {
-  const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
+export function editTask(id: number, changes: Partial<Task>): void {
+  const indexChangedTask: number = tasks.findIndex(
+    (task: Task) => task.id === id,
+  );
   for (const key of Object.keys(changes) as (keyof Task)[]) {
     if (tasks[indexChangedTask][key] !== undefined) {
       // @ts-ignore
       tasks[indexChangedTask][key] = changes[key];
     }
   }
-  console.log(tasks[indexChangedTask]);
 }
 
-export function deleteTask(id: number) {
+export function deleteTask(id: number): void {
   const index: number = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
 }

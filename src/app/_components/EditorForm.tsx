@@ -14,7 +14,7 @@ import styles from "./EditorForm.module.css";
 import { NameTask } from "./NameTask";
 import Calendar from "@/app/_components/Calendar";
 import { PriorityButton } from "@/app/_components/PriorityButton";
-import { Button } from "@/app/_components/ButtonsEditor";
+import { Button } from "@/app/_components/Buttons";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { List } from "@/app/_models/list";
 import { TaskFormattedForEditor, Priority } from "@/app/_models/task";
@@ -23,6 +23,7 @@ import { Modal } from "@/app/_components/modal";
 
 interface EditorFormProps {
   initialValues: TaskFormattedForEditor;
+  taskDone: boolean;
   lists: List[];
   saveAction: (task: TaskFormattedForEditor) => void;
   deleteButtonVisible: boolean;
@@ -31,6 +32,7 @@ interface EditorFormProps {
 
 export default function EditorForm({
   initialValues,
+  taskDone,
   lists,
   deleteButtonVisible,
   saveAction,
@@ -105,7 +107,7 @@ export default function EditorForm({
     );
   }
 
-  function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>) {
+  function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>): void {
     const selectedList: List | undefined = lists.find(
       (list: List) => list.title === e.target.value,
     );
@@ -124,13 +126,21 @@ export default function EditorForm({
       notes: notes.trim(),
     };
     saveAction(currentValues);
-     router.push(`/list/${idSelectedList}`);
+    handleBackNavigation(idSelectedList);
   }
 
   function deleteTask(): void {
     if (deleteAction !== undefined) {
       deleteAction();
-      router.push(`/list/${idSelectedList}`);
+      handleBackNavigation(initialValues.idSelectedList);
+    }
+  }
+
+  function handleBackNavigation(listIdToNavigate: number): void {
+    if (taskDone) {
+      router.push(`/archive/${listIdToNavigate}`);
+    } else {
+      router.push(`/list/${listIdToNavigate}`);
     }
   }
 
@@ -146,7 +156,7 @@ export default function EditorForm({
         <button
           type="button"
           className={styles.buttonGoBack}
-          onClick={() => setShowModalConfirmGoBack(true)}
+          onClick={(): void => setShowModalConfirmGoBack(true)}
         >
           <FontAwesomeIcon
             className={styles.iconGoBack}
@@ -159,7 +169,9 @@ export default function EditorForm({
             onClose={(): void => {
               setShowModalConfirmGoBack(false);
             }}
-            onConfirm={() => router.push(`/list/${idSelectedList}`)}
+            onConfirm={(): void =>
+              handleBackNavigation(initialValues.idSelectedList)
+            }
             title={
               "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
             }
@@ -181,7 +193,7 @@ export default function EditorForm({
           <button
             className={`${styles.buttonShowDeadline}`}
             type="button"
-            onClick={() => {
+            onClick={(): void => {
               setEnterDeadline(!enterDeadline);
               setCalendarVisible(!enterDeadline);
             }}
@@ -204,7 +216,7 @@ export default function EditorForm({
             />
             <p
               className={`${styles.stringDate} ${styles.input}`}
-              onClick={() => setCalendarVisible(!calendarVisible)}
+              onClick={(): void => setCalendarVisible(!calendarVisible)}
             >
               {date.toLocaleDateString("de-DE", {
                 day: "2-digit",
@@ -257,7 +269,9 @@ export default function EditorForm({
             className={`${styles.selectList} ${styles.input}`}
             id="list"
             name="list"
-            value={lists.find((list) => list.id === idSelectedList)?.title}
+            value={
+              lists.find((list: List) => list.id === idSelectedList)?.title
+            }
             onChange={handleChangeSelectedList}
           >
             {lists.map((list: List) => (

@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server'
- 
 export async function signIn(formData: FormData) {
   const username = formData.get('username');
   const password = formData.get('password');

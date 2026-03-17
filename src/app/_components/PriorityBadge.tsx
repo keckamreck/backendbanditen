@@ -1,6 +1,6 @@
 import { Priority } from '@/app/_models/task';
 import { getPriority, getColor } from '@/app/_lib/priority';
-import styles from './badge.module.css'
+import styles from './PriorityBadge.module.css'
 
 export interface PriorityBadgeProps {
   priority: Priority;

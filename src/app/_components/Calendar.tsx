@@ -10,7 +10,7 @@ import {
   ChangeEvent,
   Dispatch,
   SetStateAction,
-  useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -38,6 +38,53 @@ const months: string[] = [
 const minYear: number = -271821;
 const maxYear: number = 275760;
 
+function getDaysOfMonth(month: number, year: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function getDaysOfCurrentMonth(month: number, year: number): number[] {
+  const numberOfDays: number = getDaysOfMonth(month, year);
+  const daysCurrentMonth: number[] = [];
+  for (let i: number = 1; i <= numberOfDays; i++) {
+    daysCurrentMonth.push(i);
+  }
+  return daysCurrentMonth;
+}
+
+function getDaysOfPreviousMonth(month: number, year: number): number[] {
+  const numberOfDaysLastMonth: number = getDaysOfMonth(month - 1, year);
+  const daysLastMonth: number[] = [];
+  let firstDayCurrentMonth: number = new Date(year, month, 1).getDay();
+  if (firstDayCurrentMonth === 0) {
+    firstDayCurrentMonth = 7;
+  }
+  for (
+    let i: number = numberOfDaysLastMonth - (firstDayCurrentMonth - 2);
+    i <= numberOfDaysLastMonth;
+    i++
+  ) {
+    daysLastMonth.push(i);
+  }
+  return daysLastMonth;
+}
+
+function getDaysOfNextMonth(month: number, year: number): number[] {
+  const numberOfDaysNextMonth: number[] = [];
+  const numberOfDaysCurrentMonth: number = getDaysOfMonth(month, year);
+  let lastDayOfCurrentMonth: number = new Date(
+    year,
+    month,
+    numberOfDaysCurrentMonth,
+  ).getDay();
+  if (lastDayOfCurrentMonth === 0) {
+    lastDayOfCurrentMonth = 7;
+  }
+  for (let i: number = 1; i <= 7 - lastDayOfCurrentMonth; i++) {
+    numberOfDaysNextMonth.push(i);
+  }
+  return numberOfDaysNextMonth;
+}
+
 export default function Calendar({
   onDateChangeAction,
   dateToday,
@@ -46,68 +93,16 @@ export default function Calendar({
   const [year, setYear] = useState<number | "">(dateToday.getFullYear());
   const [month, setMonth] = useState<number>(dateToday.getMonth());
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
-  const [days, setDays] = useState<number[][]>([]);
 
-  useEffect((): void => {
-    getDays();
-  }, [year, month]);
-
-  function getDaysOfMonth(month: number, year: number): number {
-    return new Date(year, month + 1, 0).getDate();
-  }
-
-  function getDaysOfCurrentMonth(month: number, year: number): number[] {
-    const numberOfDays: number = getDaysOfMonth(month, year);
-    let daysCurrentMonth: number[] = [];
-    for (let i: number = 1; i <= numberOfDays; i++) {
-      daysCurrentMonth.push(i);
-    }
-    return daysCurrentMonth;
-  }
-
-  function getDaysOfPreviousMonth(month: number, year: number): number[] {
-    const numberOfDaysLastMonth: number = getDaysOfMonth(month - 1, year);
-    let daysLastMonth: number[] = [];
-    let firstDayCurrentMonth: number = new Date(year, month, 1).getDay();
-    if (firstDayCurrentMonth === 0) {
-      firstDayCurrentMonth = 7;
-    }
-    for (
-      let i: number = numberOfDaysLastMonth - (firstDayCurrentMonth - 2);
-      i <= numberOfDaysLastMonth;
-      i++
-    ) {
-      daysLastMonth.push(i);
-    }
-    return daysLastMonth;
-  }
-
-  function getDaysOfNextMonth(month: number, year: number): number[] {
-    let numberOfDaysNextMonth: number[] = [];
-    const numberOfDaysCurrentMonth: number = getDaysOfMonth(month, year);
-    let lastDayOfCurrentMonth: number = new Date(
-      year,
-      month,
-      numberOfDaysCurrentMonth,
-    ).getDay();
-    if (lastDayOfCurrentMonth === 0) {
-      lastDayOfCurrentMonth = 7;
-    }
-    for (let i: number = 1; i <= 7 - lastDayOfCurrentMonth; i++) {
-      numberOfDaysNextMonth.push(i);
-    }
-    return numberOfDaysNextMonth;
-  }
-
-  function getDays(): void {
-    let result: number[][] = [];
+  const days: number[][] = useMemo(() => {
+    const result: number[][] = [];
     if (year !== "" && year > minYear && year < maxYear) {
       result.push(getDaysOfPreviousMonth(month, year));
       result.push(getDaysOfCurrentMonth(month, year));
       result.push(getDaysOfNextMonth(month, year));
     }
-    setDays(result);
-  }
+    return result;
+  }, [year, month]);
 
   function goToPreviousMonth(): void {
     if (month === 0) {
