@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import styles from "./expandBtn.module.css";
+import styles from "./ExpandBtn.module.css";
 
 interface ExpandButtonProps {
   isExpanded: boolean;

@@ -19,12 +19,29 @@
   -webkit-tap-highlight-color: transparent;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  z-index: 20;
 }
 
 .sortButton:active {
   transform: scale(0.98);
   transition: transform 0.1s ease;
+}
+
+.sortButtonActive {
+  background-color: white;
+  border: 2px solid black;
+  padding: 0.5em 1em;
+  border-radius: 25px;
+  font-size: 1em;
+  color: orange;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 20;
 }
 
 .dropdownOverlay {
