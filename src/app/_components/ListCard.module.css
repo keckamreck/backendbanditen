@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 9em;
   width: 37vw;
+  max-width: 10em;
   padding: 1.25em;
   background: white;
   border-radius: 12px;
