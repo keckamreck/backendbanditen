@@ -33,7 +33,7 @@ let tasks: Task[] = [
     id: 3,
     title: "Milch kaufen",
     note: "- Haltbare Milch (1,5% Fett)\n- 2 Packungen\n- Sonderangebot nutzen",
-    deadline: new Date("2026-03-17T12:14:00"),
+    deadline: new Date("2026-03-20T12:14:00"),
     priority: Priority.High,
     listKey: 4,
     done: false,
