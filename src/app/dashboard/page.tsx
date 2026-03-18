@@ -30,7 +30,9 @@ export default function DashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [update, triggerUpdate] = useState(false);
 
-  const filteredLists = selectedCategory ? lists.filter((l) => l.category === selectedCategory) : lists;
+  const filteredLists = selectedCategory
+    ? lists.filter((l) => l.category === selectedCategory)
+    : lists;
   const favourites = filteredLists.filter((l) => l.isFavourite);
   const others = filteredLists.filter((l) => !l.isFavourite);
 
@@ -84,7 +86,13 @@ export default function DashboardPage() {
             const timeLeft =
               (dueTask.deadline.getTime() - timestamp.getTime()) /
               (1000 * 60 * 60 * 24);
-            setDueTaskTime(`In ${Math.ceil(timeLeft)} Tagen fällig`);
+            if (timeLeft < 1) {
+              setDueTaskTime(`Heute fällig`);
+            } else {
+              const time = dueTask.deadline.getDate() - timestamp.getDate();
+
+              setDueTaskTime(`In ${time} Tagen fällig`);
+            }
           }
         }
       }
