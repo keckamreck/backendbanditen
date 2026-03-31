@@ -21,14 +21,15 @@ export default function Page() {
     ),
   );
   const [lists] = useState<List[]>(getLists());
-  const [task] = useState<Task>(getTask(parseInt(id.id)));
-  const [initialTask] = useState<TaskFormattedForEditor>({
-    title: task.title,
-    deadline: task.deadline === null ? defaultDate : task.deadline,
-    idSelectedList: task.listKey,
-    selectedPriority: task.priority,
-    notes: task.note === null ? "" : task.note,
-    enterDeadline: task.deadline !== null,
+  const [initialTask] = useState<Task>(getTask(parseInt(id.id)));
+  const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
+    title: initialTask.title,
+    deadline:
+      initialTask.deadline === null ? defaultDate : initialTask.deadline,
+    idSelectedList: initialTask.listKey,
+    selectedPriority: initialTask.priority,
+    notes: initialTask.note === null ? "" : initialTask.note,
+    enterDeadline: initialTask.deadline !== null,
   });
 
   function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
@@ -39,7 +40,8 @@ export default function Page() {
         : null,
       listKey: editedTaskFromEditor.idSelectedList,
       priority: editedTaskFromEditor.selectedPriority,
-      note: editedTaskFromEditor.notes === "" ? "" : editedTaskFromEditor.notes,
+      note:
+        editedTaskFromEditor.notes === "" ? null : editedTaskFromEditor.notes,
     };
     const updatedFields: Partial<Task> = {};
 
@@ -49,16 +51,16 @@ export default function Page() {
     if (editedTask.deadline !== initialTask.deadline) {
       updatedFields.deadline = editedTask.deadline;
     }
-    if (editedTask.listKey !== initialTask.idSelectedList) {
+    if (editedTask.listKey !== initialTask.listKey) {
       updatedFields.listKey = editedTask.listKey;
     }
-    if (editedTask.priority !== initialTask.selectedPriority) {
+    if (editedTask.priority !== initialTask.priority) {
       updatedFields.priority = editedTask.priority;
     }
-    if (editedTask.note !== initialTask.notes) {
+    if (editedTask.note !== initialTask.note) {
       updatedFields.note = editedTask.note;
     }
-    editTask(task.id, updatedFields);
+    editTask(initialTask.id, updatedFields);
   }
 
   function handleDelete(): void {
@@ -67,8 +69,8 @@ export default function Page() {
 
   return (
     <EditorForm
-      initialValues={initialTask}
-      taskDone={task.done}
+      initialValues={initialTaskForEditor}
+      taskDone={initialTask.done}
       lists={lists}
       saveAction={handleSave}
       deleteButtonVisible={true}
