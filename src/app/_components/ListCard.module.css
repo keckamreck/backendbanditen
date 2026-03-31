@@ -1,13 +1,14 @@
 .card {
   display: flex;
   flex-direction: column;
-  width: 9em;
+  height: 9em;
+  width: 37vw;
+  max-width: 10em;
   padding: 1.25em;
   background: white;
   border-radius: 12px;
   border: 2px solid black;
   overflow: hidden;
-  aspect-ratio: 1/1;
   padding: 0.5em;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

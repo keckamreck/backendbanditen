@@ -17,10 +17,9 @@ export default function ArchivePage() {
   const id = Number(params.id);
   const list = getList(id);
   const [tasks, handleTasks] = useState(getDoneTasks(list.id));
-  const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
   const [showModal, setShowModal] = useState(false);
 
-  function showTasks(tasks: Task[], handler: (id: number) => void) {
+  function showTasks(tasks: Task[]) {
     return tasks.map((task) => {
       return (
       <TaskCard
@@ -28,16 +27,8 @@ export default function ArchivePage() {
         task={task}
         onPencilClick={() => router.push(`/editTask/${task.id}`)}
         onDoneClick={() => {
-          setFadingTaskIds((prev) => new Set(prev).add(task.id));
           editTaskDone(task.id, false);
           handleTasks(getDoneTasks(list.id));
-          setTimeout(() => {
-            setFadingTaskIds((prev) => {
-              const next = new Set(prev);
-              next.delete(task.id);
-              return next;
-            });
-          }, 1500);
         }}
       />
     );
@@ -47,14 +38,6 @@ export default function ArchivePage() {
   function handleDelete() {
     handleTasks([]);
     deleteTasks(list.id);
-  }
-
-  function handleDone(id: number) {
-    handleTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, done: !task.done } : task,
-      ),
-    );
   }
 
   function toggleModal() {
@@ -70,7 +53,7 @@ export default function ArchivePage() {
     <>
       <TopBarArchive title={list.title} id={list.id} />
       <div className={styles.tasks}>
-        {showTasks(tasks, handleDone)}
+        {showTasks(tasks)}
       </div>
       <DeleteButton className={styles.buttonDelete} onClick={toggleModal} />
       {showModal && (

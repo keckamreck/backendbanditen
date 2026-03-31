@@ -1,5 +1,3 @@
-import { getLists, getTasks } from "@/app/_lib/demo";
-
 export enum Priority {
   High,
   Medium,
