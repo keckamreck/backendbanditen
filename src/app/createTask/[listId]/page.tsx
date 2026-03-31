@@ -21,7 +21,7 @@ export default function Page() {
   );
   const [lists] = useState<List[]>(getLists());
   const [tasks] = useState<Task[]>(getTasks());
-  const [initialTask] = useState<TaskFormattedForEditor>({
+  const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
     title: "",
     enterDeadline: false,
     deadline: defaultDate,
@@ -43,7 +43,7 @@ export default function Page() {
       deadline: task.enterDeadline ? task.deadline : null,
       priority: task.selectedPriority,
       listKey: task.idSelectedList,
-      note: task.notes ?? "",
+      note: task.notes === "" ? null : task.notes,
       done: false,
     };
     addTask(result);
@@ -51,7 +51,7 @@ export default function Page() {
 
   return (
     <EditorForm
-      initialValues={initialTask}
+      initialValues={initialTaskForEditor}
       taskDone={false}
       lists={lists}
       saveAction={handleSave}
