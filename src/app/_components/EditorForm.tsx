@@ -58,25 +58,32 @@ export default function EditorForm({
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
 
-  function checkInputTime(input: string): string {
-    let newInput: string = input.replace(/\D/g, "");
-    if (newInput.length === 3) {
-      const newInputArray: string[] = newInput.split("");
-      if (newInputArray[0] == "0") {
-        newInput = `${newInputArray[1]}${newInputArray[2]}`;
+  function checkInputTime(input: string, oldValue: string): string {
+    let newValue: string = input.replace(/\D/g, "");
+    if (newValue.length === 3) {
+      const newValueArray: string[] = newValue.split("");
+      const oldValueArray = oldValue.split("");
+      if (
+        oldValueArray[0] === newValueArray[0] &&
+        oldValueArray[1] === newValueArray[1]
+      ) {
+        newValue = `${newValueArray[1]}${newValueArray[2]}`;
       } else {
-        newInput = `${newInputArray[0]}${newInputArray[1]}`;
+        newValue = `${newValueArray[0]}${newValueArray[1]}`;
       }
     }
-    if (Number.isNaN(parseInt(newInput))) {
+    if (Number.isNaN(parseInt(newValue))) {
       return "00";
     } else {
-      return newInput;
+      return newValue;
     }
   }
 
   function handleChangeHour(e: ChangeEvent<HTMLInputElement>): void {
-    let newHour: string = checkInputTime(e.target.value);
+    let newHour: string = checkInputTime(
+      e.target.value,
+      date.getHours().toString().padStart(2, "0"),
+    );
     if (parseInt(newHour) > 23) {
       newHour = "23";
     }
@@ -92,7 +99,10 @@ export default function EditorForm({
   }
 
   function handleChangeMinute(e: ChangeEvent<HTMLInputElement>): void {
-    let newMinute: string = checkInputTime(e.target.value);
+    let newMinute: string = checkInputTime(
+      e.target.value,
+      date.getMinutes().toString().padStart(2, "0"),
+    );
     if (parseInt(newMinute) > 59) {
       newMinute = "59";
     }
