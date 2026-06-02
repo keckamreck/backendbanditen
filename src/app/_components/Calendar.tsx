@@ -52,20 +52,20 @@ function getDaysOfCurrentMonth(month: number, year: number): number[] {
 }
 
 function getDaysOfPreviousMonth(month: number, year: number): number[] {
-  const numberOfDaysLastMonth: number = getDaysOfMonth(month - 1, year);
-  const daysLastMonth: number[] = [];
+  const numberOfDaysPreviousMonth: number = getDaysOfMonth(month - 1, year);
+  const daysPreviousMonth: number[] = [];
   let firstDayCurrentMonth: number = new Date(year, month, 1).getDay();
   if (firstDayCurrentMonth === 0) {
     firstDayCurrentMonth = 7;
   }
   for (
-    let i: number = numberOfDaysLastMonth - (firstDayCurrentMonth - 2);
-    i <= numberOfDaysLastMonth;
+    let i: number = numberOfDaysPreviousMonth - (firstDayCurrentMonth - 2);
+    i <= numberOfDaysPreviousMonth;
     i++
   ) {
-    daysLastMonth.push(i);
+    daysPreviousMonth.push(i);
   }
-  return daysLastMonth;
+  return daysPreviousMonth;
 }
 
 function getDaysOfNextMonth(month: number, year: number): number[] {
@@ -90,8 +90,8 @@ export default function Calendar({
   dateToday,
   initialDate,
 }: CalendarProps) {
-  const [year, setYear] = useState<number | "">(dateToday.getFullYear());
-  const [month, setMonth] = useState<number>(dateToday.getMonth());
+  const [year, setYear] = useState<number | "">(initialDate.getFullYear());
+  const [month, setMonth] = useState<number>(initialDate.getMonth());
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
 
   const days: number[][] = useMemo(() => {
