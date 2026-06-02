@@ -160,6 +160,9 @@ export default function EditorForm({
 
   function handleClickOnBackButton(): void {
     const currentValues: TaskFormattedForEditor = getCurrentValues();
+    if (!currentValues.enterDeadline) {
+      currentValues.deadline = initialValues.deadline;
+    }
     if (JSON.stringify(currentValues) === JSON.stringify(initialValues)) {
       handleBackNavigation(initialValues.idSelectedList);
     } else {
