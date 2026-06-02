@@ -58,6 +58,17 @@ export default function EditorForm({
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
 
+  function getCurrentValues(): TaskFormattedForEditor {
+    return {
+      title: title.trim(),
+      enterDeadline: enterDeadline,
+      deadline: date,
+      idSelectedList: idSelectedList,
+      selectedPriority: priority,
+      notes: notes.trim(),
+    };
+  }
+
   function checkInputTime(input: string, oldValue: string): string {
     let newValue: string = input.replace(/\D/g, "");
     if (newValue.length === 3) {
@@ -127,14 +138,7 @@ export default function EditorForm({
   }
 
   function saveTask(): void {
-    const currentValues: TaskFormattedForEditor = {
-      title: title.trim(),
-      enterDeadline: enterDeadline,
-      deadline: date,
-      idSelectedList: idSelectedList,
-      selectedPriority: priority,
-      notes: notes.trim(),
-    };
+    const currentValues: TaskFormattedForEditor = getCurrentValues();
     saveAction(currentValues);
     handleBackNavigation(idSelectedList);
   }
@@ -154,10 +158,19 @@ export default function EditorForm({
     }
   }
 
+  function handleClickOnBackButton(): void {
+    const currentValues: TaskFormattedForEditor = getCurrentValues();
+    if (JSON.stringify(currentValues) === JSON.stringify(initialValues)) {
+      handleBackNavigation(initialValues.idSelectedList);
+    } else {
+      setShowModalConfirmGoBack(true);
+    }
+  }
+
   return (
     <form
       className={styles.form}
-      onSubmit={(e: FormEvent<HTMLFormElement>) => {
+      onSubmit={(e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         saveTask();
       }}
@@ -166,7 +179,7 @@ export default function EditorForm({
         <button
           type="button"
           className={styles.buttonGoBack}
-          onClick={(): void => setShowModalConfirmGoBack(true)}
+          onClick={(): void => handleClickOnBackButton()}
         >
           <FontAwesomeIcon
             className={styles.iconGoBack}
@@ -253,7 +266,6 @@ export default function EditorForm({
               type="text"
               value={date.getHours().toString().padStart(2, "0")}
               maxLength={3}
-              pattern="[0-9]*"
               onChange={handleChangeHour}
             ></input>
             :
@@ -264,7 +276,6 @@ export default function EditorForm({
               type="text"
               value={date.getMinutes().toString().padStart(2, "0")}
               maxLength={3}
-              pattern="[0-9]*"
               onChange={handleChangeMinute}
             ></input>
             <span className={styles.textTime}>Uhr</span>
@@ -308,7 +319,7 @@ export default function EditorForm({
           name="notes"
           rows={4}
           value={notes}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
             setNotes(e.target.value)
           }
         ></textarea>

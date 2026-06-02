@@ -24,12 +24,12 @@ export default function Page() {
   const [initialTask] = useState<Task>(getTask(parseInt(id.id)));
   const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
     title: initialTask.title,
+    enterDeadline: initialTask.deadline !== null,
     deadline:
       initialTask.deadline === null ? defaultDate : initialTask.deadline,
     idSelectedList: initialTask.listKey,
     selectedPriority: initialTask.priority,
     notes: initialTask.note === null ? "" : initialTask.note,
-    enterDeadline: initialTask.deadline !== null,
   });
 
   function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
