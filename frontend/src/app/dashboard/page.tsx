@@ -78,20 +78,25 @@ export default function DashboardPage() {
         if (dueTask.deadline !== null) {
           console.log("timestamp:", timestamp);
           console.log("dueTask.deadline:", dueTask.deadline);
-          if (timestamp.getDay() === dueTask.deadline.getDay()) {
+          // if (timestamp.getFullYear() === dueTask.deadline.getFullYear()) {
+          // }
+          const timestampInDays = timestamp.getTime() / 86400000;
+          const dueTaskInDays = dueTask.deadline.getTime() / 86400000;
+
+          // console.log(timestamp.getTime());
+          if (timestampInDays === dueTaskInDays) {
             setDueTaskTime("Heute fällig");
-          } else if (timestamp.getDay() + 1 === dueTask.deadline.getDay()) {
+          } else if (
+            Math.floor(timestampInDays) + 1 ===
+            Math.floor(dueTaskInDays)
+          ) {
             setDueTaskTime("Morgen fällig");
           } else {
-            const timeLeft =
-              (dueTask.deadline.getTime() - timestamp.getTime()) /
-              (1000 * 60 * 60 * 24);
+            const timeLeft = Math.floor(dueTaskInDays - timestampInDays);
             if (timeLeft < 1) {
               setDueTaskTime(`Heute fällig`);
             } else {
-              const time = dueTask.deadline.getDate() - timestamp.getDate();
-
-              setDueTaskTime(`In ${time} Tagen fällig`);
+              setDueTaskTime(`In ${timeLeft} Tagen fällig`);
             }
           }
         }
