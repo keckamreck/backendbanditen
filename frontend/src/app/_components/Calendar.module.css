@@ -94,4 +94,13 @@
     padding-left: 5px;
 }
 
+.errorMessage {
+    padding-top: 30px;
+    font-size: 13px;
+    color: #f2a68e;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 
