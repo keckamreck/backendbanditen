@@ -217,12 +217,6 @@ export default function Calendar({
     }
   }
 
-  function checkInputYear(e: ChangeEvent<HTMLInputElement>): void {
-    if (e.target.value === "") {
-      setYear(dateToday.getFullYear());
-    }
-  }
-
   return (
     <div>
       <div className={styles.headerComponent}>
@@ -251,31 +245,34 @@ export default function Calendar({
           className={`${styles.selectShownMonth} ${styles.selectYear}`}
           value={year}
           onChange={handleChangeYear}
-          onBlur={checkInputYear}
         ></input>
         <button type="button" className={styles.button} onClick={goToNextMonth}>
           <FontAwesomeIcon size="1x" icon={faChevronRight} color="black" />
         </button>
       </div>
-      <div className={styles.calendar}>
-        {weekday.map((day: string) => (
-          <p className={styles.headerWeekdays} key={day}>
-            {day}
-          </p>
-        ))}
-        {days?.map((item: number[], index: number) =>
-          item.map((day: number) => (
-            <button
-              type="button"
-              className={getDayClassName(index, day)}
-              key={`${index}-${day}`}
-              onClick={(): void => handleChangeDeadline(day, index)}
-            >
+      {days.length === 0 ? (
+        <p className={styles.errorMessage}>Bitte ein gültiges Jahr eingeben</p>
+      ) : (
+        <div className={styles.calendar}>
+          {weekday.map((day: string) => (
+            <p className={styles.headerWeekdays} key={day}>
               {day}
-            </button>
-          )),
-        )}
-      </div>
+            </p>
+          ))}
+          {days?.map((item: number[], index: number) =>
+            item.map((day: number) => (
+              <button
+                type="button"
+                className={getDayClassName(index, day)}
+                key={`${index}-${day}`}
+                onClick={(): void => handleChangeDeadline(day, index)}
+              >
+                {day}
+              </button>
+            )),
+          )}
+        </div>
+      )}
     </div>
   );
 }
