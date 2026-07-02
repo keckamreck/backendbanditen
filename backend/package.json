@@ -1,7 +1,9 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "tsx -r dotenv/config src/app-router.ts"
+    "dev": "tsx -r dotenv/config src/app-router.ts",
+    "build": "npx tsc",
+    "start": "node -r dotenv/config dist/app-router.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
@@ -15,7 +17,6 @@
     "drizzle-kit": "^0.31.10",
     "prettier": "^3.9.4",
     "tsx": "^4.22.5",
-    "typescript": "^6.0.3",
-    "vercel": "^54.18.7"
+    "typescript": "^6.0.3"
   }
 }
