@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, uuid, text, boolean, date, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, text, boolean, date, unique, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['high', 'medium', 'low'])
@@ -49,7 +49,11 @@ export const user = pgTable("user", {
 	id: uuid().primaryKey().notNull(),
 	username: text().notNull(),
 	password: text().notNull(),
-});
+	email: text().notNull(),
+}, (table) => [
+	unique("user_username_key").on(table.username),
+	unique("user_email_key").on(table.email),
+]);
 
 export const category = pgTable("category", {
 	id: uuid().primaryKey().notNull(),
