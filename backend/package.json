@@ -1,9 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "tsx -r dotenv/config src/app-router.ts",
-    "build": "next build",
-    "start": "next start"
+    "dev": "tsx -r dotenv/config src/app-router.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
