@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "tsx -r dotenv/config src/app-router.ts",
+    "dev": "tsx -r dotenv/config src/app.ts",
     "build": "npx tsc",
     "start": "node -r dotenv/config dist/app-router.js"
   },

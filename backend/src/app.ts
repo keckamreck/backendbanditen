@@ -19,3 +19,4 @@ app.post("/users", (request, response) => {
 app.listen(8097, () => {
   console.log("Server gestartet");
 });
+export default app;
