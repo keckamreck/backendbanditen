@@ -2,8 +2,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx -r dotenv/config src/app.ts",
-    "build": "npx tsc",
-    "start": "node -r dotenv/config dist/app-router.js"
+    "build": "npx tsc && echo '{\"type\": \"module\"}' > dist/package.json",
+    "start": "node -r dotenv/config dist/app.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
