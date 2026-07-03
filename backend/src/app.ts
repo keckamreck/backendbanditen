@@ -1,7 +1,7 @@
 //@ts-ignore
 import express from "express";
 //@ts-ignore
-import { insertData } from "./index.js";
+import { insertData } from "./repositories/index.js";
 
 const app = express();
 app.use(express.json());

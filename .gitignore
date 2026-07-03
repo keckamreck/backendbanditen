@@ -47,3 +47,4 @@ frontend/next-env.d.ts
 
 # Provisional documentation
 /docs
+/backend/dist/
