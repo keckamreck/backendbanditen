@@ -8,12 +8,10 @@ router.post("/", (request, response) => {
     id: "",
     username: request.body.username,
     password: request.body.password,
-    email: request.body.email
-  }
+    email: request.body.email,
+  };
 
-  users.createData(
-    data
-  ).then((result: any) => {
+  users.createData(data).then((result: any) => {
     response.status(200);
   });
 });
@@ -21,9 +19,7 @@ router.post("/", (request, response) => {
 router.get("/:id", (request, response) => {
   const data = request.params.id;
 
-  users.readData(
-    data,
-  ).then((result: any) => {
+  users.readData(data).then((result: any) => {
     response.status(200).json(result);
   });
 });
@@ -33,12 +29,10 @@ router.patch("/:id", (request, response) => {
     id: request.params.id,
     username: request.body.username,
     password: request.body.password,
-    email: request.body.email
-  }
+    email: request.body.email,
+  };
 
-  users.updateData(
-    data
-  ).then((result: any) => {
+  users.updateData(data).then((result: any) => {
     response.status(200);
   });
 });
@@ -46,9 +40,7 @@ router.patch("/:id", (request, response) => {
 router.delete("/:id", (request, response) => {
   const data = request.params.id;
 
-  users.deleteData(
-    data,
-  ).then((result: any) => {
+  users.deleteData(data).then((result: any) => {
     response.status(200);
   });
 });
