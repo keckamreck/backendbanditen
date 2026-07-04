@@ -1,20 +1,10 @@
 //@ts-ignore
 import express from "express";
-//@ts-ignore
-import { insertData } from "./repositories/index.js";
+import { router as userRouter } from "./routers/user-router.js";
 
 const app = express();
 app.use(express.json());
-
-app.post("/users", (request, response) => {
-  insertData(
-    request.body.username,
-    request.body.password,
-    request.body.email,
-  ).then((result: any) => {
-    response.status(200).json(result);
-  });
-});
+app.use("/users", userRouter);
 
 app.listen(8097, () => {
   console.log("Server gestartet");
