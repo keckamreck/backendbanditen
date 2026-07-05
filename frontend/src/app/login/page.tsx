@@ -2,22 +2,25 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { useRouter } from 'next/navigation';
-import { signIn } from '@/app/_lib/auth';
-import styles from './page.module.css'
+import { authClient } from "@/app/_lib/auth-client";
+import styles from './page.module.css';
 
 export default function Login() {
-  const router = useRouter();
-
   async function verifyData(formData: FormData) {
-    const response = await signIn(formData)
+    const emailInput = formData.get('username') as string;
+    const passwordInput = formData.get('password') as string;
+    
+    const { data, error } = await authClient.signIn.email({
+        email: emailInput,
+        password: passwordInput,
+        callbackURL: "/dashboard",
+        rememberMe: false
+    }, {
+      //callbacks
+    })
 
-    if (response.ok) {
-      router.push('/dashboard')
-      alert("Login successful!");
-    } else {
-      alert("WRONG PASSWORD!");
-    }
+    const testtt = 0;
+
   }
 
   return (
