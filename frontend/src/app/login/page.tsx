@@ -1,29 +1,32 @@
-'use client';
+"use client";
 
-import { redirect } from 'next/navigation';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { redirect } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { authClient } from "@/app/_lib/auth-client";
-import styles from './page.module.css';
+import styles from "./page.module.css";
 
 export default function Login() {
   async function processForm(formData: FormData) {
-    const usernameInput = formData.get('username') as string;
-    const passwordInput = formData.get('password') as string;
-    
-    const { data, error } = await authClient.signIn.username({
+    const usernameInput = formData.get("username") as string;
+    const passwordInput = formData.get("password") as string;
+
+    const { data, error } = await authClient.signIn.username(
+      {
         username: usernameInput,
         password: passwordInput,
         callbackURL: "/dashboard",
-        rememberMe: false
-    }, {
+        rememberMe: false,
+      },
+      {
         onSuccess: (ctx) => {
-            redirect('/dashboard');
+          redirect("/dashboard");
         },
         onError: (ctx) => {
-            alert(ctx.error.message);
+          alert(ctx.error.message);
         },
-    });
+      },
+    );
   }
 
   function showRegister() {
@@ -36,18 +39,31 @@ export default function Login() {
         <form action={processForm}>
           <h1>Login</h1>
           <div className={styles.icon}>
-            <FontAwesomeIcon size="6x" icon={faCircleUser}/>
+            <FontAwesomeIcon size="6x" icon={faCircleUser} />
           </div>
           <div className={styles.inputPair}>
             <span>Username</span>
-            <input type="text" placeholder="meinHundGniesbert" name="username" required />
+            <input
+              type="text"
+              placeholder="meinHundGniesbert"
+              name="username"
+              required
+            />
           </div>
           <div className={styles.inputPair}>
             <span>Password</span>
-            <input type="password" placeholder="**********" name="password" minLength={8}required />
+            <input
+              type="password"
+              placeholder="**********"
+              name="password"
+              minLength={8}
+              required
+            />
           </div>
           <button type="submit">Login</button>
-          <a className={styles.new} onClick={showRegister}>Create a new account</a>
+          <a className={styles.new} onClick={showRegister}>
+            Create a new account
+          </a>
         </form>
       </div>
     </div>
