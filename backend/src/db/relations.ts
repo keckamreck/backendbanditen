@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm/relations";
 //@ts-ignore
-import { user, list, category, task } from "./schema";
+import { user, list, category, task, session, account } from "./schema";
 
 export const listRelations = relations(list, ({ one, many }) => ({
   user: one(user, {
@@ -18,6 +18,8 @@ export const userRelations = relations(user, ({ many }) => ({
   lists: many(list),
   tasks: many(task),
   categories: many(category),
+  sessions: many(session),
+  accounts: many(account),
 }));
 
 export const categoryRelations = relations(category, ({ one, many }) => ({
@@ -35,6 +37,20 @@ export const taskRelations = relations(task, ({ one }) => ({
   }),
   user: one(user, {
     fields: [task.userId],
+    references: [user.id],
+  }),
+}));
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
+}));
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
     references: [user.id],
   }),
 }));
