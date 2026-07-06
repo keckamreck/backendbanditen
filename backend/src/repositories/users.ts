@@ -5,17 +5,16 @@ import { eq } from "drizzle-orm";
 export interface User {
   id: string;
   username: string;
-  password: string;
   email: string;
 }
 
 export async function createData(user: User) {
-  await db.insert(users).values({
-    id: crypto.randomUUID(),
-    username: user.username,
-    password: user.password,
-    email: user.email,
-  });
+  //await db.insert(users).values({
+  //  id: crypto.randomUUID(),
+  //  username: user.username,
+  //  password: user.password,
+  //  email: user.email,
+  //});
 }
 
 export async function readData(id: string) {
@@ -31,7 +30,6 @@ export async function updateData(user: User) {
     .update(users)
     .set({
       username: user.username,
-      password: user.password,
       email: user.email,
     })
     .where(eq(users.id, user.id));
