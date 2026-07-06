@@ -1,20 +1,12 @@
-//@ts-ignore
 import express from "express";
-//@ts-ignore
-import { insertData } from "./repositories/index.js";
+
+import { router as usersRouter } from "./routers/users-router.js";
+import { router as userContextRouter } from "./routers/user-context-router.js";
 
 const app = express();
 app.use(express.json());
-
-app.post("/users", (request, response) => {
-  insertData(
-    request.body.username,
-    request.body.password,
-    request.body.email,
-  ).then((result: any) => {
-    response.status(200).json(result);
-  });
-});
+app.use("/users", usersRouter);
+app.use("/users/:userId", userContextRouter);
 
 app.listen(8097, () => {
   console.log("Server gestartet");
