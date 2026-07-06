@@ -1,8 +1,7 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, uuid } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-//import { username } from "better-auth/plugins"
+import { username } from "better-auth/plugins"
 import { db } from "./repositories/db.js";
-import * as schema from "./db/schema.js";
 
 export const auth = betterAuth({
     disableTrustedOriginsCors: true,
@@ -10,12 +9,16 @@ export const auth = betterAuth({
     baseURL: "http://localhost:8097/auth",
     database: drizzleAdapter(db, {
         provider: "pg",
-        schema: { 
-            ...schema, 
-            user: schema.user,
-        }, 
     }),
+    advanced: {
+        database: {
+            generateId: "uuid"
+        }
+    },
     emailAndPassword: { 
         enabled: true, 
     },
+    plugins: [ 
+        username() 
+    ] 
 });
