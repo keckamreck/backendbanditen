@@ -3,7 +3,6 @@
 import { redirect } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
-import { ChevronButton } from '../_components/ButtonsIcon';
 import { authClient } from "@/app/_lib/auth-client";
 import styles from './page.module.css';
 
@@ -26,6 +25,7 @@ export default function Register() {
             //show loading
         },
         onSuccess: (ctx) => {
+            alert("Account successfully created! YAY");
             redirect('/dashboard');
         },
         onError: (ctx) => {

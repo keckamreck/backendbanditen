@@ -7,7 +7,7 @@ import { authClient } from "@/app/_lib/auth-client";
 import styles from './page.module.css';
 
 export default function Login() {
-  async function verifyData(formData: FormData) {
+  async function processForm(formData: FormData) {
     const usernameInput = formData.get('username') as string;
     const passwordInput = formData.get('password') as string;
     
@@ -33,7 +33,7 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <form action={verifyData}>
+        <form action={processForm}>
           <h1>Login</h1>
           <div className={styles.icon}>
             <FontAwesomeIcon size="6x" icon={faCircleUser}/>
