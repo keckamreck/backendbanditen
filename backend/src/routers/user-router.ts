@@ -7,7 +7,6 @@ router.post("/", (request, response) => {
   const data: User = {
     id: "",
     username: request.body.username,
-    password: request.body.password,
     email: request.body.email,
   };
 
@@ -28,7 +27,6 @@ router.patch("/:id", (request, response) => {
   const data: User = {
     id: request.params.id,
     username: request.body.username,
-    password: request.body.password,
     email: request.body.email,
   };
 
