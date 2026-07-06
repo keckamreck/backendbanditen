@@ -1,0 +1,104 @@
+body {
+  background-color: #e9ccaa;
+}
+
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 4em 2em 3em 2em;
+}
+
+.chevron {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
+
+.chevron > button {
+  width: 6em;
+  height: 2.5em;
+  border: none;
+  color: white;
+  background-color: #c49965;
+}
+
+.card form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.card h1 {
+  font-size: 1.9em;
+  margin-top: -0.3em;
+  margin-bottom: 0.7em;
+}
+
+.card .icon {
+  color: rgb(219, 219, 219);
+  margin-bottom: 2em;
+}
+
+.card .inputPair {
+  display: flex;
+  flex-direction: column;
+}
+
+.card .inputTerms {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1em;
+  width: 17em;
+}
+
+.inputTerms input {
+  text-align: left;
+}
+
+.inputTerms label {
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  margin-left: 0.5em;
+  color: #aa6a1c;
+}
+
+.inputPair span {
+  text-align: left;
+  font-size: 0.8em;
+  color: #aa6a1c;
+}
+
+.inputPair input[type=text] {
+  width: 19em;
+  height: 2.5em;
+  padding: 4px 7px 4px 7px;
+  margin-bottom: 0.5em;
+  background-color: rgb(219, 219, 219);
+  border: none;
+}
+
+.inputPair > input[type=password] {
+  width: 19em;
+  height: 2.5em;
+  padding: 4px 7px 4px 7px;
+  background-color: rgb(219, 219, 219);
+  border: none;
+}
+
+.card button[type=submit] {
+  width: 20em;
+  height: 3em;
+  margin: 5em 0 0 0;
+  border: none;
+  color: white;
+  background-color: #c49965;
+}
