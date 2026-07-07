@@ -8,14 +8,15 @@ import { redirect } from "next/navigation";
 
 
 export function Logout() {
-  async function zongTest() {
+  async function handleZong() {
     const { data: session } = await authClient.getSession();
-    console.log(session);
+    alert(JSON.stringify(session, null, " "));
   }
   async function handleLogout() {
     await authClient.signOut({
     fetchOptions: {
       onSuccess: () => {
+        alert("Redirecting!");
         redirect('/login');
       },
     },
@@ -43,9 +44,9 @@ export function Logout() {
       className={styles.modal}>
       <div className={styles.content}>
         <CloseButton onClick={handleClose} className={styles.closeButton} />
-        <div className={styles.modalTitle}>Session</div>
+        <div className={styles.modalTitle}>Session Management</div>
         <div className={styles.actionContainer}>
-          <button onClick={zongTest} className={styles.actionButton}>Zong</button>
+          <button onClick={handleZong} className={styles.actionButton}>Zong</button>
           <button onClick={handleLogout} className={styles.actionButton}>Logout</button>
         </div>
       </div>
