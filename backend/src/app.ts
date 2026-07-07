@@ -13,7 +13,8 @@ var corsOptions = {
   allowedHeaders: 'Content-Type, Authorization',
 };
 
-app.all("/auth/*splat", cors(corsOptions), toNodeHandler(auth));
+app.use(cors(corsOptions));
+app.all("/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 app.use("/users", userRouter);
 
