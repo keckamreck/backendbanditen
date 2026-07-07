@@ -36,22 +36,20 @@ export function Logout() {
   }
 
   return (
-    <div>
-      <span
-      style={{ display: isBurger ? "flex" : "none" }}
-      className={styles.roundBackground}>
-        <BurgerButton onClick={handleOpen} ></BurgerButton>
-      </span>
-      
+    <div className={styles.burgerMenu}>
+      <BurgerButton onClick={handleOpen} className={styles.burgerButton} />
       <div
-       style={{ display: isMenu ? "flex" : "none" }}
+       style={{ display: isMenu ? "block" : "none" }}
       className={styles.modal}>
       <div className={styles.content}>
         <CloseButton onClick={handleClose} className={styles.closeButton} />
-        <button onClick={zongTest}>ZONG</button>
-        <button onClick={handleLogout}>LOGOUT</button>
+        <div className={styles.modalTitle}>Session</div>
+        <div className={styles.actionContainer}>
+          <button onClick={zongTest} className={styles.actionButton}>Zong</button>
+          <button onClick={handleLogout} className={styles.actionButton}>Logout</button>
+        </div>
       </div>
-    </div>
+      </div>
     </div>
   );
 }
