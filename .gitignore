@@ -44,6 +44,7 @@ frontend/next-env.d.ts
 # IDE
 /.idea
 /.vscode
+/*/.vscode
 
 # Provisional documentation
 /docs
