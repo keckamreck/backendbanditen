@@ -16,6 +16,7 @@ import { Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
 import CategorySort from "../_components/CategorySort";
+import { Logout } from "../_components/logout";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -140,11 +141,13 @@ export default function DashboardPage() {
       )}
       <main className={styles.main}>
         <div className={styles.pageContainer}>
+          
           {/* Header mit Suchleiste links und Add-Button rechts */}
           <div className={styles.header}>
             <div className={styles.searchSection}>
               <SearchBar />
             </div>
+            
             <div className={styles.addButtonSection}>
               <button
                 title="addList"
@@ -154,6 +157,7 @@ export default function DashboardPage() {
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div>
+            <Logout />
           </div>
 
           {/* Search Dropdown */}
@@ -181,7 +185,6 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-
         {/* Section for due Task */}
         <DueTaskSection />
         <CategorySort onCategorySelect={setSelectedCategory} />
