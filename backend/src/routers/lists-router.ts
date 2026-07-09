@@ -33,12 +33,21 @@ router.get("", async (req, res) => {
   } else {
     const search = query.data;
     console.log(search);
-    list.getListsBySearch(search).then((result) => {
-      res.status(200).json(result);
-    });
+    try {
+      //@ts-ignore
+      list.getListsBySearch(search, req.params.userId).then((result) => {
+        //@ts-ignore
+        if (result.error != undefined) {
+          throw Error("Error by getting lists.");
+        }
+        res.status(200).json(result);
+      });
+    } catch (err) {
+      res.status(500);
+    }
   }
 });
-//////////////////Not my Task blow////////////////////////
+
 router.delete("/:id", async (req, res) => {
   await list.deleteListById(req.params.id).then((result) => {
     res.status(200).json(result);

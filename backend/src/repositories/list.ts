@@ -1,6 +1,6 @@
 import { db } from "./db.js";
-import { list as lists } from "../db/schema.js";
-import { eq, ilike } from "drizzle-orm";
+import { list as lists, user as users } from "../db/schema.js";
+import { eq, ilike, and } from "drizzle-orm";
 
 export interface List {
   id: string;
@@ -17,29 +17,42 @@ export async function newList(list: List) {
   };
 }
 
-export async function getListsBySearch(query: any) {
+export async function getListsBySearch(query: any, userId: string) {
   if (query.search != undefined) {
     console.log(query.search);
     return db
       .select()
       .from(lists)
-      .where(ilike(lists.title, `%${query.search}%`));
+      .where(
+        and(ilike(lists.title, `%${query.search}%`), eq(lists.userId, userId)),
+      );
   }
   if (query.categoryId != "null" && query.categoryId != undefined) {
     return db
       .select()
       .from(lists)
-      .where(eq(lists.categoryId, query.categoryId));
+      .where(
+        and(eq(lists.categoryId, query.categoryId), eq(lists.userId, userId)),
+      );
   }
-  console.log("query");
+  console.log(`query+ ${Object.keys(query).length}`);
   if (query.isFavorite != undefined) {
     console.log("test");
     return db
       .select()
       .from(lists)
-      .where(eq(lists.isFavorite, query.isFavorite));
+      .where(
+        and(eq(lists.isFavorite, query.isFavorite), eq(lists.userId, userId)),
+      );
+  }
+  if (Object.keys(query).length === 0) {
+    console.log("no keys");
+    return db.select().from(lists).where(eq(lists.userId, userId));
   } else {
-    return {};
+    console.log("Fail");
+    return {
+      error: "invalid search request",
+    };
   }
 }
 

@@ -1,8 +1,8 @@
 import { db } from "./db.js";
 import { task as tasks } from "../db/schema.js";
-import { desc, asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
-export async function getOneTask(query: any) {
+export async function getOneTask(query: any, userId: string) {
   if (
     query.done == false &&
     query.sort == "deadline" &&
@@ -12,6 +12,7 @@ export async function getOneTask(query: any) {
     return db
       .select()
       .from(tasks)
+      .where(eq(tasks.userId, userId))
       .orderBy(asc(tasks.deadline))
       .limit(query.limit);
   } else {

@@ -1,17 +1,15 @@
 import express from "express";
 import * as task from "../repositories/task.js";
 import { z } from "zod";
-import { boolean } from "drizzle-orm/pg-core";
-import { priority } from "../db/schema.js";
 
 export const router = express.Router({ mergeParams: true });
 
 router.get("", async (req, res) => {
-  console.log("Going in");
+  // console.log("Going in");
   const querySchema = z.object({
     done: z.stringbool().optional(),
-    sort: z.enum(["deadline"]).optional(),
-    direction: z.enum(["desc", "asc"]).optional(),
+    sort: z.string("deadline").optional(),
+    direction: z.string("asc").optional(),
     limit: z.coerce.number().optional(),
   });
 
@@ -23,7 +21,8 @@ router.get("", async (req, res) => {
     console.log(search);
     try {
       if (search.limit === 1) {
-        const result = await task.getOneTask(search);
+        //@ts-ignore
+        const result = await task.getOneTask(search, req.params.userId);
         return res.status(200).json(result);
       }
       res.status(200).json(search);
