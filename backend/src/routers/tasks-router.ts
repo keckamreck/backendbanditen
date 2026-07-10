@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Request } from "express";
 import * as task from "../repositories/task.js";
 import { z } from "zod";
 
 export const router = express.Router({ mergeParams: true });
 
-router.get("", async (req, res) => {
+router.get("", async (req: Request<{ userId: string }>, res) => {
   // console.log("Going in");
   const querySchema = z.object({
     done: z.stringbool().optional(),
@@ -21,7 +21,6 @@ router.get("", async (req, res) => {
     console.log(search);
     try {
       if (search.limit === 1) {
-        //@ts-ignore
         const result = await task.getOneTask(search, req.params.userId);
         return res.status(200).json(result);
       }
