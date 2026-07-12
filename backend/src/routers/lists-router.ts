@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { getListById } from "../repositories/list.js";
+import { getListById, deleteListById } from "../repositories/list.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -18,4 +18,13 @@ router.get("/:id", async (req: Request<ListParms>, res: Response) => {
     return res.status(404).json({ message: "no list found" });
   }
   res.json(list);
+});
+
+router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
+  const { id, userId } = req.params;
+  const delist = await deleteListById(id, userId);
+  if (!delist) {
+    return res.status(404).json({ message: "no list found" });
+  }
+  res.json(delist);
 });
