@@ -1,6 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-//@ts-ignore
-import { user, list, category, task } from "./schema";
+import { user, list, category, task } from "./schema.js";
 
 export const listRelations = relations(list, ({ one, many }) => ({
   user: one(user, {
