@@ -1,5 +1,10 @@
 import express, { Request, Response } from "express";
-import { getListById, deleteListById } from "../repositories/list.js";
+import {
+  type ListUpdateInput,
+  getListById,
+  deleteListById,
+  updateListById,
+} from "../repositories/list.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -18,6 +23,16 @@ router.get("/:id", async (req: Request<ListParms>, res: Response) => {
     return res.status(404).json({ message: "no list found" });
   }
   res.json(list);
+});
+
+router.patch("/:id", async (req: Request<ListParms>, res: Response) => {
+  const { id, userId } = req.params;
+  const data: ListUpdateInput = req.body;
+  const upList = await updateListById(id, userId, data);
+  if (!upList) {
+    return res.status(404).json({ message: "no list found" });
+  }
+  res.json(upList);
 });
 
 router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
