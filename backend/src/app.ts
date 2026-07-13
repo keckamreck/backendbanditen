@@ -8,7 +8,7 @@ import { auth } from "./auth.js";
 
 const app = express();
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://backendbanditen-frontend.vercel.app/'],
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: 'Content-Type, Authorization',
