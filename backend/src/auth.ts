@@ -5,7 +5,7 @@ import { db } from "./repositories/db.js";
 
 export const auth = betterAuth({
   disableTrustedOriginsCors: true,
-  trustedOrigins: ["https://backendbanditen-frontend.vercel.app"],
+  trustedOrigins: ['http://localhost:3000', 'https://backendbanditen-frontend.vercel.app/'],
   baseURL: "https://backendbanditen-backend.vercel.app/auth",
   database: drizzleAdapter(db, {
     provider: "pg",
