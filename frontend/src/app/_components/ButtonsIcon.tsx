@@ -6,6 +6,7 @@ import {
   faBoxArchive,
   faChevronLeft,
   faXmark,
+  faBurger,
 } from "@fortawesome/free-solid-svg-icons";
 import { ButtonHTMLAttributes } from "react";
 import styles from "./ButtonsIcon.module.css";
@@ -53,6 +54,19 @@ export function CloseButton(props: ButtonProps) {
       className={`${styles.button} ${props.className}`}
     >
       <FontAwesomeIcon color="black" size="2x" icon={faXmark} />
+    </button>
+  );
+}
+
+export function BurgerButton(props: ButtonProps) {
+  return (
+    <button
+      id="burger-button"
+      type="button"
+      onClick={props.onClick}
+      className={`${styles.button} ${props.className}`}
+    >
+      <FontAwesomeIcon color="black" size="2x" icon={faBurger} />
     </button>
   );
 }

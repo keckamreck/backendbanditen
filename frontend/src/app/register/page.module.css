@@ -17,6 +17,20 @@ body {
   padding: 4em 2em 3em 2em;
 }
 
+.chevron {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}
+
+.chevron > button {
+  width: 6em;
+  height: 2.5em;
+  border: none;
+  color: white;
+  background-color: #c49965;
+}
+
 .card form {
   display: flex;
   flex-direction: column;
@@ -39,6 +53,24 @@ body {
 .card .inputPair {
   display: flex;
   flex-direction: column;
+}
+
+.card .inputTerms {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1em;
+  width: 17em;
+}
+
+.inputTerms input {
+  text-align: left;
+}
+
+.inputTerms label {
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  margin-left: 0.5em;
+  color: #aa6a1c;
 }
 
 .inputPair span {
@@ -71,10 +103,4 @@ body {
   border: none;
   color: white;
   background-color: #c49965;
-}
-
-.new {
-  font-size: 0.9em;
-  padding-top: 1em;
-  color: gray;
 }

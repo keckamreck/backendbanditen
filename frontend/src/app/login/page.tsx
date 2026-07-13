@@ -1,36 +1,69 @@
-'use client';
+"use client";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import { useRouter } from 'next/navigation';
-import { signIn } from '@/app/_lib/auth';
-import styles from './page.module.css'
+import { redirect } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { authClient } from "@/app/_lib/auth-client";
+import styles from "./page.module.css";
 
 export default function Login() {
-  const router = useRouter();
+  async function processForm(formData: FormData) {
+    const usernameInput = formData.get("username") as string;
+    const passwordInput = formData.get("password") as string;
 
-  async function verifyData(formData: FormData) {
-    const response = await signIn(formData)
+    const { data, error } = await authClient.signIn.username(
+      {
+        username: usernameInput,
+        password: passwordInput,
+        callbackURL: "/dashboard",
+        rememberMe: false,
+      },
+      {
+        onSuccess: (ctx) => {
+          redirect("/dashboard");
+        },
+        onError: (ctx) => {
+          alert(ctx.error.message);
+        },
+      },
+    );
+  }
 
-    if (response.ok) {
-      router.push('/dashboard')
-      alert("Login successful!");
-    } else {
-      alert("WRONG PASSWORD!");
-    }
+  function showRegister() {
+    redirect("/register");
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <form action={verifyData}>
-          <h1>BackendBanditen</h1>
+        <form action={processForm}>
+          <h1>Login</h1>
           <div className={styles.icon}>
-            <FontAwesomeIcon size="6x" icon={faCircleUser}/>
+            <FontAwesomeIcon size="6x" icon={faCircleUser} />
           </div>
-          <input type="text" placeholder="Username" name="username" required />
-          <input type="password" placeholder="Password" name="password" required />
+          <div className={styles.inputPair}>
+            <span>Username</span>
+            <input
+              type="text"
+              placeholder="meinHundGniesbert"
+              name="username"
+              required
+            />
+          </div>
+          <div className={styles.inputPair}>
+            <span>Password</span>
+            <input
+              type="password"
+              placeholder="**********"
+              name="password"
+              minLength={8}
+              required
+            />
+          </div>
           <button type="submit">Login</button>
+          <a className={styles.new} onClick={showRegister}>
+            Create a new account
+          </a>
         </form>
       </div>
     </div>
