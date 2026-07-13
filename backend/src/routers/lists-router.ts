@@ -1,0 +1,123 @@
+import express from "express";
+import { List } from "../repositories/list.js";
+import * as list from "../repositories/list.js";
+import { z } from "zod";
+import { Request, Response } from "express";
+import {
+  type ListUpdateInput,
+  getListById,
+  deleteListById,
+  updateListById,
+} from "../repositories/list.js";
+
+import { getTasksForList } from "../repositories/task.js";
+
+export const router = express.Router({ mergeParams: true });
+
+router.post("/", async (req, res) => {
+  const data: List = {
+    id: crypto.randomUUID(),
+    title: req.body.title,
+    isFavorite: req.body.isFavorite,
+    userId: req.body.userId,
+    categoryId: req.body.categoryId ?? null,
+  };
+
+  await list.newList(data).then((result) => {
+    res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
+  });
+});
+
+router.get("", async (req, res) => {
+  const querySchema = z.object({
+    search: z.string().optional(),
+    isFavorite: z.stringbool().optional(),
+    categoryId: z.string().optional(),
+  });
+
+  const query = querySchema.safeParse(req.query);
+  if (!query.success) {
+    res.status(400);
+  } else {
+    const search = query.data;
+    console.log(search);
+    try {
+      //@ts-ignore
+      list.getListsBySearch(search, req.params.userId).then((result) => {
+        //@ts-ignore
+        if (result.error != undefined) {
+          throw Error("Error by getting lists.");
+        }
+        res.status(200).json(result);
+      });
+    } catch (err) {
+      res.status(500);
+    }
+  }
+});
+
+interface ListParms {
+  id: string;
+  title: string;
+  isFavorite: boolean;
+  userId: string;
+  categoryId: string;
+}
+
+interface TaskQuery {
+  id: string;
+  title?: string;
+  deadline?: string;
+  priority?: number;
+  listId: string;
+  userId: string;
+  done?: string;
+  sort?: string;
+}
+
+router.get("/:listId", async (req: Request<ListParms>, res: Response) => {
+  const { id, userId } = req.params;
+  const list = await getListById(id, userId);
+  if (!list) {
+    return res.status(404).json({ message: "no list found" });
+  }
+  res.json(list);
+});
+
+router.patch("/:listId", async (req: Request<ListParms>, res: Response) => {
+  const { id, userId } = req.params;
+  const data: ListUpdateInput = req.body;
+  const upList = await updateListById(id, userId, data);
+  if (!upList) {
+    return res.status(404).json({ message: "no list found" });
+  }
+  res.json(upList);
+});
+
+router.delete("/:listId", async (req: Request<ListParms>, res: Response) => {
+  const { id, userId } = req.params;
+  const delist = await deleteListById(id, userId);
+  if (!delist) {
+    return res.status(404).json({ message: "no list found" });
+  }
+  res.json(delist);
+});
+
+router.get(
+  "/:listId/tasks",
+  async (req: Request<ListParms, {}, {}, TaskQuery>, res: Response) => {
+    const { id, userId } = req.params;
+    const done: boolean | undefined =
+      req.query.done === "true"
+        ? true
+        : req.query.done === "false"
+          ? false
+          : undefined;
+    const sort = req.query.sort;
+    const tasks = await getTasksForList(id, userId, done, sort);
+    if (!tasks) {
+      return res.status(404).json({ message: "no list found" });
+    }
+    res.json(tasks);
+  },
+);
