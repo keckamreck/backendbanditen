@@ -58,8 +58,7 @@ export const user = pgTable(
     id: uuid("id")
       .default(sql`pg_catalog.gen_random_uuid()`)
       .primaryKey(),
-    username: text().notNull(),
-    password: text().notNull(),
+    name: text().notNull(),
     email: text().notNull(),
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
@@ -68,6 +67,7 @@ export const user = pgTable(
       .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
+    username: text().notNull(),
     displayUsername: text("display_username"),
   },
   (table) => [
