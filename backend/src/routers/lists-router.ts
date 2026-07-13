@@ -26,7 +26,7 @@ interface TaskQuery {
   listId: string;
   userId: string;
   done?: string;
-  sortby?: string;
+  sort?: string;
 }
 
 router.get("/:id", async (req: Request<ListParms>, res: Response) => {
@@ -67,8 +67,8 @@ router.get(
         : req.query.done === "false"
           ? false
           : undefined;
-    const sortby = req.query.sortby;
-    const tasks = await getTasksForList(id, userId, done, sortby);
+    const sort = req.query.sort;
+    const tasks = await getTasksForList(id, userId, done, sort);
     if (!tasks) {
       return res.status(404).json({ message: "no list found" });
     }
