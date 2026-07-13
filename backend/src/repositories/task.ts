@@ -8,7 +8,7 @@ export async function getTasksForList(
   done?: boolean,
   sort?: string,
 ) {
-  const result = db.query.task.findMany({
+  const result = await db.query.task.findMany({
     where: (task, { eq, and }) => {
       const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
 
