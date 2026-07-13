@@ -1,21 +1,25 @@
 import { db } from "./db.js";
 import { task as tasks } from "../db/schema.js";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, and, desc, SQL } from "drizzle-orm";
 
-export async function getOneTask(query: any, userId: string) {
-  if (
-    query.done == false &&
-    query.sort == "deadline" &&
-    query.direction == "asc"
-  ) {
-    //Get the Due Task
-    return db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.userId, userId))
-      .orderBy(asc(tasks.deadline))
-      .limit(query.limit);
-  } else {
-    return {};
+export async function getTasks(query: any, userId: string) {
+  const whereConditions = [
+    eq(tasks.userId, userId),
+    ...(query.done === false || query.done === true
+      ? [eq(tasks.done, query.done)]
+      : []),
+  ];
+  const filterConditions: SQL[] = [];
+  if (query.sort) {
+    filterConditions.push(
+      query.direction === "asc" ? asc(query.sort) : desc(query.sort),
+    );
   }
+
+  return db
+    .select()
+    .from(tasks)
+    .where(and(...whereConditions))
+    .orderBy(...filterConditions)
+    .limit(query.limit ?? undefined);
 }

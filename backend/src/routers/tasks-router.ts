@@ -8,8 +8,8 @@ router.get("", async (req: Request<{ userId: string }>, res) => {
   // console.log("Going in");
   const querySchema = z.object({
     done: z.stringbool().optional(),
-    sort: z.string("deadline").optional(),
-    direction: z.string("asc").optional(),
+    sort: z.enum(["title", "note", "deadline", "priority"]).optional(),
+    direction: z.enum(["asc", "desc"]).optional(),
     limit: z.coerce.number().optional(),
   });
 
@@ -20,13 +20,10 @@ router.get("", async (req: Request<{ userId: string }>, res) => {
     const search = query.data;
     console.log(search);
     try {
-      if (search.limit === 1) {
-        const result = await task.getOneTask(search, req.params.userId);
-        return res.status(200).json(result);
-      }
-      res.status(200).json(search);
+      const result = await task.getTasks(search, req.params.userId);
+      return res.status(200).json(result);
     } catch (error) {
-      console.log("Fehler bei der Datenbank");
+      console.log("Fehler beim Datenbank Abruf");
     }
   }
 });

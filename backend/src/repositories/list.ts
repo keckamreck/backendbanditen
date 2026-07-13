@@ -1,14 +1,8 @@
 import { db } from "./db.js";
-import { list as lists, user as users } from "../db/schema.js";
+import { list, list as lists, user as users } from "../db/schema.js";
 import { eq, ilike, and } from "drizzle-orm";
 
-export interface List {
-  id: string;
-  title: string;
-  isFavorite: boolean;
-  userId: string;
-  categoryId: string;
-}
+export type List = typeof lists.$inferInsert;
 
 export async function newList(list: List) {
   await db.insert(lists).values(list);
