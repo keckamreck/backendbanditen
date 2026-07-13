@@ -1,7 +1,7 @@
-import { pgTable, foreignKey, uuid, text, boolean, date, unique, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, text, boolean, timestamp, unique, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
-export const priority = pgEnum("priority", ['high', 'medium', 'low'])
+export const priority = pgEnum("priority", ['0', '1', '2'])
 
 
 export const list = pgTable("list", {
@@ -27,7 +27,7 @@ export const task = pgTable("task", {
 	id: uuid().primaryKey().notNull(),
 	title: text().notNull(),
 	note: text(),
-	deadline: date(),
+	deadline: timestamp({ withTimezone: true, mode: 'string' }),
 	priority: priority().notNull(),
 	listId: uuid().notNull(),
 	userId: uuid().notNull(),
