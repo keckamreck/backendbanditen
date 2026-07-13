@@ -1,12 +1,13 @@
+import { z } from "zod";
 import express, { Request, Response, NextFunction } from "express";
 import {
+  getTasks,
   createTask,
   deleteTask,
   getTask,
   updateTask,
 } from "../repositories/task.js";
 import { errorHandler } from "../middleware/errorHandler.js";
-import { z } from "zod";
 import { ValidationError } from "../errors/errors.js";
 import { InferSelectModel } from "drizzle-orm";
 import { task } from "../db/schema.js";
@@ -26,6 +27,32 @@ export const userInputCreateTaskSchema = z.object({
 });
 export const userInputUpdateTaskSchema = userInputCreateTaskSchema.partial();
 export type Task = InferSelectModel<typeof task>;
+
+router.get("", async (req: Request<{ userId: string }>, res) => {
+  // console.log("Going in");
+  const querySchema = z.object({
+    done: z.stringbool().optional(),
+    sort: z.enum(["title", "note", "deadline", "priority"]).optional(),
+    direction: z.enum(["asc", "desc"]).optional(),
+    limit: z.coerce.number().optional(),
+  });
+
+  const query = querySchema.safeParse(req.query);
+  if (!query.success) {
+    res.status(400).json(query.error);
+  } else {
+    const search = query.data;
+    console.log(search);
+    try {
+      const result = await getTasks(search, req.params.userId);
+      return res.status(200).json(result);
+    } catch (error) {
+      console.log("Fehler beim Datenbank Abruf");
+      return res.status(500).json(query.error);
+    }
+  }
+});
+
 
 router.get(
   "/:taskId",
