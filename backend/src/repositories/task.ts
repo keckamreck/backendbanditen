@@ -6,17 +6,22 @@ export async function getTasksForList(
   ListId: string,
   userId: string,
   done?: boolean,
+  sortby?: string,
 ) {
   const result = db.query.task.findMany({
     where: (task, { eq, and }) => {
-      if (done === undefined) {
-        return and(eq(task.listId, ListId), eq(task.userId, userId));
+      const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
+
+      if (done !== undefined) {
+        conditions.push(eq(task.done, done));
       }
-      return and(
-        eq(task.listId, ListId),
-        eq(task.userId, userId),
-        eq(task.done, done),
-      );
+      return and(...conditions);
+    },
+    orderBy: (task, { asc }) => {
+      if (sortby !== undefined) {
+        return [asc(task[sortby as keyof typeof task])];
+      }
+      return [];
     },
   });
   return result;

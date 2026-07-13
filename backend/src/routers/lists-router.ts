@@ -18,6 +18,17 @@ interface ListParms {
   categoryId: string;
 }
 
+interface TaskQuery {
+  id: string;
+  title?: string;
+  deadline?: string;
+  priority?: number;
+  listId: string;
+  userId: string;
+  done?: string;
+  sortby?: string;
+}
+
 router.get("/:id", async (req: Request<ListParms>, res: Response) => {
   const { id, userId } = req.params;
   const list = await getListById(id, userId);
@@ -46,17 +57,6 @@ router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
   res.json(delist);
 });
 
-interface TaskQuery {
-  id: string;
-  title: string;
-  note: string;
-  deadline: string;
-  priority: number;
-  listId: string;
-  userId: string;
-  done?: string;
-}
-
 router.get(
   "/:id/tasks",
   async (req: Request<ListParms, {}, {}, TaskQuery>, res: Response) => {
@@ -67,7 +67,8 @@ router.get(
         : req.query.done === "false"
           ? false
           : undefined;
-    const tasks = await getTasksForList(id, userId, done);
+    const sortby = req.query.sortby;
+    const tasks = await getTasksForList(id, userId, done, sortby);
     if (!tasks) {
       return res.status(404).json({ message: "no list found" });
     }
