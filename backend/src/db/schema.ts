@@ -1,7 +1,7 @@
 import { pgTable, foreignKey, uuid, text, boolean, timestamp, unique, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
-export const priority = pgEnum("priority", ['high', 'medium', 'low'])
+export const priority = pgEnum("priority", ['0', '1', '2'])
 
 
 export const list = pgTable("list", {

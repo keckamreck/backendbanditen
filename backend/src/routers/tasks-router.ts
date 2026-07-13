@@ -20,7 +20,7 @@ export const userInputCreateTaskSchema = z.object({
   title: z.string(),
   note: z.string().nullable(),
   deadline: z.iso.datetime({ offset: true }).nullable(),
-  priority: z.enum(["high", "medium", "low"]),
+  priority: z.enum(["0", "1", "2"]),
   listId: z.uuid(),
   done: z.boolean(),
 });
