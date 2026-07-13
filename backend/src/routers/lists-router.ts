@@ -75,7 +75,7 @@ interface TaskQuery {
   sort?: string;
 }
 
-router.get("/:id", async (req: Request<ListParms>, res: Response) => {
+router.get("/:listId", async (req: Request<ListParms>, res: Response) => {
   const { id, userId } = req.params;
   const list = await getListById(id, userId);
   if (!list) {
@@ -84,7 +84,7 @@ router.get("/:id", async (req: Request<ListParms>, res: Response) => {
   res.json(list);
 });
 
-router.patch("/:id", async (req: Request<ListParms>, res: Response) => {
+router.patch("/:listId", async (req: Request<ListParms>, res: Response) => {
   const { id, userId } = req.params;
   const data: ListUpdateInput = req.body;
   const upList = await updateListById(id, userId, data);
@@ -94,7 +94,7 @@ router.patch("/:id", async (req: Request<ListParms>, res: Response) => {
   res.json(upList);
 });
 
-router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
+router.delete("/:listId", async (req: Request<ListParms>, res: Response) => {
   const { id, userId } = req.params;
   const delist = await deleteListById(id, userId);
   if (!delist) {
@@ -104,7 +104,7 @@ router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
 });
 
 router.get(
-  "/:id/tasks",
+  "/:listId/tasks",
   async (req: Request<ListParms, {}, {}, TaskQuery>, res: Response) => {
     const { id, userId } = req.params;
     const done: boolean | undefined =
