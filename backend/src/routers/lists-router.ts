@@ -47,9 +47,3 @@ router.get("", async (req, res) => {
     }
   }
 });
-
-router.delete("/:id", async (req, res) => {
-  await list.deleteListById(req.params.id).then((result) => {
-    res.status(200).json(result);
-  });
-});

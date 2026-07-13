@@ -49,10 +49,3 @@ export async function getListsBySearch(query: any, userId: string) {
     };
   }
 }
-
-export async function deleteListById(id: string) {
-  await db.delete(lists).where(eq(lists.id, id));
-  return {
-    id: id,
-  };
-}

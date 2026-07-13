@@ -24,6 +24,7 @@ router.get("", async (req: Request<{ userId: string }>, res) => {
       return res.status(200).json(result);
     } catch (error) {
       console.log("Fehler beim Datenbank Abruf");
+      return res.status(500).json(query.error);
     }
   }
 });
