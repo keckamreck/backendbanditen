@@ -1,6 +1,28 @@
-import { task } from "../db/schema.js";
 import { db } from "./db.js";
-import { eq, and } from "drizzle-orm";
+import { task as tasks } from "../db/schema.js";
+import { asc, eq, and, desc, SQL } from "drizzle-orm";
+
+export async function getTasks(query: any, userId: string) {
+  const whereConditions = [
+    eq(tasks.userId, userId),
+    ...(query.done === false || query.done === true
+      ? [eq(tasks.done, query.done)]
+      : []),
+  ];
+  const filterConditions: SQL[] = [];
+  if (query.sort) {
+    filterConditions.push(
+      query.direction === "asc" ? asc(query.sort) : desc(query.sort),
+    );
+  }
+
+  return db
+    .select()
+    .from(tasks)
+    .where(and(...whereConditions))
+    .orderBy(...filterConditions)
+    .limit(query.limit ?? undefined);
+}
 
 export async function getTasksForList(
   ListId: string,
@@ -8,7 +30,7 @@ export async function getTasksForList(
   done?: boolean,
   sort?: string,
 ) {
-  const result = await db.query.task.findMany({
+  return db.query.task.findMany({
     where: (task, { eq, and }) => {
       const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
 
@@ -24,5 +46,4 @@ export async function getTasksForList(
       return [];
     },
   });
-  return result;
 }

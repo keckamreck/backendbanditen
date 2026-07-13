@@ -1,4 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import { List } from "../repositories/list.js";
+import * as list from "../repositories/list.js";
+import { z } from "zod";
+import { Request, Response } from "express";
 import {
   type ListUpdateInput,
   getListById,
@@ -9,6 +13,48 @@ import {
 import { getTasksForList } from "../repositories/task.js";
 
 export const router = express.Router({ mergeParams: true });
+
+router.post("/", async (req, res) => {
+  const data: List = {
+    id: crypto.randomUUID(),
+    title: req.body.title,
+    isFavorite: req.body.isFavorite,
+    userId: req.body.userId,
+    categoryId: req.body.categoryId ?? null,
+  };
+
+  await list.newList(data).then((result) => {
+    res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
+  });
+});
+
+router.get("", async (req, res) => {
+  const querySchema = z.object({
+    search: z.string().optional(),
+    isFavorite: z.stringbool().optional(),
+    categoryId: z.string().optional(),
+  });
+
+  const query = querySchema.safeParse(req.query);
+  if (!query.success) {
+    res.status(400);
+  } else {
+    const search = query.data;
+    console.log(search);
+    try {
+      //@ts-ignore
+      list.getListsBySearch(search, req.params.userId).then((result) => {
+        //@ts-ignore
+        if (result.error != undefined) {
+          throw Error("Error by getting lists.");
+        }
+        res.status(200).json(result);
+      });
+    } catch (err) {
+      res.status(500);
+    }
+  }
+});
 
 interface ListParms {
   id: string;
