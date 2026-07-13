@@ -6,6 +6,7 @@ export default defineConfig({
   schema: "./src/db/schema.ts", // Output path for the schema file
   dialect: "postgresql",
   dbCredentials: {
+    //@ts-ignore
     url: process.env.DATABASE_URL!, // Your Neon connection string
   },
 });

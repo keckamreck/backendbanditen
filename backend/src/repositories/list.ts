@@ -1,8 +1,38 @@
+import { list as lists } from "../db/schema.js";
 import { db } from "./db.js";
-import { list, list as lists, user as users } from "../db/schema.js";
-import { eq, ilike, and } from "drizzle-orm";
+import { eq,  ilike, and } from "drizzle-orm";
 
 export type List = typeof lists.$inferInsert;
+
+export type ListUpdateInput = {
+  title?: string;
+  isFavorite?: boolean;
+  categoryId?: string;
+};
+
+export async function getListById(ListId: string, userId: string) {
+  return await db.query.list.findFirst({
+    where: (list, { eq, and }) =>
+      and(eq(list.id, ListId), eq(list.userId, userId)),
+  });
+}
+export async function updateListById(
+  ListId: string,
+  userId: string,
+  data: ListUpdateInput,
+) {
+  return db
+    .update(lists)
+    .set(data)
+    .where(and(eq(lists.id, ListId), eq(lists.userId, userId)))
+    .returning();
+}
+
+export async function deleteListById(ListId: string, userId: string) {
+  return db
+    .delete(lists)
+    .where(and(eq(lists.id, ListId), eq(lists.userId, userId)));
+}
 
 export async function newList(list: List) {
   await db.insert(lists).values(list);

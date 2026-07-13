@@ -23,3 +23,27 @@ export async function getTasks(query: any, userId: string) {
     .orderBy(...filterConditions)
     .limit(query.limit ?? undefined);
 }
+
+export async function getTasksForList(
+  ListId: string,
+  userId: string,
+  done?: boolean,
+  sort?: string,
+) {
+  return db.query.task.findMany({
+    where: (task, { eq, and }) => {
+      const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
+
+      if (done !== undefined) {
+        conditions.push(eq(task.done, done));
+      }
+      return and(...conditions);
+    },
+    orderBy: (task, { asc }) => {
+      if (sort !== undefined) {
+        return [asc(task[sort as keyof typeof task])];
+      }
+      return [];
+    },
+  });
+}
