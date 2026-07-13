@@ -49,3 +49,4 @@ frontend/next-env.d.ts
 # Provisional documentation
 /docs
 /backend/dist/
+next-env.d.ts
