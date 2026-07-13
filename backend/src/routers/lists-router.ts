@@ -6,6 +6,8 @@ import {
   updateListById,
 } from "../repositories/list.js";
 
+import { getTasksForList } from "../repositories/task.js";
+
 export const router = express.Router({ mergeParams: true });
 
 interface ListParms {
@@ -43,3 +45,32 @@ router.delete("/:id", async (req: Request<ListParms>, res: Response) => {
   }
   res.json(delist);
 });
+
+interface TaskQuery {
+  id: string;
+  title: string;
+  note: string;
+  deadline: string;
+  priority: number;
+  listId: string;
+  userId: string;
+  done?: string;
+}
+
+router.get(
+  "/:id/tasks",
+  async (req: Request<ListParms, {}, {}, TaskQuery>, res: Response) => {
+    const { id, userId } = req.params;
+    const done: boolean | undefined =
+      req.query.done === "true"
+        ? true
+        : req.query.done === "false"
+          ? false
+          : undefined;
+    const tasks = await getTasksForList(id, userId, done);
+    if (!tasks) {
+      return res.status(404).json({ message: "no list found" });
+    }
+    res.json(tasks);
+  },
+);
