@@ -11,7 +11,7 @@ var corsOptions = {
   origin: ['http://localhost:3000', 'https://backendbanditen-frontend.vercel.app/'],
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type, Authorization',
+  allowedHeaders: 'Content-Type, Authorization, Access-Control-Allow-Credentials',
 };
 
 app.use(cors(corsOptions));
