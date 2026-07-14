@@ -6,7 +6,9 @@ import { db } from "./repositories/db.js";
 export const auth = betterAuth({
   disableTrustedOriginsCors: true,
   trustedOrigins: ['https://backendbanditen.biber.mom', 'http://localhost:3000'],
-  baseURL: "https://backend.biber.mom/auth",
+  baseURL: process.env.NODE_ENV === 'production'
+      ? "https://backend.biber.mom/auth"
+      : "http://localhost:8097/auth",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -16,7 +18,9 @@ export const auth = betterAuth({
     },
     crossSubDomainCookies: {
       enabled: true,
-      domain: 'biber.mom'
+      domain: process.env.NODE_ENV === 'production'
+      ? 'biber.mom'
+      : "localhost",
     }
   },
   emailAndPassword: {
