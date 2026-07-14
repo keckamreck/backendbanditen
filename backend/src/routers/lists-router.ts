@@ -44,31 +44,23 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("", async (req, res) => {
+router.get("", async (req, res, next) => {
   const querySchema = z.object({
     search: z.string().optional(),
     isFavorite: z.stringbool().optional(),
     categoryId: z.string().optional(),
   });
 
-  const query = querySchema.safeParse(req.query);
-  if (!query.success) {
-    res.status(400);
-  } else {
-    const search = query.data;
-    console.log(search);
-    try {
-      //@ts-ignore
-      list.getListsBySearch(search, req.params.userId).then((result) => {
-        //@ts-ignore
-        if (result.error != undefined) {
-          throw Error("Error by getting lists.");
-        }
-        res.status(200).json(result);
-      });
-    } catch (err) {
-      res.status(500);
-    }
+  const query = zodValidation(querySchema, req.query);
+
+  try {
+    //@ts-ignore
+    list.getListsBySearch(query, req.params.userId).then((result) => {
+      res.status(200).json(result);
+    });
+  } catch (err) {
+    console.log("Fehler beim Datenbank abruf");
+    next(err);
   }
 });
 
