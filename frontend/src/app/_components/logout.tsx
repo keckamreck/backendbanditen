@@ -2,12 +2,16 @@
 
 import { CloseButton, BurgerButton } from "@/app/_components/ButtonsIcon";
 import { authClient } from "../_lib/auth-client";
+import { getUserId } from "../api/users-api";
 import { useState } from "react";
 import styles from "./logout.module.css";
 import { redirect } from "next/navigation";
 
-
 export function Logout() {
+  async function handleUser() {
+    const userId = await getUserId();
+    prompt("User ID:", JSON.stringify(userId));
+  }
   async function handleZong() {
     const { data: session } = await authClient.getSession();
     alert(JSON.stringify(session, null, " "));
