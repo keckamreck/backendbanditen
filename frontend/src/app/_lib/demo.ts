@@ -1,7 +1,7 @@
 import { List } from "@/app/_models/list";
 import { Priority, Task } from "@/app/_models/task";
 
-let tasks: Task[] = [
+const tasks: Task[] = [
   {
     id: 0,
     title: "This is a task",
@@ -40,7 +40,7 @@ let tasks: Task[] = [
   },
 ];
 
-let list: List[] = [
+const list: List[] = [
   {
     id: 0,
     title: "Arbeit",
@@ -126,7 +126,7 @@ export function deleteTask(id: number): void {
 export function deleteTasks(listKey: number) {
   tasks.forEach((task) => {
     if (task.listKey === listKey && task.done === true) {
-      let index = tasks.indexOf(task);
+      const index = tasks.indexOf(task);
       tasks.splice(index, 1);
     }
   });
@@ -166,8 +166,8 @@ export function getCategories() {
 
 export function getTaskofList(listKey: number) {
   const tasks = getTasks();
-  let tasksofList = [];
-  for (let e of tasks) {
+  const tasksofList = [];
+  for (const e of tasks) {
     if (e.listKey === listKey) {
       tasksofList.push(e);
     }
@@ -177,8 +177,8 @@ export function getTaskofList(listKey: number) {
 
 export function getDoneTasks(listKey: number) {
   const tasks = getTaskofList(listKey);
-  let doneTasks = [];
-  for (let e of tasks) {
+  const doneTasks = [];
+  for (const e of tasks) {
     if (e.done) {
       doneTasks.push(e);
     }
@@ -188,7 +188,7 @@ export function getDoneTasks(listKey: number) {
 
 export function getTask(id: number) {
   const tasks: Task[] = getTasks();
-  for (let e of tasks) {
+  for (const e of tasks) {
     if (e.id === id) {
       return e;
     }
@@ -198,7 +198,7 @@ export function getTask(id: number) {
 
 export function getList(id: number) {
   const lists: List[] = getLists();
-  for (let e of lists) {
+  for (const e of lists) {
     if (e.id === id) {
       return e;
     }

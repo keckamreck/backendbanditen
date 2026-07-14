@@ -1,6 +1,6 @@
 import { list as lists } from "../db/schema.js";
 import { db } from "./db.js";
-import { eq,  ilike, and } from "drizzle-orm";
+import { eq, ilike, and } from "drizzle-orm";
 
 export type List = typeof lists.$inferInsert;
 

@@ -11,21 +11,37 @@ import {
 } from "../repositories/list.js";
 
 import { getTasksForList } from "../repositories/task.js";
+import { zodValidation } from "../validation/zod-validation.js";
 
 export const router = express.Router({ mergeParams: true });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
+  const zodSchema = z.object({
+    title: z.string(),
+    isFavorite: z.boolean(),
+    //@ts-ignore
+    userId: z.string().refine((val) => val === req.params.userId),
+    categoryId: z.string().optional(),
+  });
+
+  const validData = zodValidation(zodSchema, req.body);
+
   const data: List = {
     id: crypto.randomUUID(),
-    title: req.body.title,
-    isFavorite: req.body.isFavorite,
-    userId: req.body.userId,
-    categoryId: req.body.categoryId ?? null,
+    title: validData.title,
+    isFavorite: validData.isFavorite,
+    userId: validData.userId,
+    categoryId: validData.categoryId ?? null,
   };
-
-  await list.newList(data).then((result) => {
-    res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
-  });
+  console.log(data);
+  try {
+    await list.newList(data).then((result) => {
+      res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
+    });
+  } catch (err) {
+    console.log("Fehler beim Datenbank abruf");
+    next(err);
+  }
 });
 
 router.get("", async (req, res) => {
