@@ -8,7 +8,7 @@ import { auth } from "./auth.js";
 
 const app = express();
 var corsOptions = {
-  origin: ['https://backendbanditen.biber.mom'],
+  origin: ['https://backendbanditen.biber.mom', 'http://localhost:3000'],
   credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: 'Content-Type, Authorization',
