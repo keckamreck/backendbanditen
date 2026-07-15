@@ -1,9 +1,11 @@
 import { apiError } from "@/app/api/error";
+import { getUserId } from "@/app/api/users-api";
 
 export async function newList(title: string) {
   try {
+    const userId = await getUserId();
     const response = await fetch(
-      `http://localhost:8097/users/e16203c1-9337-43d1-924e-50e92aae7503/lists`,
+      `http://localhost:8097/users/${userId}/lists`,
       {
         method: "POST",
         headers: {
@@ -25,9 +27,8 @@ export async function newList(title: string) {
 }
 export async function getLists() {
   try {
-    const response = await fetch(
-      `http://localhost:8097/users/e16203c1-9337-43d1-924e-50e92aae7503/lists`,
-    );
+    const userId = await getUserId();
+    const response = await fetch(`http://localhost:8097/users/${userId}/lists`);
     if (!response.ok) {
       throw new Error();
     }
@@ -40,8 +41,9 @@ export async function getLists() {
 }
 export async function getDueTask() {
   try {
+    const userId = await getUserId();
     const response = await fetch(
-      `http://localhost:8097/users/e16203c1-9337-43d1-924e-50e92aae7503/tasks?done=false&sort=deadline&direction=asc&limit=1`,
+      `http://localhost:8097/users/${userId}/tasks?done=false&sort=deadline&direction=asc&limit=1`,
     );
     if (!response.ok) {
       throw new Error();
@@ -57,8 +59,9 @@ export async function getDueTask() {
 
 export async function getListsBySearch(searchTerm: string) {
   try {
+    const userId = await getUserId();
     const response = await fetch(
-      `http://localhost:8097/users/e16203c1-9337-43d1-924e-50e92aae7503/lists?search=${searchTerm}`,
+      `http://localhost:8097/users/${userId}/lists?search=${searchTerm}`,
     );
     if (!response.ok) {
       throw new Error();
