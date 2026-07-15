@@ -19,9 +19,7 @@ router.post("/", async (req, res, next) => {
   const zodSchema = z.object({
     title: z.string(),
     isFavorite: z.boolean(),
-    //@ts-ignore
-    userId: z.string().refine((val) => val === req.params.userId),
-    categoryId: z.string().optional(),
+    categoryId: z.uuid().optional(),
   });
 
   const validData = zodValidation(zodSchema, req.body);
@@ -30,7 +28,8 @@ router.post("/", async (req, res, next) => {
     id: crypto.randomUUID(),
     title: validData.title,
     isFavorite: validData.isFavorite,
-    userId: validData.userId,
+    //@ts-ignore
+    userId: req.params.userId,
     categoryId: validData.categoryId ?? null,
   };
   console.log(data);

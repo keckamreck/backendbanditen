@@ -13,6 +13,15 @@ export interface Task {
   listKey: number;
   done: boolean;
 }
+export interface TaskReal {
+  id: string;
+  title: string;
+  note: string | null;
+  deadline: Date | null;
+  priority: Priority;
+  listId: string;
+  done: boolean;
+}
 
 export interface TaskFormattedForEditor {
   title: string;
