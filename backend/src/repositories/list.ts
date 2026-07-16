@@ -1,14 +1,14 @@
 import { list as lists } from "../db/schema.js";
 import { db } from "./db.js";
-import { eq,  ilike, and } from "drizzle-orm";
+import { eq, ilike, and } from "drizzle-orm";
 
 export type List = typeof lists.$inferInsert;
 
-export type ListUpdateInput = {
-  title?: string;
-  isFavorite?: boolean;
-  categoryId?: string;
-};
+// export type ListUpdateInput = {
+//   title?: string;
+//   isFavorite?: boolean;
+//   categoryId?: string;
+// };
 
 export async function getListById(ListId: string, userId: string) {
   return await db.query.list.findFirst({
