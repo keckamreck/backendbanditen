@@ -1,80 +1,64 @@
 "use client";
 
 import EditorForm from "@/app/_components/EditorForm";
-import { getLists, editTask, deleteTask } from "@/app/_lib/demo";
-import { TaskFormattedForEditor, Task } from "@/app/_models/task";
-import { useState } from "react";
+import { getLists } from "@/app/_lib/demo";
+import { TaskFrontend } from "@/app/_models/task";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { List } from "@/app/_models/list";
-import { getTask } from "@/app/_lib/demo";
+import { getTask, editTask, deleteTask } from "@/app/api/tasks-api";
 
 export default function Page() {
   const id: { id: string } = useParams<{ id: string }>();
-  const [dateToday] = useState<Date>(new Date());
-  const [defaultDate] = useState<Date>(
-    new Date(
-      dateToday.getFullYear(),
-      dateToday.getMonth(),
-      dateToday.getDate() + 1,
-      12,
-      30,
-    ),
-  );
   const [lists] = useState<List[]>(getLists());
-  const [initialTask] = useState<Task>(getTask(parseInt(id.id)));
-  const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
-    title: initialTask.title,
-    enterDeadline: initialTask.deadline !== null,
-    deadline:
-      initialTask.deadline === null ? defaultDate : initialTask.deadline,
-    idSelectedList: initialTask.listKey,
-    selectedPriority: initialTask.priority,
-    notes: initialTask.note === null ? "" : initialTask.note,
-  });
+  const [initialTask, setInitialTask] = useState<TaskFrontend>();
 
-  function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
-    const editedTask: Partial<Task> = {
-      title: editedTaskFromEditor.title,
-      deadline: editedTaskFromEditor.enterDeadline
-        ? editedTaskFromEditor.deadline
-        : null,
-      listKey: editedTaskFromEditor.idSelectedList,
-      priority: editedTaskFromEditor.selectedPriority,
-      note:
-        editedTaskFromEditor.notes === "" ? null : editedTaskFromEditor.notes,
-    };
-    const updatedFields: Partial<Task> = {};
+  useEffect((): void => {
+    async function fetchTask(id: string): Promise<void> {
+      try {
+        const task: TaskFrontend | undefined = await getTask(id);
+        setInitialTask(task);
+      } catch (error) {}
+    }
+    fetchTask(id.id);
+  }, [id.id]);
 
-    if (editedTask.title !== initialTask.title) {
-      updatedFields.title = editedTask.title;
+  function handleSave(editedTask: TaskFrontend): void {
+    const updatedFields: Partial<TaskFrontend> = {};
+    if (initialTask) {
+      if (editedTask.title !== initialTask.title) {
+        updatedFields.title = editedTask.title;
+      }
+      if (editedTask.deadline !== initialTask.deadline) {
+        updatedFields.deadline = editedTask.deadline;
+      }
+      if (editedTask.listKey !== initialTask.listKey) {
+        updatedFields.listKey = editedTask.listKey;
+      }
+      if (editedTask.priority !== initialTask.priority) {
+        updatedFields.priority = editedTask.priority;
+      }
+      if (editedTask.note !== initialTask.note) {
+        updatedFields.note = editedTask.note;
+      }
+      editTask(initialTask.id, updatedFields);
     }
-    if (editedTask.deadline !== initialTask.deadline) {
-      updatedFields.deadline = editedTask.deadline;
-    }
-    if (editedTask.listKey !== initialTask.listKey) {
-      updatedFields.listKey = editedTask.listKey;
-    }
-    if (editedTask.priority !== initialTask.priority) {
-      updatedFields.priority = editedTask.priority;
-    }
-    if (editedTask.note !== initialTask.note) {
-      updatedFields.note = editedTask.note;
-    }
-    editTask(initialTask.id, updatedFields);
   }
 
   function handleDelete(): void {
-    deleteTask(parseInt(id.id));
+    deleteTask(id.id);
   }
 
-  return (
-    <EditorForm
-      initialValues={initialTaskForEditor}
-      taskDone={initialTask.done}
-      lists={lists}
-      saveAction={handleSave}
-      deleteButtonVisible={true}
-      deleteAction={handleDelete}
-    />
-  );
+  if (initialTask) {
+    return (
+      <EditorForm
+        initialValues={initialTask}
+        taskDone={initialTask.done}
+        lists={lists}
+        saveAction={handleSave}
+        deleteButtonVisible={true}
+        deleteAction={handleDelete}
+      />
+    );
+  }
 }

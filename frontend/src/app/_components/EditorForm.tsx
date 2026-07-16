@@ -17,15 +17,15 @@ import { PriorityButton } from "@/app/_components/PriorityButton";
 import { Button } from "@/app/_components/Buttons";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { List } from "@/app/_models/list";
-import { TaskFormattedForEditor, Priority } from "@/app/_models/task";
+import { Priority, TaskFrontend } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 
 interface EditorFormProps {
-  initialValues: TaskFormattedForEditor;
+  initialValues: TaskFrontend;
   taskDone: boolean;
   lists: List[];
-  saveAction: (task: TaskFormattedForEditor) => void;
+  saveAction: (task: TaskFrontend) => void;
   deleteButtonVisible: boolean;
   deleteAction?: () => void;
 }
@@ -39,33 +39,45 @@ export default function EditorForm({
   deleteAction,
 }: EditorFormProps) {
   const router = useRouter();
+  const [dateToday] = useState<Date>(new Date());
   const [title, setTitle] = useState<string>(initialValues.title);
   const [enterDeadline, setEnterDeadline] = useState<boolean>(
-    initialValues.enterDeadline,
+    initialValues.deadline !== null,
   );
   const [calendarVisible, setCalendarVisible] =
     useState<boolean>(enterDeadline);
-  const [date, setDate] = useState<Date>(initialValues.deadline);
-  const [priority, setPriority] = useState<Priority>(
-    initialValues.selectedPriority,
+  const [date, setDate] = useState<Date>(
+    initialValues.deadline === null
+      ? new Date(
+          dateToday.getFullYear(),
+          dateToday.getMonth(),
+          dateToday.getDate() + 1,
+          12,
+          30,
+        )
+      : initialValues.deadline,
   );
+  const [priority, setPriority] = useState<Priority>(initialValues.priority);
   const [idSelectedList, setIdSelectedList] = useState<number>(
-    initialValues.idSelectedList,
+    initialValues.listKey,
   );
-  const [notes, setNotes] = useState<string>(initialValues.notes);
+  const [notes, setNotes] = useState<string>(
+    initialValues.note === null ? "" : initialValues.note,
+  );
   const [showModalConfirmGoBack, setShowModalConfirmGoBack] =
     useState<boolean>(false);
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
 
-  function getCurrentValues(): TaskFormattedForEditor {
+  function getCurrentValues(): TaskFrontend {
     return {
+      id: initialValues.id,
       title: title.trim(),
-      enterDeadline: enterDeadline,
-      deadline: date,
-      idSelectedList: idSelectedList,
-      selectedPriority: priority,
-      notes: notes.trim(),
+      deadline: enterDeadline ? date : null,
+      listKey: idSelectedList,
+      priority: priority,
+      note: notes.trim(),
+      done: initialValues.done,
     };
   }
 
@@ -138,7 +150,7 @@ export default function EditorForm({
   }
 
   function saveTask(): void {
-    const currentValues: TaskFormattedForEditor = getCurrentValues();
+    const currentValues: TaskFrontend = getCurrentValues();
     saveAction(currentValues);
     handleBackNavigation(idSelectedList);
   }
@@ -146,7 +158,7 @@ export default function EditorForm({
   function deleteTask(): void {
     if (deleteAction !== undefined) {
       deleteAction();
-      handleBackNavigation(initialValues.idSelectedList);
+      handleBackNavigation(initialValues.listKey);
     }
   }
 
@@ -159,12 +171,9 @@ export default function EditorForm({
   }
 
   function handleClickOnBackButton(): void {
-    const currentValues: TaskFormattedForEditor = getCurrentValues();
-    if (!currentValues.enterDeadline) {
-      currentValues.deadline = initialValues.deadline;
-    }
+    const currentValues: TaskFrontend = getCurrentValues();
     if (JSON.stringify(currentValues) === JSON.stringify(initialValues)) {
-      handleBackNavigation(initialValues.idSelectedList);
+      handleBackNavigation(initialValues.listKey);
     } else {
       setShowModalConfirmGoBack(true);
     }
@@ -195,9 +204,7 @@ export default function EditorForm({
             onClose={(): void => {
               setShowModalConfirmGoBack(false);
             }}
-            onConfirm={(): void =>
-              handleBackNavigation(initialValues.idSelectedList)
-            }
+            onConfirm={(): void => handleBackNavigation(initialValues.listKey)}
             title={
               "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
             }
