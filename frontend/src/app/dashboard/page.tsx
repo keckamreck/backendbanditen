@@ -17,7 +17,7 @@ import {
   getListsBySearch,
 } from "@/app/api/lists-api";
 import { ListReal as List } from "@/app/_models/list";
-import { TaskReal as Task } from "@/app/_models/task";
+import { TaskFrontend as Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
 import CategorySort from "../_components/CategorySort";
