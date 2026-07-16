@@ -1,15 +1,15 @@
 export enum Priority {
-  High,
-  Medium,
-  Low,
+  High = "0",
+  Medium = "1",
+  Low = "2",
 }
 
-export interface Task {
-  id: number;
+export interface TaskBackend {
+  id: string;
   title: string;
   note: string | null;
-  deadline: Date | null;
-  priority: Priority;
+  deadline: string | null;
+  priority: "0" | "1" | "2";
   listKey: number;
   done: boolean;
 }
@@ -23,11 +23,12 @@ export interface TaskReal {
   done: boolean;
 }
 
-export interface TaskFormattedForEditor {
+export interface TaskFrontend {
+  id: string;
   title: string;
-  enterDeadline: boolean;
-  idSelectedList: number;
-  selectedPriority: Priority;
-  deadline: Date;
-  notes: string;
+  note: string | null;
+  deadline: Date | null;
+  priority: Priority;
+  listKey: number;
+  done: boolean;
 }
