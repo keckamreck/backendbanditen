@@ -1,17 +1,17 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
 import { router as usersRouter } from "./routers/users-router.js";
 import { router as userContextRouter } from "./routers/user-context-router.js";
-import {router as categoriesRouter} from "./routers/categories-router.js";
+import { router as categoriesRouter } from "./routers/categories-router.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
 
 const app = express();
 var corsOptions = {
-  origin: ['https://backendbanditen.biber.mom', 'http://localhost:3000'],
+  origin: ["https://backendbanditen.biber.mom", "http://localhost:3000"],
   credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type, Authorization',
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type, Authorization",
 };
 
 app.use(cors(corsOptions));

@@ -14,18 +14,17 @@ export function Logout() {
   }
   async function handleZong() {
     const { data: session } = await authClient.getSession();
-    alert(JSON.stringify(session, null, " "));
+    prompt("User data:", JSON.stringify(session, null, " "));
   }
   async function handleLogout() {
     await authClient.signOut({
-    fetchOptions: {
-      onSuccess: () => {
-        alert("Redirecting!");
-        redirect('/login');
+      fetchOptions: {
+        onSuccess: () => {
+          alert("Redirecting!");
+          redirect("/login");
+        },
       },
-    },
-});
-
+    });
   }
   const [isBurger, setIsBurger] = useState(true);
   const [isMenu, setIsMenu] = useState(false);
@@ -44,16 +43,24 @@ export function Logout() {
     <div className={styles.burgerMenu}>
       <BurgerButton onClick={handleOpen} className={styles.burgerButton} />
       <div
-       style={{ display: isMenu ? "block" : "none" }}
-      className={styles.modal}>
-      <div className={styles.content}>
-        <CloseButton onClick={handleClose} className={styles.closeButton} />
-        <div className={styles.modalTitle}>Session Management</div>
-        <div className={styles.actionContainer}>
-          <button onClick={handleZong} className={styles.actionButton}>Zong</button>
-          <button onClick={handleLogout} className={styles.actionButton}>Logout</button>
+        style={{ display: isMenu ? "block" : "none" }}
+        className={styles.modal}
+      >
+        <div className={styles.content}>
+          <CloseButton onClick={handleClose} className={styles.closeButton} />
+          <div className={styles.modalTitle}>Session Management</div>
+          <div className={styles.actionContainer}>
+            <button onClick={handleUser} className={styles.actionButton}>
+              UserID
+            </button>
+            <button onClick={handleZong} className={styles.actionButton}>
+              Zong
+            </button>
+            <button onClick={handleLogout} className={styles.actionButton}>
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
