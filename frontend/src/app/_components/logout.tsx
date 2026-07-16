@@ -2,7 +2,7 @@
 
 import { CloseButton, BurgerButton } from "@/app/_components/ButtonsIcon";
 import { authClient } from "../_lib/auth-client";
-import { getUserId } from "../api/users-api";
+import { getUserId } from "@/app/_api/users-api";
 import { useState } from "react";
 import styles from "./logout.module.css";
 import { redirect } from "next/navigation";
@@ -18,14 +18,13 @@ export function Logout() {
   }
   async function handleLogout() {
     await authClient.signOut({
-    fetchOptions: {
-      onSuccess: () => {
-        alert("Redirecting!");
-        redirect('/login');
+      fetchOptions: {
+        onSuccess: () => {
+          alert("Redirecting!");
+          redirect("/login");
+        },
       },
-    },
-});
-
+    });
   }
   const [isBurger, setIsBurger] = useState(true);
   const [isMenu, setIsMenu] = useState(false);
@@ -44,17 +43,24 @@ export function Logout() {
     <div className={styles.burgerMenu}>
       <BurgerButton onClick={handleOpen} className={styles.burgerButton} />
       <div
-       style={{ display: isMenu ? "block" : "none" }}
-      className={styles.modal}>
-      <div className={styles.content}>
-        <CloseButton onClick={handleClose} className={styles.closeButton} />
-        <div className={styles.modalTitle}>Session Management</div>
-        <div className={styles.actionContainer}>
-          <button onClick={handleUser} className={styles.actionButton}>UserID</button>
-          <button onClick={handleZong} className={styles.actionButton}>Zong</button>
-          <button onClick={handleLogout} className={styles.actionButton}>Logout</button>
+        style={{ display: isMenu ? "block" : "none" }}
+        className={styles.modal}
+      >
+        <div className={styles.content}>
+          <CloseButton onClick={handleClose} className={styles.closeButton} />
+          <div className={styles.modalTitle}>Session Management</div>
+          <div className={styles.actionContainer}>
+            <button onClick={handleUser} className={styles.actionButton}>
+              UserID
+            </button>
+            <button onClick={handleZong} className={styles.actionButton}>
+              Zong
+            </button>
+            <button onClick={handleLogout} className={styles.actionButton}>
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
