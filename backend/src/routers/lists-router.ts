@@ -1,7 +1,7 @@
 import express from "express";
 import { List } from "../repositories/list.js";
 import { InferSelectModel } from "drizzle-orm";
-import { list as listschema } from "../db/schema.js";
+import { list as listschema, priority } from "../db/schema.js";
 import * as list from "../repositories/list.js";
 import { z } from "zod";
 import { Request, Response } from "express";
@@ -68,8 +68,9 @@ export const userUpdateSchema = z.object({
 export type ListSchema = InferSelectModel<typeof listschema>;
 const taskQuerySchema = z.object({
   done: z.boolean().optional(),
-  sort: z.string().optional(),
+  sort: z.enum(["title", "deadline", "priority"]).optional(),
 });
+export type TaskSortField = z.infer<typeof taskQuerySchema>["sort"];
 
 router.get("/:listId", async (req: Request, res: Response, next) => {
   try {
@@ -78,7 +79,6 @@ router.get("/:listId", async (req: Request, res: Response, next) => {
     const foundList = await getListById(id, userId);
     res.json(foundList);
   } catch (error) {
-    //return res.status(404).json({ message: "no list found" });
     next(error);
   }
 });
@@ -99,8 +99,8 @@ router.delete("/:listId", async (req: Request, res: Response, next) => {
   try {
     const id = zodValidation(uuidSchema, req.params.ListId);
     const userId = zodValidation(uuidSchema, req.params.userId);
-    const delist = await deleteListById(id, userId);
-    res.json(delist);
+    await deleteListById(id, userId);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

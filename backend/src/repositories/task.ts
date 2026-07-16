@@ -1,5 +1,6 @@
 import { db } from "./db.js";
 import { task as tasks } from "../db/schema.js";
+import { TaskSortField } from "../routers/lists-router.js";
 import { asc, eq, and, desc, SQL } from "drizzle-orm";
 import {
   Task,
@@ -36,24 +37,28 @@ export async function getTasksForList(
   ListId: string,
   userId: string,
   done?: boolean,
-  sort?: string,
+  sort?: TaskSortField,
 ) {
-  return db.query.task.findMany({
-    where: (task, { eq, and }) => {
-      const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
+  try {
+    const tasksFromList = await db.query.task.findMany({
+      where: (task, { eq, and }) => {
+        const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
 
-      if (done !== undefined) {
-        conditions.push(eq(task.done, done));
-      }
-      return and(...conditions);
-    },
-    orderBy: (task, { asc }) => {
-      if (sort !== undefined) {
-        return [asc(task[sort as keyof typeof task])];
-      }
-      return [];
-    },
-  });
+        if (done !== undefined) {
+          conditions.push(eq(task.done, done));
+        }
+        return and(...conditions);
+      },
+      orderBy: (task, { asc }) => {
+        if (sort !== undefined) {
+          return [asc(task[sort as keyof typeof task])];
+        }
+        return [];
+      },
+    });
+  } catch (error) {
+    throw mapDatabaseError(error);
+  }
 }
 
 export async function getTask(userId: string, taskId: string): Promise<Task> {
