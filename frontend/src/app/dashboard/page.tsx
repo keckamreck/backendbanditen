@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import Head from "next/head";
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { List } from "@/app/_models/list";
 import PopupWithInput from "@/app/_components/popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,8 +10,14 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { getLists, getTasks, newList } from "@/app/_lib/demo";
-import { Task } from "@/app/_models/task";
+import {
+  newList,
+  getLists,
+  getDueTask,
+  getListsBySearch,
+} from "@/app/api/lists-api";
+import { ListReal as List } from "@/app/_models/list";
+import { TaskReal as Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
 import CategorySort from "../_components/CategorySort";
@@ -22,7 +27,6 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [dueTask, setDueTask] = useState<Task | null>(null);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
@@ -37,67 +41,39 @@ export default function DashboardPage() {
   const favourites = filteredLists.filter((l) => l.isFavourite);
   const others = filteredLists.filter((l) => !l.isFavourite);
 
+  //Get Lists and Due Task
   useEffect(() => {
-    const initialLists = getLists();
-    setLists(initialLists);
-    const initialTasks = getTasks();
-    setTasks(initialTasks);
-    console.log("Lists initialized:", initialLists);
-    console.log("Tasks initialized:", initialTasks);
-  }, []);
-
-  useEffect(() => {
-    const getDueTask = () => {
-      const filteredTasks = tasks.filter(
-        (task) => task.deadline != undefined && !task.done,
-      );
-      const sortedTasks = [...filteredTasks].sort((a, b) => {
-        return (a.deadline?.getTime() ?? 0) - (b.deadline?.getTime() ?? 0);
-      });
-      setDueTask(sortedTasks[0]);
+    const fetchData = () => {
+      getLists().then((lists) => setLists(lists));
+      getDueTask().then((task) => setDueTask(task));
     };
-
-    const timer = setInterval(getDueTask, 60000);
-    getDueTask();
+    fetchData();
+    const timer = setInterval(fetchData, 60000);
     return () => clearInterval(timer);
-  }, [tasks]);
+  }, [update]);
 
+  //Validate the Due Task
   useEffect(() => {
-    const getListsFromDemo = () => {
-      setLists(getLists());
-    };
-
-    const timer = setInterval(getListsFromDemo, 60000);
-    return () => clearInterval(timer);
-  }, [lists, update]);
-
-  useEffect(() => {
-    console.log("Due task updated:", dueTask);
     const getDueTaskTime = () => {
       const timestamp = new Date();
       if (dueTask !== null && dueTask != undefined) {
-        if (dueTask.deadline !== null) {
-          console.log("timestamp:", timestamp);
-          console.log("dueTask.deadline:", dueTask.deadline);
-          // if (timestamp.getFullYear() === dueTask.deadline.getFullYear()) {
-          // }
+        if (dueTask.deadline !== null && dueTask.deadline !== undefined) {
+          //Constants
+          const deadlineDate = new Date(dueTask.deadline);
           const timestampInDays = timestamp.getTime() / 86400000;
-          const dueTaskInDays = dueTask.deadline.getTime() / 86400000;
-
-          // console.log(timestamp.getTime());
-          if (timestampInDays === dueTaskInDays) {
+          const dueTaskInDays = deadlineDate.getTime() / 86400000;
+          const ceilTimeLeft = Math.ceil(dueTaskInDays - timestampInDays);
+          const floorTimeLeft = Math.floor(dueTaskInDays - timestampInDays);
+          //Check how much time is left
+          if (dueTaskInDays === timestampInDays) {
             setDueTaskTime("Heute fällig");
-          } else if (
-            Math.floor(timestampInDays) + 1 ===
-            Math.floor(dueTaskInDays)
-          ) {
+          } else if (ceilTimeLeft === 1) {
             setDueTaskTime("Morgen fällig");
           } else {
-            const timeLeft = Math.floor(dueTaskInDays - timestampInDays);
-            if (timeLeft < 1) {
+            if (floorTimeLeft < 1) {
               setDueTaskTime(`Heute fällig`);
             } else {
-              setDueTaskTime(`In ${timeLeft} Tagen fällig`);
+              setDueTaskTime(`In ${ceilTimeLeft} Tagen fällig`);
             }
           }
         }
@@ -141,13 +117,12 @@ export default function DashboardPage() {
       )}
       <main className={styles.main}>
         <div className={styles.pageContainer}>
-          
           {/* Header mit Suchleiste links und Add-Button rechts */}
           <div className={styles.header}>
             <div className={styles.searchSection}>
               <SearchBar />
             </div>
-            
+
             <div className={styles.addButtonSection}>
               <button
                 title="addList"
@@ -162,6 +137,7 @@ export default function DashboardPage() {
 
           {/* Search Dropdown */}
           {isSearchOpen && (
+            //Listen gefunden
             <div className={styles.searchDropdown}>
               {searchResults.length > 0 ? (
                 <div className={styles.searchResultsContainer}>
@@ -180,6 +156,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
               ) : (
+                //Keine Listen gefunden
                 <div className={styles.noResults}>Keine Listen gefunden</div>
               )}
             </div>
@@ -187,6 +164,7 @@ export default function DashboardPage() {
         </div>
         {/* Section for due Task */}
         <DueTaskSection />
+        {/* Section for Category Sort */}
         <CategorySort onCategorySelect={setSelectedCategory} />
         <div className={styles.cardContainer}>
           {favourites.map((list) => (
@@ -224,7 +202,7 @@ export default function DashboardPage() {
     return (
       <form
         className={styles.searchForm}
-        onSubmit={(e) => handleSearchSubmit(e)}
+        onSubmit={(form) => handleSearchSubmit(form)}
       >
         <div className={styles.searchInputWrapper}>
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
@@ -239,38 +217,37 @@ export default function DashboardPage() {
     );
   }
 
-  function gotoList(listKey: number) {
-    router.push("/list/" + listKey);
+  function gotoList(listId: string) {
+    router.push("/list/" + listId);
   }
   function handleNewListButton(name: string) {
-    newList(name);
-    if (update) {
-      triggerUpdate(false);
-    }
-    triggerUpdate(true);
+    newList(name).then(() => {
+      triggerUpdate((prev) => !prev);
+    });
   }
 
   function DueTaskSection() {
-    if (dueTask) {
+    if (dueTask?.deadline) {
+      const deadlineDate = new Date(dueTask.deadline);
       return (
         <div className={styles.todaySection}>
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={() => gotoList(dueTask?.listKey)}
+            onClick={() => gotoList(dueTask?.id)}
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
-                <span className={styles.dueTitle}>{dueTask?.title}</span>
+                <span className={styles.dueTitle}>{dueTask.title}</span>
                 <span className={styles.dueDate}>
-                  {dueTask?.deadline?.toLocaleDateString("de-DE", {
+                  {deadlineDate.toLocaleDateString("de-DE", {
                     weekday: "long",
                     day: "numeric",
                     month: "long",
                     year: "numeric",
                   })}
                   ,{" "}
-                  {dueTask?.deadline?.toLocaleTimeString("de-DE", {
+                  {deadlineDate.toLocaleTimeString("de-DE", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
@@ -286,23 +263,16 @@ export default function DashboardPage() {
     }
   }
 
-  function searchLists(s: string) {
-    const results = lists.filter((list) =>
-      list.title.toLowerCase().includes(s.toLowerCase()),
-    );
-    setSearchResults(results);
-    setIsSearchOpen(true);
-  }
-
   function handleSearchSubmit(e: FormEvent) {
-    // e.preventDefault();
+    e.preventDefault();
 
     const input = document.getElementById("searchInput") as HTMLInputElement;
 
     if (input && input.value.trim()) {
-      // console.log("Form submitted with name:", input.value);
-
-      searchLists(input.value.trim());
+      getListsBySearch(input.value.trim()).then((lists) => {
+        setSearchResults(lists);
+        setIsSearchOpen(true);
+      });
       input.value = "";
     } else {
       alert("Bitte geben Sie einen Namen ein!");

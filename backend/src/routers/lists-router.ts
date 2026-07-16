@@ -11,48 +11,55 @@ import {
 } from "../repositories/list.js";
 
 import { getTasksForList } from "../repositories/task.js";
+import { zodValidation } from "../validation/zod-validation.js";
 
 export const router = express.Router({ mergeParams: true });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
+  const zodSchema = z.object({
+    title: z.string(),
+    isFavorite: z.boolean(),
+    categoryId: z.uuid().optional(),
+  });
+
+  const validData = zodValidation(zodSchema, req.body);
+
   const data: List = {
     id: crypto.randomUUID(),
-    title: req.body.title,
-    isFavorite: req.body.isFavorite,
-    userId: req.body.userId,
-    categoryId: req.body.categoryId ?? null,
+    title: validData.title,
+    isFavorite: validData.isFavorite,
+    //@ts-ignore
+    userId: req.params.userId,
+    categoryId: validData.categoryId ?? null,
   };
-
-  await list.newList(data).then((result) => {
-    res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
-  });
+  console.log(data);
+  try {
+    await list.newList(data).then((result) => {
+      res.status(201).json(result); //result wird für einfachere Tests in Postman zurückgegeben
+    });
+  } catch (err) {
+    console.log("Fehler beim Datenbank abruf");
+    next(err);
+  }
 });
 
-router.get("", async (req, res) => {
+router.get("", async (req, res, next) => {
   const querySchema = z.object({
     search: z.string().optional(),
     isFavorite: z.stringbool().optional(),
     categoryId: z.string().optional(),
   });
 
-  const query = querySchema.safeParse(req.query);
-  if (!query.success) {
-    res.status(400);
-  } else {
-    const search = query.data;
-    console.log(search);
-    try {
-      //@ts-ignore
-      list.getListsBySearch(search, req.params.userId).then((result) => {
-        //@ts-ignore
-        if (result.error != undefined) {
-          throw Error("Error by getting lists.");
-        }
-        res.status(200).json(result);
-      });
-    } catch (err) {
-      res.status(500);
-    }
+  const query = zodValidation(querySchema, req.query);
+
+  try {
+    //@ts-ignore
+    list.getListsBySearch(query, req.params.userId).then((result) => {
+      res.status(200).json(result);
+    });
+  } catch (err) {
+    console.log("Fehler beim Datenbank abruf");
+    next(err);
   }
 });
 
