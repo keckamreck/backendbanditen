@@ -6,7 +6,7 @@ import { TaskFrontend } from "@/app/_models/task";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { List } from "@/app/_models/list";
-import { getTask, editTask, deleteTask } from "@/app/api/tasks-api";
+import { getTask, editTask, deleteTask } from "@/app/_api/tasks-api";
 
 export default function Page() {
   const id: { id: string } = useParams<{ id: string }>();

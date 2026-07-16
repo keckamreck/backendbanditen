@@ -2,7 +2,7 @@
 
 import { CloseButton, BurgerButton } from "@/app/_components/ButtonsIcon";
 import { authClient } from "../_lib/auth-client";
-import { getUserId } from "../api/users-api";
+import { getUserId } from "@/app/_api/users-api";
 import { useState } from "react";
 import styles from "./logout.module.css";
 import { redirect } from "next/navigation";

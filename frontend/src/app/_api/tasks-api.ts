@@ -1,7 +1,7 @@
-import { getUserId } from "@/app/api/users-api";
+import { getUserId } from "@/app/_api/users-api";
 import config from "@/app/_lib/config";
 import { TaskFrontend, TaskBackend } from "@/app/_models/task";
-import { apiError } from "@/app/api/errorHandler";
+import { apiError } from "@/app/_api/errorHandler";
 
 export async function getTask(
   taskId: string,
