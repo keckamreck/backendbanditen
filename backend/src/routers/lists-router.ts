@@ -63,18 +63,18 @@ const uuidSchema = z.uuid();
 export const userUpdateSchema = z.object({
   title: z.string().optional(),
   isFavorite: z.boolean().optional(),
-  categoryId: z.uuid().optional(),
+  categoryId: z.uuid().optional().nullable(),
 });
 export type ListSchema = InferSelectModel<typeof listschema>;
 const taskQuerySchema = z.object({
-  done: z.boolean().optional(),
+  done: z.stringbool().optional(),
   sort: z.enum(["title", "deadline", "priority"]).optional(),
 });
 export type TaskSortField = z.infer<typeof taskQuerySchema>["sort"];
 
 router.get("/:listId", async (req: Request, res: Response, next) => {
   try {
-    const id = zodValidation(uuidSchema, req.params.ListId);
+    const id = zodValidation(uuidSchema, req.params.listId);
     const userId = zodValidation(uuidSchema, req.params.userId);
     const foundList = await getListById(id, userId);
     res.json(foundList);
@@ -85,7 +85,7 @@ router.get("/:listId", async (req: Request, res: Response, next) => {
 
 router.patch("/:listId", async (req: Request, res: Response, next) => {
   try {
-    const id = zodValidation(uuidSchema, req.params.ListId);
+    const id = zodValidation(uuidSchema, req.params.listId);
     const userId = zodValidation(uuidSchema, req.params.userId);
     const data = zodValidation(userUpdateSchema, req.body);
     const upList = await updateListById(id, userId, data);
@@ -97,7 +97,7 @@ router.patch("/:listId", async (req: Request, res: Response, next) => {
 
 router.delete("/:listId", async (req: Request, res: Response, next) => {
   try {
-    const id = zodValidation(uuidSchema, req.params.ListId);
+    const id = zodValidation(uuidSchema, req.params.listId);
     const userId = zodValidation(uuidSchema, req.params.userId);
     await deleteListById(id, userId);
     res.status(204).send();
@@ -108,7 +108,7 @@ router.delete("/:listId", async (req: Request, res: Response, next) => {
 
 router.get("/:listId/tasks", async (req: Request, res: Response, next) => {
   try {
-    const id = zodValidation(uuidSchema, req.params.ListId);
+    const id = zodValidation(uuidSchema, req.params.listId);
     const userId = zodValidation(uuidSchema, req.params.userId);
     const { done, sort } = zodValidation(taskQuerySchema, req.query);
     const tasks = await getTasksForList(id, userId, done, sort);

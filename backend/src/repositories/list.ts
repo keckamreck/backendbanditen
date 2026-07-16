@@ -9,12 +9,6 @@ import { userUpdateSchema } from "../routers/lists-router.js";
 
 export type List = typeof lists.$inferInsert;
 
-// export type ListUpdateInput = {
-//   title?: string;
-//   isFavorite?: boolean;
-//   categoryId?: string;
-// };
-
 export async function getListById(ListId: string, userId: string) {
   try {
     const result = await db.query.list.findFirst({
@@ -51,9 +45,10 @@ export async function updateListById(
 
 export async function deleteListById(ListId: string, userId: string) {
   try {
-    const deleted = await db
+    const [deleted] = await db
       .delete(lists)
-      .where(and(eq(lists.id, ListId), eq(lists.userId, userId)));
+      .where(and(eq(lists.id, ListId), eq(lists.userId, userId)))
+      .returning();
     if (!deleted) {
       throw new NotFoundError("List not found");
     }

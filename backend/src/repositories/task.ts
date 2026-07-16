@@ -40,7 +40,7 @@ export async function getTasksForList(
   sort?: TaskSortField,
 ) {
   try {
-    const tasksFromList = await db.query.task.findMany({
+    return await db.query.task.findMany({
       where: (task, { eq, and }) => {
         const conditions = [eq(task.listId, ListId), eq(task.userId, userId)];
 
@@ -51,7 +51,7 @@ export async function getTasksForList(
       },
       orderBy: (task, { asc }) => {
         if (sort !== undefined) {
-          return [asc(task[sort as keyof typeof task])];
+          return [asc(task[sort])];
         }
         return [];
       },
