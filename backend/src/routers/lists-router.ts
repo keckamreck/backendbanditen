@@ -6,7 +6,6 @@ import * as list from "../repositories/list.js";
 import { z } from "zod";
 import { Request, Response } from "express";
 import {
-  type ListUpdateInput,
   getListById,
   deleteListById,
   updateListById,
