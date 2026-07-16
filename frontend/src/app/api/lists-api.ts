@@ -1,22 +1,20 @@
-import { apiError } from "@/app/api/error";
+import { apiError } from "@/app/api/errorHandler";
 import { getUserId } from "@/app/api/users-api";
+import config from "@/app/_lib/config";
 
 export async function newList(title: string) {
   try {
     const userId = await getUserId();
-    const response = await fetch(
-      `http://localhost:8097/users/${userId}/lists`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: title,
-          isFavorite: false,
-        }),
+    const response = await fetch(`${config.apiUrl}users/${userId}/lists`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        title: title,
+        isFavorite: false,
+      }),
+    });
     if (!response.ok) {
       throw new Error();
     }
@@ -28,7 +26,7 @@ export async function newList(title: string) {
 export async function getLists() {
   try {
     const userId = await getUserId();
-    const response = await fetch(`http://localhost:8097/users/${userId}/lists`);
+    const response = await fetch(`${config.apiUrl}users/${userId}/lists`);
     if (!response.ok) {
       throw new Error();
     }
@@ -43,7 +41,7 @@ export async function getDueTask() {
   try {
     const userId = await getUserId();
     const response = await fetch(
-      `http://localhost:8097/users/${userId}/tasks?done=false&sort=deadline&direction=asc&limit=1`,
+      `${config.apiUrl}users/${userId}/tasks?done=false&sort=deadline&direction=asc&limit=1`,
     );
     if (!response.ok) {
       throw new Error();
@@ -60,8 +58,9 @@ export async function getDueTask() {
 export async function getListsBySearch(searchTerm: string) {
   try {
     const userId = await getUserId();
+
     const response = await fetch(
-      `http://localhost:8097/users/${userId}/lists?search=${searchTerm}`,
+      `${config.apiUrl}users/${userId}/lists?search=${searchTerm}`,
     );
     if (!response.ok) {
       throw new Error();
