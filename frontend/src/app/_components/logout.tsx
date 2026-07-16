@@ -14,7 +14,7 @@ export function Logout() {
   }
   async function handleZong() {
     const { data: session } = await authClient.getSession();
-    alert(JSON.stringify(session, null, " "));
+    prompt("User data:", JSON.stringify(session, null, " "));
   }
   async function handleLogout() {
     await authClient.signOut({
@@ -50,6 +50,7 @@ export function Logout() {
         <CloseButton onClick={handleClose} className={styles.closeButton} />
         <div className={styles.modalTitle}>Session Management</div>
         <div className={styles.actionContainer}>
+          <button onClick={handleUser} className={styles.actionButton}>UserID</button>
           <button onClick={handleZong} className={styles.actionButton}>Zong</button>
           <button onClick={handleLogout} className={styles.actionButton}>Logout</button>
         </div>
