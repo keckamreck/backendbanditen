@@ -19,7 +19,6 @@ app.all("/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 app.use("/users", usersRouter);
 app.use("/users/:userId", userContextRouter);
-app.use("/", categoriesRouter);
 
 app.listen(8097, () => {
   console.log("Server gestartet");
