@@ -1,6 +1,6 @@
 import { Priority } from "@/app/_models/task";
 
-export function StringToPriority(priority: string): Priority {
+export function stringToPriority(priority: string): Priority {
   const priorityAsNumber: number = parseInt(priority);
   if (priorityAsNumber < 0 || priorityAsNumber > 2) {
     throw new Error();
@@ -9,7 +9,7 @@ export function StringToPriority(priority: string): Priority {
   }
 }
 
-export function PriorityToString(priority: Priority): "0" | "1" | "2" {
+export function priorityToString(priority: Priority): "0" | "1" | "2" {
   const priorityAsString: string = priority.toString();
   if (
     priorityAsString === "0" ||

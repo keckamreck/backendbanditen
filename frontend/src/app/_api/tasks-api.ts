@@ -1,7 +1,14 @@
 import { apiError } from "@/app/_api/errorHandler";
 import { getUserId } from "@/app/_api/users-api";
 import config from "@/app/_lib/config";
-import { TaskFrontend, TaskBackend } from "@/app/_models/task";
+import {
+  TaskFrontend,
+  TaskBackend,
+  TaskBackendWithoutId,
+  TaskFrontendWithoutId,
+} from "@/app/_models/task";
+import { toTask, toApiTask } from "@/app/_mappers/task.mapper";
+import { fetchApi } from "@/app/_api/fetcher";
 
 export async function getDueTask() {
   try {
@@ -21,26 +28,50 @@ export async function getDueTask() {
   }
 }
 
-export async function getTask(
-  taskId: string,
-): Promise<TaskFrontend | undefined> {
-  try {
-    const userId = await getUserId();
-
-    const result = await fetch(
-      config.apiUrl + "users/" + userId + "/tasks/" + taskId,
-    );
-    if (!result.ok) {
-      throw new Error();
-    } else {
-      return await result.json();
-    }
-  } catch (error) {
-    console.error(error);
-    apiError();
+export async function getTask(taskId: string): Promise<TaskFrontend | false> {
+  const result: TaskBackend | "successful" | undefined =
+    await fetchApi<TaskBackend>(`/tasks/${taskId}`, "GET");
+  if (result !== undefined && result !== "successful") {
+    return toTask(result);
+  } else {
+    return false;
   }
 }
 
-export function editTask(id: string, task: Partial<TaskFrontend>) {}
+export async function createTask(
+  task: TaskFrontendWithoutId,
+): Promise<TaskFrontend | false> {
+  const taskFormattedForBackend: TaskBackendWithoutId | Partial<TaskBackend> =
+    toApiTask(task);
+  const result: TaskBackend | "successful" | undefined =
+    await fetchApi<TaskBackend>(`/tasks`, "POST", taskFormattedForBackend);
+  if (result !== undefined && result !== "successful") {
+    return toTask(result);
+  } else {
+    return false;
+  }
+}
 
-export function deleteTask(id: string) {}
+export async function editTask(
+  taskId: string,
+  changes: Partial<TaskFrontend>,
+): Promise<TaskFrontend | false> {
+  const changesFormattedForBackend: Partial<TaskBackend> = toApiTask(changes);
+  const result: TaskBackend | "successful" | undefined =
+    await fetchApi<TaskBackend>(
+      `/tasks/${taskId}`,
+      "PATCH",
+      changesFormattedForBackend,
+    );
+  if (result !== undefined && result !== "successful") {
+    return toTask(result);
+  } else {
+    return false;
+  }
+}
+
+export async function deleteTask(id: string): Promise<true | false> {
+  const result: TaskBackend | "successful" | undefined =
+    await fetchApi<TaskBackend>(`/tasks/${id}`, "DELETE");
+  return result === "successful";
+}

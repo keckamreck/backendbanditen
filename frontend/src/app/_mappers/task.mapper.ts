@@ -1,29 +1,32 @@
-import { TaskBackend, TaskFrontend } from "@/app/_models/task";
 import {
-  StringToPriority,
-  PriorityToString,
+  TaskBackend,
+  TaskBackendWithoutId,
+  TaskFrontend,
+  TaskFrontendWithoutId,
+} from "@/app/_models/task";
+import {
+  stringToPriority,
+  priorityToString,
 } from "@/app/_mappers/priority.mapper";
 
 export function toTask(task: TaskBackend): TaskFrontend {
   return {
     id: task.id,
     title: task.title,
-    note: task.note,
     deadline: task.deadline === null ? null : new Date(task.deadline),
-    priority: StringToPriority(task.priority),
-    listKey: task.listKey,
+    listId: task.listId,
+    priority: stringToPriority(task.priority),
+    note: task.note,
     done: task.done,
   };
 }
 
-export function toApiTask(task: TaskFrontend): TaskBackend {
+export function toApiTask(
+  task: Partial<TaskFrontend> | TaskFrontendWithoutId,
+): Partial<TaskBackend> | TaskBackendWithoutId {
   return {
-    id: task.id,
-    title: task.title,
-    note: task.note,
-    deadline: task.deadline === null ? null : task.deadline.toDateString(),
-    priority: PriorityToString(task.priority),
-    listKey: task.listKey,
-    done: task.done,
+    ...task,
+    priority:
+      task.priority === undefined ? undefined : priorityToString(task.priority),
   };
 }

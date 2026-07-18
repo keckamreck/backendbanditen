@@ -9,8 +9,9 @@ export function zodValidation<Schema extends ZodType>(
   if (!result.success) {
     throw new ValidationError(
       result.error.issues
-        .map((error): string => error.path.join(", ") + ": " + error.message)
-        .join("; "),
+        .map((error): string => error.path.join(", ") + " " + error.message)
+        .join("; ")
+        .trim(),
     );
   }
   return result.data;
