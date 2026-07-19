@@ -1,61 +1,56 @@
 "use client";
 
 import EditorForm from "@/app/_components/EditorForm";
-import { getLists, getTasks, addTask } from "@/app/_lib/demo";
-import { Priority, TaskFormattedForEditor, Task } from "@/app/_models/task";
-import { List } from "@/app/_models/list";
-import { useState } from "react";
+import { getLists } from "@/app/_api/lists-api";
+import {
+  Priority,
+  TaskFrontend,
+  TaskFrontendWithoutId,
+} from "@/app/_models/task";
+import { ListReal } from "@/app/_models/list";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { createTask } from "@/app/_api/tasks-api";
 
 export default function Page() {
-  const listId: { listId: string } = useParams<{ listId: string }>();
-  const [dateToday] = useState<Date>(new Date());
-  const [defaultDate] = useState<Date>(
-    new Date(
-      dateToday.getFullYear(),
-      dateToday.getMonth(),
-      dateToday.getDate() + 1,
-      12,
-      30,
-    ),
-  );
-  const [lists] = useState<List[]>(getLists());
-  const [tasks] = useState<Task[]>(getTasks());
-  const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
-    title: "",
-    enterDeadline: false,
-    deadline: defaultDate,
-    idSelectedList: parseInt(listId.listId),
-    selectedPriority: Priority.Low,
-    notes: "",
-  });
-  function handleSave(task: TaskFormattedForEditor): void {
-    let highestId: number = 0;
-    for (const element of tasks) {
-      if (element.id > highestId) {
-        highestId = element.id;
+  const { listId }: { listId: string } = useParams<{ listId: string }>();
+  const [lists, setLists] = useState<ListReal[]>();
+  const [initialTask, setInitialTask] = useState<TaskFrontendWithoutId>();
+
+  async function handleSave(
+    task: TaskFrontendWithoutId,
+  ): Promise<true | false> {
+    const result: TaskFrontend | false = await createTask(task);
+    return !!result;
+  }
+  useEffect((): void => {
+    async function fetchListsAndSetInitialTask(): Promise<void> {
+      const lists: ListReal[] | undefined = await getLists();
+      setLists(lists);
+      if (lists) {
+        setInitialTask({
+          title: "",
+          deadline: null,
+          listId: lists.some((value: ListReal): boolean => value.id === listId)
+            ? listId
+            : lists[0].id,
+          priority: Priority.Low,
+          note: null,
+          done: false,
+        });
       }
     }
+    fetchListsAndSetInitialTask();
+  }, [listId]);
 
-    const result: Task = {
-      id: highestId + 1,
-      title: task.title,
-      deadline: task.enterDeadline ? task.deadline : null,
-      priority: task.selectedPriority,
-      listKey: task.idSelectedList,
-      note: task.notes === "" ? null : task.notes,
-      done: false,
-    };
-    addTask(result);
+  if (lists && initialTask) {
+    return (
+      <EditorForm
+        initialValues={initialTask}
+        lists={lists}
+        saveAction={handleSave}
+        deleteButtonVisible={false}
+      />
+    );
   }
-
-  return (
-    <EditorForm
-      initialValues={initialTaskForEditor}
-      taskDone={false}
-      lists={lists}
-      saveAction={handleSave}
-      deleteButtonVisible={false}
-    />
-  );
 }

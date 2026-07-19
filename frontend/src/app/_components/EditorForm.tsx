@@ -16,56 +16,66 @@ import Calendar from "@/app/_components/Calendar";
 import { PriorityButton } from "@/app/_components/PriorityButton";
 import { Button } from "@/app/_components/Buttons";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { List } from "@/app/_models/list";
-import { TaskFormattedForEditor, Priority } from "@/app/_models/task";
+import { ListReal } from "@/app/_models/list";
+import { Priority, TaskFrontendWithoutId } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 
 interface EditorFormProps {
-  initialValues: TaskFormattedForEditor;
-  taskDone: boolean;
-  lists: List[];
-  saveAction: (task: TaskFormattedForEditor) => void;
+  initialValues: TaskFrontendWithoutId;
+  lists: ListReal[];
+  saveAction: (task: TaskFrontendWithoutId) => Promise<true | false>;
   deleteButtonVisible: boolean;
-  deleteAction?: () => void;
+  deleteAction?: () => Promise<true | false>;
 }
 
 export default function EditorForm({
   initialValues,
-  taskDone,
   lists,
   deleteButtonVisible,
   saveAction,
   deleteAction,
 }: EditorFormProps) {
   const router = useRouter();
+  const [showEditor, setShowEditor] = useState<boolean>(true);
+  const [dateToday] = useState<Date>(new Date());
   const [title, setTitle] = useState<string>(initialValues.title);
   const [enterDeadline, setEnterDeadline] = useState<boolean>(
-    initialValues.enterDeadline,
+    initialValues.deadline !== null,
   );
   const [calendarVisible, setCalendarVisible] =
     useState<boolean>(enterDeadline);
-  const [date, setDate] = useState<Date>(initialValues.deadline);
-  const [priority, setPriority] = useState<Priority>(
-    initialValues.selectedPriority,
+  const [date, setDate] = useState<Date>(
+    initialValues.deadline === null
+      ? new Date(
+          dateToday.getFullYear(),
+          dateToday.getMonth(),
+          dateToday.getDate() + 1,
+          12,
+          30,
+        )
+      : initialValues.deadline,
   );
-  const [idSelectedList, setIdSelectedList] = useState<number>(
-    initialValues.idSelectedList,
+  const [priority, setPriority] = useState<Priority>(initialValues.priority);
+  const [idSelectedList, setIdSelectedList] = useState<string>(
+    initialValues.listId,
   );
-  const [notes, setNotes] = useState<string>(initialValues.notes);
+  const [notes, setNotes] = useState<string>(
+    initialValues.note === null ? "" : initialValues.note,
+  );
   const [showModalConfirmGoBack, setShowModalConfirmGoBack] =
     useState<boolean>(false);
   const [showModalConfirmDelete, setShowModalConfirmDelete] =
     useState<boolean>(false);
 
-  function getCurrentValues(): TaskFormattedForEditor {
+  function getCurrentValues(): TaskFrontendWithoutId {
     return {
       title: title.trim(),
-      enterDeadline: enterDeadline,
-      deadline: date,
-      idSelectedList: idSelectedList,
-      selectedPriority: priority,
-      notes: notes.trim(),
+      deadline: enterDeadline ? date : null,
+      listId: idSelectedList,
+      priority: priority,
+      note: notes.trim().length > 0 ? notes.trim() : null,
+      done: initialValues.done,
     };
   }
 
@@ -129,29 +139,43 @@ export default function EditorForm({
   }
 
   function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>): void {
-    const selectedList: List | undefined = lists.find(
-      (list: List) => list.title === e.target.value,
+    const selectedList: ListReal | undefined = lists.find(
+      (list: ListReal): boolean => list.id === e.target.value,
     );
     if (selectedList !== undefined) {
       setIdSelectedList(selectedList.id);
     }
   }
 
-  function saveTask(): void {
-    const currentValues: TaskFormattedForEditor = getCurrentValues();
-    saveAction(currentValues);
-    handleBackNavigation(idSelectedList);
-  }
-
-  function deleteTask(): void {
-    if (deleteAction !== undefined) {
-      deleteAction();
-      handleBackNavigation(initialValues.idSelectedList);
+  async function saveTask(): Promise<void> {
+    const currentValues: TaskFrontendWithoutId = getCurrentValues();
+    if (JSON.stringify(currentValues) === JSON.stringify(initialValues)) {
+      handleBackNavigation(initialValues.listId);
+    } else {
+      setShowEditor(false);
+      const result: true | false = await saveAction(currentValues);
+      if (result) {
+        handleBackNavigation(idSelectedList);
+      } else {
+        setShowEditor(true);
+      }
     }
   }
 
-  function handleBackNavigation(listIdToNavigate: number): void {
-    if (taskDone) {
+  async function deleteTask(): Promise<void> {
+    if (deleteAction !== undefined) {
+      setShowEditor(false);
+      const result: true | false = await deleteAction();
+      if (result) {
+        handleBackNavigation(initialValues.listId);
+      } else {
+        setShowEditor(true);
+      }
+    }
+  }
+
+  function handleBackNavigation(listIdToNavigate: string): void {
+    if (initialValues.done) {
       router.push(`/archive/${listIdToNavigate}`);
     } else {
       router.push(`/list/${listIdToNavigate}`);
@@ -159,201 +183,199 @@ export default function EditorForm({
   }
 
   function handleClickOnBackButton(): void {
-    const currentValues: TaskFormattedForEditor = getCurrentValues();
-    if (!currentValues.enterDeadline) {
-      currentValues.deadline = initialValues.deadline;
-    }
+    const currentValues: TaskFrontendWithoutId = getCurrentValues();
     if (JSON.stringify(currentValues) === JSON.stringify(initialValues)) {
-      handleBackNavigation(initialValues.idSelectedList);
+      handleBackNavigation(initialValues.listId);
     } else {
       setShowModalConfirmGoBack(true);
     }
   }
-
-  return (
-    <form
-      className={styles.form}
-      onSubmit={(e: FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        saveTask();
-      }}
-    >
-      <div className={`${styles.dflexRow} ${styles.titleComponent}`}>
-        <button
-          type="button"
-          className={styles.buttonGoBack}
-          onClick={(): void => handleClickOnBackButton()}
-        >
-          <FontAwesomeIcon
-            className={styles.iconGoBack}
-            size="2x"
-            icon={faChevronLeft}
-          />
-        </button>
-        {showModalConfirmGoBack && (
-          <Modal
-            onClose={(): void => {
-              setShowModalConfirmGoBack(false);
-            }}
-            onConfirm={(): void =>
-              handleBackNavigation(initialValues.idSelectedList)
-            }
-            title={
-              "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
-            }
-            yes={"Ja"}
-            no={"Nein"}
-          />
-        )}
-        <NameTask
-          className={`${styles.title}`}
-          value={title}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setTitle(e.target.value);
-          }}
-        />
-      </div>
-
-      <div className={`${styles.bodyForm} ${styles.dflexCol}`}>
-        <div className={`${styles.dflexRow} ${styles.labelDeadline}`}>
+  if (showEditor) {
+    return (
+      <form
+        className={styles.form}
+        onSubmit={(e: FormEvent<HTMLFormElement>): void => {
+          e.preventDefault();
+          saveTask();
+        }}
+      >
+        <div className={`${styles.dflexRow} ${styles.titleComponent}`}>
           <button
-            className={`${styles.buttonShowDeadline}`}
             type="button"
-            onClick={(): void => {
-              setEnterDeadline(!enterDeadline);
-              setCalendarVisible(!enterDeadline);
-            }}
+            className={styles.buttonGoBack}
+            onClick={(): void => handleClickOnBackButton()}
           >
             <FontAwesomeIcon
-              className={styles.iconShowDeadline}
-              icon={enterDeadline ? faSquareCheck : faSquare}
+              className={styles.iconGoBack}
+              size="2x"
+              icon={faChevronLeft}
             />
           </button>
-          <label>Fälligkeit</label>
-        </div>
-        <div
-          className={`${styles.dflexCol} ${styles[enterDeadline ? "" : "hideElement"]}`}
-        >
-          <div className={`${styles.dflexRow} ${styles.date}`}>
-            <FontAwesomeIcon
-              className={styles.iconDate}
-              size="1x"
-              icon={faCalendar}
+          {showModalConfirmGoBack && (
+            <Modal
+              onClose={(): void => {
+                setShowModalConfirmGoBack(false);
+              }}
+              onConfirm={(): void => handleBackNavigation(initialValues.listId)}
+              title={
+                "Beim Verlassen dieser Seite gehen ihre Eingaben verloren. Möchten Sie diese Seite dennoch verlassen?"
+              }
+              yes={"Ja"}
+              no={"Nein"}
             />
-            <p
-              className={`${styles.stringDate} ${styles.input}`}
-              onClick={(): void => setCalendarVisible(!calendarVisible)}
+          )}
+          <NameTask
+            className={`${styles.title}`}
+            value={title}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setTitle(e.target.value);
+            }}
+          />
+        </div>
+
+        <div className={`${styles.bodyForm} ${styles.dflexCol}`}>
+          <div className={`${styles.dflexRow} ${styles.labelDeadline}`}>
+            <button
+              className={`${styles.buttonShowDeadline}`}
+              type="button"
+              onClick={(): void => {
+                setEnterDeadline(!enterDeadline);
+                setCalendarVisible(!enterDeadline);
+              }}
             >
-              {date.toLocaleDateString("de-DE", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}
-            </p>
+              <FontAwesomeIcon
+                className={styles.iconShowDeadline}
+                icon={enterDeadline ? faSquareCheck : faSquare}
+              />
+            </button>
+            <label>Fälligkeit</label>
           </div>
           <div
-            className={`${styles.dflexCol} ${styles.calendar} ${styles[calendarVisible ? "" : "hideElement"]}`}
+            className={`${styles.dflexCol} ${styles[enterDeadline ? "" : "hideElement"]}`}
           >
-            <Calendar
-              onDateChangeAction={setDate}
-              dateToday={new Date()}
-              initialDate={date}
-            ></Calendar>
+            <div className={`${styles.dflexRow} ${styles.date}`}>
+              <FontAwesomeIcon
+                className={styles.iconDate}
+                size="1x"
+                icon={faCalendar}
+              />
+              <p
+                className={`${styles.stringDate} ${styles.input}`}
+                onClick={(): void => setCalendarVisible(!calendarVisible)}
+              >
+                {date.toLocaleDateString("de-DE", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+            <div
+              className={`${styles.dflexCol} ${styles.calendar} ${styles[calendarVisible ? "" : "hideElement"]}`}
+            >
+              <Calendar
+                onDateChangeAction={setDate}
+                dateToday={new Date()}
+                initialDate={date}
+              ></Calendar>
+            </div>
+            <div className={`${styles.dflexRow} ${styles.timePicker}`}>
+              <FontAwesomeIcon size="1x" icon={faClock} />
+              <input
+                className={`${styles.input} ${styles.time} ${styles.hours}`}
+                id="timeHours"
+                name="hour"
+                type="text"
+                value={date.getHours().toString().padStart(2, "0")}
+                maxLength={3}
+                onChange={handleChangeHour}
+              ></input>
+              :
+              <input
+                className={`${styles.input} ${styles.time} ${styles.minutes}`}
+                id="timeMinutes"
+                name="minute"
+                type="text"
+                value={date.getMinutes().toString().padStart(2, "0")}
+                maxLength={3}
+                onChange={handleChangeMinute}
+              ></input>
+              <span className={styles.textTime}>Uhr</span>
+            </div>
           </div>
-          <div className={`${styles.dflexRow} ${styles.timePicker}`}>
-            <FontAwesomeIcon size="1x" icon={faClock} />
-            <input
-              className={`${styles.input} ${styles.time} ${styles.hours}`}
-              id="timeHours"
-              name="hour"
-              type="text"
-              value={date.getHours().toString().padStart(2, "0")}
-              maxLength={3}
-              onChange={handleChangeHour}
-            ></input>
-            :
-            <input
-              className={`${styles.input} ${styles.time} ${styles.minutes}`}
-              id="timeMinutes"
-              name="minute"
-              type="text"
-              value={date.getMinutes().toString().padStart(2, "0")}
-              maxLength={3}
-              onChange={handleChangeMinute}
-            ></input>
-            <span className={styles.textTime}>Uhr</span>
+          <span className={styles.separator}></span>
+          <div className={`${styles.list} ${styles.dflexCol}`}>
+            <label className={styles.labelList} htmlFor="list">
+              Liste
+            </label>
+            <select
+              className={`${styles.selectList} ${styles.input}`}
+              id="list"
+              name="list"
+              value={idSelectedList}
+              onChange={handleChangeSelectedList}
+            >
+              {lists.map((list: ListReal) => (
+                <option
+                  className={styles.selectedList}
+                  key={list.id}
+                  value={list.id}
+                >
+                  {list.title}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
-        <span className={styles.separator}></span>
-        <div className={`${styles.list} ${styles.dflexCol}`}>
-          <label className={styles.labelList} htmlFor="list">
-            Liste
-          </label>
-          <select
-            className={`${styles.selectList} ${styles.input}`}
-            id="list"
-            name="list"
-            value={
-              lists.find((list: List) => list.id === idSelectedList)?.title
+          <span className={styles.separator}></span>
+          <div className={styles.dflexCol}>
+            <label>Priorität </label>
+            <PriorityButton
+              className={styles.priorityButton}
+              onChangePriorityAction={setPriority}
+              defaultValue={priority}
+            />
+          </div>
+          <span className={styles.separator}></span>
+          <label htmlFor="notes">Notizen </label>
+          <textarea
+            className={`${styles.input} ${styles.notes}`}
+            id="notes"
+            name="notes"
+            rows={4}
+            value={notes}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
+              setNotes(e.target.value)
             }
-            onChange={handleChangeSelectedList}
-          >
-            {lists.map((list: List) => (
-              <option className={styles.selectedList} key={list.id}>
-                {list.title}
-              </option>
-            ))}
-          </select>
+          ></textarea>
         </div>
-        <span className={styles.separator}></span>
-        <div className={styles.dflexCol}>
-          <label>Priorität </label>
-          <PriorityButton
-            className={styles.priorityButton}
-            onChangePriorityAction={setPriority}
-            defaultValue={priority}
+        <div className={`${styles.saveDeleteButtons} ${styles.dflexRow}`}>
+          <Button
+            className={deleteButtonVisible ? "" : styles.hideElement}
+            disabled={false}
+            buttonType={"button"}
+            onClickAction={(): void => setShowModalConfirmDelete(true)}
+            text="löschen"
+            styleType="delete"
+          />
+          {showModalConfirmDelete && (
+            <Modal
+              onClose={(): void => {
+                setShowModalConfirmDelete(false);
+              }}
+              onConfirm={deleteTask}
+              title={"Möchten Sie diese Aufgabe wirklich löschen?"}
+              yes={"Ja"}
+              no={"Nein"}
+            />
+          )}
+          <Button
+            buttonType="submit"
+            disabled={title.trim() === "" || title === ""}
+            text="speichern"
+            styleType="save"
           />
         </div>
-        <span className={styles.separator}></span>
-        <label htmlFor="notes">Notizen </label>
-        <textarea
-          className={`${styles.input} ${styles.notes}`}
-          id="notes"
-          name="notes"
-          rows={4}
-          value={notes}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
-            setNotes(e.target.value)
-          }
-        ></textarea>
-      </div>
-      <div className={`${styles.saveDeleteButtons} ${styles.dflexRow}`}>
-        <Button
-          className={deleteButtonVisible ? "" : styles.hideElement}
-          disabled={false}
-          buttonType={"button"}
-          onClickAction={(): void => setShowModalConfirmDelete(true)}
-          text="löschen"
-          styleType="delete"
-        />
-        {showModalConfirmDelete && (
-          <Modal
-            onClose={(): void => {
-              setShowModalConfirmDelete(false);
-            }}
-            onConfirm={deleteTask}
-            title={"Möchten Sie diese Aufgabe wirklich löschen?"}
-            yes={"Ja"}
-            no={"Nein"}
-          />
-        )}
-        <Button
-          buttonType="submit"
-          disabled={title.trim() === "" || title === ""}
-          text="speichern"
-          styleType="save"
-        />
-      </div>
-    </form>
-  );
+      </form>
+    );
+  }
 }
