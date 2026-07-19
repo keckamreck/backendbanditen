@@ -54,3 +54,48 @@ export async function getListsBySearch(searchTerm: string) {
     apiError();
   }
 }
+
+export async function getListById(ListId: string) {
+  try {
+    const userId = await getUserId();
+    const response = await fetch(
+      `${config.apiUrl}users/${userId}/lists/${ListId}`,
+      { method: "GET" },
+    );
+    if (!response.ok) {
+      throw new Error();
+    }
+    return await response.json();
+  } catch (error) {
+    apiError();
+  }
+}
+
+export async function deleteListById(ListId: string) {
+  try {
+    const userId = await getUserId();
+    const response = await fetch(
+      `${config.apiUrl}users/${userId}/lists/${ListId}`,
+      { method: "DELETE" },
+    );
+    if (!response.ok) {
+      throw new Error();
+    }
+  } catch (error) {
+    apiError();
+  }
+}
+export async function updateListById(ListId: string) {
+  try {
+    const userId = await getUserId();
+    const response = await fetch(
+      `${config.apiUrl}users/${userId}/lists/${ListId}/`,
+      { method: "PATCH" },
+    );
+    if (!response.ok) {
+      throw new Error();
+    }
+  } catch (error) {
+    apiError();
+  }
+}

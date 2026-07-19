@@ -1,43 +1,48 @@
 "use client";
 
 import { TopBar } from "@/app/_components/TopBar";
-import { Sort } from "@/app/_models/list";
-import { getList } from "@/app/_lib/demo";
-import { getTaskofList } from "@/app/_lib/demo";
+import { Sort, ListReal } from "@/app/_models/list";
+import { TaskFrontend } from "@/app/_models/task";
+import { fetchApi } from "@/app/_api/fetcher";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { deleteList } from "@/app/_lib/demo";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Footer } from "@/app/_components/footer";
-import { editTaskDone } from "@/app/_lib/demo";
+import { editTaskDone } from "@/app/_lib/demo"; //kommt dann von carolin
 
-function List({ ListId }: { ListId: number }) {
+function List({ ListId }: { ListId: string }) {
   const router = useRouter();
-  const [list, setList] = useState(getList(ListId));
-  const initialTasks = getTaskofList(ListId);
-  const [tasks, setTasks] = useState(initialTasks);
+  const [list, setList] = useState<ListReal>();
+  const [tasks, setTasks] = useState<TaskFrontend[]>([]);
   const [sort, setSort] = useState<Sort>(Sort.dueDate);
-  const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
-  const [showModal, setShowModal] = useState(false);
+  const [fadingTaskIds, setFadingTaskIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
 
-  function handleDelete() {
-    deleteList(ListId);
-    router.push(`/dashboard/`);
-  }
-
-  function toggleModal() {
-    setShowModal(!showModal);
-  }
-
-  function handleConfirm() {
-    handleDelete();
-    toggleModal();
-  }
+  useEffect(() => {
+    async function load(): Promise<void> {
+      const [listResult, tasksResult] = await Promise.all([
+        fetchApi<ListReal>(`/lists/${ListId}`, "GET"),
+        fetchApi<TaskFrontend[]>(`/lists/${ListId}/tasks`, "GET"),
+      ]);
+      if (listResult && listResult !== "successful") {
+        setList(listResult);
+      }
+      if (tasksResult && tasksResult !== "successful") {
+        setTasks(
+          tasksResult.map((task) => ({
+            ...task,
+            deadline: task.deadline ? new Date(task.deadline) : null,
+          })),
+        );
+      }
+      setLoading(false);
+    }
+    load();
+  }, [ListId]);
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
@@ -50,6 +55,9 @@ function List({ ListId }: { ListId: number }) {
     }
   });
 
+  if (loading || !list) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className={styles.list}>
       <TopBar ListId={ListId}></TopBar>
@@ -98,6 +106,6 @@ function List({ ListId }: { ListId: number }) {
 
 export default function Page() {
   const parms = useParams();
-  const id = parms.id;
-  return <List ListId={Number(id)} />;
+  const id = parms.id as string;
+  return <List ListId={id} />;
 }

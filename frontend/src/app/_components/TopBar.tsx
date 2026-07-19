@@ -1,21 +1,38 @@
 "use client";
 
 import styles from "./TopBar.module.css";
-import { List } from "../_models/list";
-import { getList } from "@/app/_lib/demo";
+import { ListReal } from "../_models/list";
+import { fetchApi } from "@/app/_api/fetcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setListTitle } from "@/app/_lib/demo";
 
-export function TopBar({ ListId }: { ListId: number }) {
-  const list = getList(ListId);
+export function TopBar({ ListId }: { ListId: string }) {
   const [editmode, setEditmode] = useState(false);
-  const [listname, setlistname] = useState(list.title);
+  const [listname, setlistname] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchList(): Promise<void> {
+      const list = await fetchApi<ListReal>(`/lists/${ListId}`, "GET");
+      if (list && list !== "successful") {
+        setlistname(list.title);
+      }
+    }
+    fetchList();
+  }, [ListId]);
+
+  async function handleEditClick() {
+    if (editmode) {
+      await fetchApi<ListReal>(`/lists/${ListId}`, "PATCH", {
+        title: listname,
+      });
+    }
+    setEditmode(!editmode);
+  }
 
   return (
     <div className={styles.container}>
@@ -41,10 +58,7 @@ export function TopBar({ ListId }: { ListId: number }) {
           <button
             id="ButtonEditName"
             className={styles.buttonEdit}
-            onClick={() => {
-              setEditmode(!editmode);
-              setListTitle(ListId, listname);
-            }}
+            onClick={handleEditClick}
           >
             <FontAwesomeIcon
               color="black"

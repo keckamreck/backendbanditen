@@ -1,21 +1,20 @@
 "use client";
 
 import styles from "./footer.module.css";
-import { getList } from "@/app/_lib/demo";
+import { fetchApi } from "@/app/_api/fetcher";
+import { ListReal } from "@/app/_models/list";
 import { useState } from "react";
-import { useParams } from "next/navigation";
 import { ArchiveButton, DeleteButton } from "@/app/_components/ButtonsIcon";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
-import { deleteList } from "@/app/_lib/demo";
 
-export function Footer({ ListId }: { ListId: number }) {
+export function Footer({ ListId }: { ListId: string }) {
   const router = useRouter();
-  const [list, setList] = useState(getList(ListId));
+  const [list, setList] = useState<ListReal>();
   const [showModal, setShowModal] = useState(false);
 
-  function handleDelete() {
-    deleteList(ListId);
+  async function handleDelete() {
+    await fetchApi<ListReal>(`/lists/${ListId}`, "DELETE");
     router.push(`/dashboard/`);
   }
 

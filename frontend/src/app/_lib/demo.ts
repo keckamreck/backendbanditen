@@ -100,7 +100,7 @@ export function addTask(task: Task): void {
   tasks.push(task);
 }
 
-export function editTaskDone(id: number, done: boolean) {
+export function editTaskDone(id: string, done: boolean) {
   const indexChangedTask: number = tasks.findIndex((task) => task.id === id);
   tasks[indexChangedTask].done = done;
   console.log(tasks[indexChangedTask]);
