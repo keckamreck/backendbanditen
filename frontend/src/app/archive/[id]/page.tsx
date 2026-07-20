@@ -4,7 +4,6 @@ import { TaskFrontend } from "@/app/_models/task";
 import {
   getTasksForList,
   editTask,
-  deleteTask,
   deleteAllDoneTasks,
 } from "@/app/_api/tasks-api";
 import { TaskCard } from "@/app/_components/TaskCard";
@@ -50,12 +49,6 @@ export default function ArchivePage() {
     }
   }
 
-  async function handleDelete() {
-    const results = await Promise.all(tasks.map((t) => deleteTask(t.id)));
-    const remaining = tasks.filter((_, i) => !results[i]);
-    setTasks(remaining);
-  }
-
   function toggleModal() {
     setShowModal(!showModal);
   }
@@ -65,6 +58,7 @@ export default function ArchivePage() {
     setShowModal(!showModal);
     router.push(`/list/${ListId}`);
   }
+
   if (loading || !list) {
     return <div style={{ margin: "20px" }}>Loading...</div>;
   }
