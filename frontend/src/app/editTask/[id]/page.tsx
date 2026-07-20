@@ -78,5 +78,7 @@ export default function Page() {
         deleteAction={handleDelete}
       />
     );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
   }
 }

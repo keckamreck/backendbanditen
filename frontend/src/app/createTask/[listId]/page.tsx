@@ -52,5 +52,7 @@ export default function Page() {
         deleteButtonVisible={false}
       />
     );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
   }
 }
