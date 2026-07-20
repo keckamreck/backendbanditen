@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
-  const [dueTask, setDueTask] = useState<Task | null>(null);
+  const [dueTask, setDueTask] = useState<Task | null>();
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -89,99 +89,81 @@ export default function DashboardPage() {
       ),
     );
   }
+  if (dueTask === null || (dueTask && lists)) {
+    return (
+      <div className={styles.page}>
+        <Head>
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+          />
+          <title>Dashboard</title>
+        </Head>
+        <PopupWithInput
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          onSubmitting={(name) => handleNewListButton(name)}
+        />
+        {isSearchOpen && (
+          <div
+            className={styles.searchBackdrop}
+            onClick={() => setIsSearchOpen(false)}
+          />
+        )}
+        <main className={styles.main}>
+          <div className={styles.pageContainer}>
+            {/* Header mit Suchleiste links und Add-Button rechts */}
+            <div className={styles.header}>
+              <div className={styles.searchSection}>
+                <SearchBar />
+              </div>
 
-  return (
-    <div className={styles.page}>
-      <Head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
-        />
-        <title>Dashboard</title>
-      </Head>
-      <PopupWithInput
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        onSubmitting={(name) => handleNewListButton(name)}
-      />
-      {isSearchOpen && (
-        <div
-          className={styles.searchBackdrop}
-          onClick={() => setIsSearchOpen(false)}
-        />
-      )}
-      <main className={styles.main}>
-        <div className={styles.pageContainer}>
-          {/* Header mit Suchleiste links und Add-Button rechts */}
-          <div className={styles.header}>
-            <div className={styles.searchSection}>
-              <SearchBar />
+              <div className={styles.addButtonSection}>
+                <button
+                  title="addList"
+                  className={styles.addIcon}
+                  onClick={() => setIsPopupOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+              <Logout />
             </div>
 
-            <div className={styles.addButtonSection}>
-              <button
-                title="addList"
-                className={styles.addIcon}
-                onClick={() => setIsPopupOpen(true)}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </div>
-            <Logout />
+            {/* Search Dropdown */}
+            {isSearchOpen && (
+              //Listen gefunden
+              <div className={styles.searchDropdown}>
+                {searchResults.length > 0 ? (
+                  <div className={styles.searchResultsContainer}>
+                    {searchResults.map((list) => (
+                      <div
+                        key={list.id}
+                        className={styles.dropdownItem}
+                        onClick={() => {
+                          gotoList(list.id);
+                          setIsSearchOpen(false);
+                          setSearchResults([]);
+                        }}
+                      >
+                        <span>{list.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  //Keine Listen gefunden
+                  <div className={styles.noResults}>Keine Listen gefunden</div>
+                )}
+              </div>
+            )}
           </div>
-
-          {/* Search Dropdown */}
-          {isSearchOpen && (
-            //Listen gefunden
-            <div className={styles.searchDropdown}>
-              {searchResults.length > 0 ? (
-                <div className={styles.searchResultsContainer}>
-                  {searchResults.map((list) => (
-                    <div
-                      key={list.id}
-                      className={styles.dropdownItem}
-                      onClick={() => {
-                        gotoList(list.id);
-                        setIsSearchOpen(false);
-                        setSearchResults([]);
-                      }}
-                    >
-                      <span>{list.title}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                //Keine Listen gefunden
-                <div className={styles.noResults}>Keine Listen gefunden</div>
-              )}
-            </div>
-          )}
-        </div>
-        {/* Section for due Task */}
-        <DueTaskSection />
-        {/* Section for Category Sort */}
-        <CategorySort onCategorySelect={setSelectedCategory} />
-        <div className={styles.cardContainer}>
-          {favourites.map((list) => (
-            <ListCard
-              key={list.id}
-              list={list}
-              onToggleFavorite={handleToggleFavourite}
-            />
-          ))}
-        </div>
-
-        {/* Der Toggle-Button */}
-        <ExpandButton
-          isExpanded={isExpanded}
-          onToggle={() => setIsExpanded(!isExpanded)}
-        />
-
-        {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
-        {isExpanded && (
+          {/* Section for due Task */}
+          <DueTaskSection />
+          {/* Section for Category Sort */}
+          <CategorySort onCategorySelect={setSelectedCategory} />
           <div className={styles.cardContainer}>
-            {others.map((list) => (
+            {favourites.map((list) => (
               <ListCard
                 key={list.id}
                 list={list}
@@ -189,10 +171,31 @@ export default function DashboardPage() {
               />
             ))}
           </div>
-        )}
-      </main>
-    </div>
-  );
+
+          {/* Der Toggle-Button */}
+          <ExpandButton
+            isExpanded={isExpanded}
+            onToggle={() => setIsExpanded(!isExpanded)}
+          />
+
+          {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
+          {isExpanded && (
+            <div className={styles.cardContainer}>
+              {others.map((list) => (
+                <ListCard
+                  key={list.id}
+                  list={list}
+                  onToggleFavorite={handleToggleFavourite}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
+  }
 
   function SearchBar() {
     return (
