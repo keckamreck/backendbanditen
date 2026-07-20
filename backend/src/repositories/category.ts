@@ -9,7 +9,7 @@ export type Category = InferSelectModel<typeof category>;
 
 export async function getCategoryById(categoryId: string, userId: string) {
   try {
-    const [result] = await db
+    const result = await db
       .select()
       .from(category)
       .where(and(eq(category.id, categoryId), eq(category.userId, userId)));

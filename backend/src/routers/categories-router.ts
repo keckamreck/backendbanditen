@@ -20,7 +20,7 @@ router.get(
     try {
       const categoryId = zodValidation(uuidSchema, request.params.categoryId);
       const userId = request.params.userId;
-      const result: Category = await category.getCategoryById(categoryId, userId);
+      const result: Category[] = await category.getCategoryById(categoryId, userId);
       return response.status(200).json(result);
     } catch (error) {
       next(error);
