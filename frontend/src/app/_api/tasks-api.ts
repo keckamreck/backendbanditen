@@ -35,27 +35,22 @@ export async function getTasksForList(
   listId: string,
   done?: boolean,
   sort?: TaskSortField,
-) {
-  try {
-    const userId = await getUserId();
-    const parms = new URLSearchParams();
-    if (done !== undefined) {
-      parms.set("done", String(done));
-    }
-    if (sort !== undefined) {
-      parms.set("sort", sort);
-    }
-    const query = parms.toString();
-    const response = await fetch(
-      `${config.apiUrl}users/${userId}/lists/${listId}/tasks${query ? `?${query}` : ""}`,
-    ); //Bedingung ? wennWahr : wennFalsch
-    if (!response.ok) {
-      throw new Error();
-    }
-    return await response.json();
-  } catch (error) {
-    apiError();
+): Promise<TaskFrontend[] | false> {
+  const parms = new URLSearchParams();
+  if (done !== undefined) {
+    parms.set("done", String(done));
   }
+  if (sort !== undefined) {
+    parms.set("sort", sort);
+  }
+  const query = parms.toString();
+  const result = await fetchApi<TaskBackend[]>(
+    `/lists/${listId}/tasks${query ? `?${query}` : ""}`,
+    "GET",
+  ); //Bedingung ? wennWahr : wennFalsch
+  return result !== undefined && result !== "successful"
+    ? result.map(toTask)
+    : false;
 }
 
 export async function getTask(taskId: string): Promise<TaskFrontend | false> {

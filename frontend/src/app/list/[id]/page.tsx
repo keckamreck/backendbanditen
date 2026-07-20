@@ -3,7 +3,8 @@
 import { TopBar } from "@/app/_components/TopBar";
 import { Sort, ListReal } from "@/app/_models/list";
 import { TaskFrontend } from "@/app/_models/task";
-import { fetchApi } from "@/app/_api/fetcher";
+import { getListById } from "@/app/_api/lists-api";
+import { getTasksForList, editTask } from "@/app/_api/tasks-api";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
@@ -12,7 +13,6 @@ import { ButtonSort } from "@/app/_components/ButtonSort";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Footer } from "@/app/_components/footer";
-import { editTaskDone } from "@/app/_lib/demo"; //kommt dann von carolin
 
 function List({ ListId }: { ListId: string }) {
   const router = useRouter();
@@ -25,19 +25,14 @@ function List({ ListId }: { ListId: string }) {
   useEffect(() => {
     async function load(): Promise<void> {
       const [listResult, tasksResult] = await Promise.all([
-        fetchApi<ListReal>(`/lists/${ListId}`, "GET"),
-        fetchApi<TaskFrontend[]>(`/lists/${ListId}/tasks`, "GET"),
+        getListById(ListId),
+        getTasksForList(ListId, false),
       ]);
-      if (listResult && listResult !== "successful") {
+      if (listResult) {
         setList(listResult);
       }
-      if (tasksResult && tasksResult !== "successful") {
-        setTasks(
-          tasksResult.map((task) => ({
-            ...task,
-            deadline: task.deadline ? new Date(task.deadline) : null,
-          })),
-        );
+      if (tasksResult) {
+        setTasks(tasksResult);
       }
       setLoading(false);
     }
@@ -54,6 +49,32 @@ function List({ ListId }: { ListId: string }) {
         return a.title.localeCompare(b.title);
     }
   });
+
+  async function handleDoneClicked(TaskId: string) {
+    setFadingTaskIds((prev) => new Set(prev).add(TaskId));
+
+    setTasks((prev) =>
+      prev.map((t) => (t.id === TaskId ? { ...t, done: true } : t)),
+    );
+    const result = await editTask(TaskId, { done: true });
+    if (!result) {
+      setTasks((prev) =>
+        prev.map((t) => (t.id === TaskId ? { ...t, done: false } : t)),
+      );
+      setFadingTaskIds((prev) => {
+        const next = new Set(prev);
+        next.delete(TaskId);
+        return next;
+      });
+    }
+    setTimeout(() => {
+      setFadingTaskIds((prev) => {
+        const next = new Set(prev);
+        next.delete(TaskId);
+        return next;
+      });
+    }, 1500);
+  }
 
   if (loading || !list) {
     return <div>Loading...</div>;
@@ -85,15 +106,7 @@ function List({ ListId }: { ListId: string }) {
                 task={task}
                 onPencilClick={() => router.push(`/editTask/${task.id}`)}
                 onDoneClick={() => {
-                  setFadingTaskIds((prev) => new Set(prev).add(task.id));
-                  editTaskDone(task.id, true);
-                  setTimeout(() => {
-                    setFadingTaskIds((prev) => {
-                      const next = new Set(prev);
-                      next.delete(task.id);
-                      return next;
-                    });
-                  }, 1500);
+                  handleDoneClicked(task.id);
                 }}
               />
             </div>

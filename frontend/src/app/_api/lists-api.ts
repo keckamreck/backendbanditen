@@ -1,4 +1,6 @@
 import { apiError } from "@/app/_api/errorHandler";
+import { fetchApi } from "@/app/_api/fetcher";
+import { ListReal } from "@/app/_models/list";
 import { getUserId } from "@/app/_api/users-api";
 import config from "@/app/_lib/config";
 
@@ -55,47 +57,25 @@ export async function getListsBySearch(searchTerm: string) {
   }
 }
 
-export async function getListById(ListId: string) {
-  try {
-    const userId = await getUserId();
-    const response = await fetch(
-      `${config.apiUrl}users/${userId}/lists/${ListId}`,
-      { method: "GET" },
-    );
-    if (!response.ok) {
-      throw new Error();
-    }
-    return await response.json();
-  } catch (error) {
-    apiError();
-  }
+export async function getListById(ListId: string): Promise<ListReal | false> {
+  const result = await fetchApi<ListReal>(`/lists/${ListId}`, "GET");
+  return result !== undefined && result !== "successful" ? result : false;
 }
 
-export async function deleteListById(ListId: string) {
-  try {
-    const userId = await getUserId();
-    const response = await fetch(
-      `${config.apiUrl}users/${userId}/lists/${ListId}`,
-      { method: "DELETE" },
-    );
-    if (!response.ok) {
-      throw new Error();
-    }
-  } catch (error) {
-    apiError();
-  }
+export async function deleteListById(ListId: string): Promise<true | false> {
+  const result = await fetchApi<ListReal>(`lists/${ListId}`, "DELETE");
+  return result === "successful";
 }
-export async function updateListById(ListId: string) {
-  try {
-    const userId = await getUserId();
-    const response = await fetch(
-      `${config.apiUrl}users/${userId}/lists/${ListId}/`,
-      { method: "PATCH" },
-    );
-    if (!response.ok) {
-      throw new Error();
-    }
-  } catch (error) {
-    apiError();
-  }
+
+export interface ListUpdateData {
+  title?: string;
+  isFavorite?: boolean;
+  categoryId?: string;
+}
+export async function updateListById(
+  ListId: string,
+  data: ListUpdateData,
+): Promise<ListReal | false> {
+  const result = await fetchApi<ListReal>(`lists/${ListId}/`, "PATCH", data);
+  return result !== undefined && result !== "successful" ? result : false;
 }
