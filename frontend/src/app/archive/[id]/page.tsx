@@ -1,7 +1,12 @@
 "use client";
 
 import { TaskFrontend } from "@/app/_models/task";
-import { getTasksForList, editTask, deleteTask } from "@/app/_api/tasks-api";
+import {
+  getTasksForList,
+  editTask,
+  deleteTask,
+  deleteAllDoneTasks,
+} from "@/app/_api/tasks-api";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { DeleteButton } from "@/app/_components/ButtonsIcon";
 import { TopBarArchive } from "@/app/_components/TopBarArchive";
@@ -56,11 +61,12 @@ export default function ArchivePage() {
   }
 
   async function handleConfirm() {
-    await handleDelete();
+    await deleteAllDoneTasks(ListId);
     setShowModal(!showModal);
+    router.push(`/list/${ListId}`);
   }
   if (loading || !list) {
-    return <div>Loading...</div>;
+    return <div style={{ margin: "20px" }}>Loading...</div>;
   }
 
   return (

@@ -100,3 +100,14 @@ export async function deleteTask(id: string): Promise<true | false> {
     await fetchApi<TaskBackend>(`/tasks/${id}`, "DELETE");
   return result === "successful";
 }
+
+export async function deleteAllDoneTasks(
+  ListId: string,
+): Promise<true | false> {
+  const parms = new URLSearchParams();
+  parms.set("done", "true");
+  const query = parms.toString();
+  const result: TaskBackend | "successful" | undefined =
+    await fetchApi<TaskBackend>(`/lists/${ListId}/tasks?${query}`, "DELETE");
+  return result === "successful";
+}
