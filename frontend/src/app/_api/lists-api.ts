@@ -63,7 +63,8 @@ export async function getListById(ListId: string): Promise<ListReal | false> {
 }
 
 export async function deleteListById(ListId: string): Promise<true | false> {
-  const result = await fetchApi<ListReal>(`lists/${ListId}`, "DELETE");
+  const result = await fetchApi<ListReal>(`/lists/${ListId}`, "DELETE");
+  console.log("delete");
   return result === "successful";
 }
 

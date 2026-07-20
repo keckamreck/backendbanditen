@@ -1,14 +1,13 @@
 "use client";
 
 import styles from "./TopBar.module.css";
-import { ListReal } from "../_models/list";
-import { fetchApi } from "@/app/_api/fetcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getListById, updateListById } from "../_api/lists-api";
 
 export function TopBar({ ListId }: { ListId: string }) {
   const [editmode, setEditmode] = useState(false);
@@ -17,8 +16,8 @@ export function TopBar({ ListId }: { ListId: string }) {
 
   useEffect(() => {
     async function fetchList(): Promise<void> {
-      const list = await fetchApi<ListReal>(`/lists/${ListId}`, "GET");
-      if (list && list !== "successful") {
+      const list = await getListById(ListId);
+      if (list) {
         setlistname(list.title);
       }
     }
@@ -27,9 +26,7 @@ export function TopBar({ ListId }: { ListId: string }) {
 
   async function handleEditClick() {
     if (editmode) {
-      await fetchApi<ListReal>(`/lists/${ListId}`, "PATCH", {
-        title: listname,
-      });
+      await updateListById(ListId, { title: listname });
     }
     setEditmode(!editmode);
   }

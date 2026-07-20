@@ -1,30 +1,26 @@
 "use client";
 
 import styles from "./footer.module.css";
-import { fetchApi } from "@/app/_api/fetcher";
-import { ListReal } from "@/app/_models/list";
 import { useState } from "react";
 import { ArchiveButton, DeleteButton } from "@/app/_components/ButtonsIcon";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
+import { deleteListById } from "../_api/lists-api";
 
 export function Footer({ ListId }: { ListId: string }) {
   const router = useRouter();
-  const [list, setList] = useState<ListReal>();
   const [showModal, setShowModal] = useState(false);
-
-  async function handleDelete() {
-    await fetchApi<ListReal>(`/lists/${ListId}`, "DELETE");
-    router.push(`/dashboard/`);
-  }
 
   function toggleModal() {
     setShowModal(!showModal);
   }
 
-  function handleConfirm() {
-    handleDelete();
-    toggleModal();
+  async function handleConfirm() {
+    const result = await deleteListById(ListId);
+    if (result) {
+      toggleModal();
+      router.push(`/dashboard/`);
+    }
   }
   return (
     <footer className={styles.footer}>
