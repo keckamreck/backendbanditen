@@ -6,3 +6,8 @@ export async function getUserId() {
   const { data: session } = await authClient.getSession();
   return session?.user.id;
 }
+
+export async function getToken() {
+  const { data: session } = await authClient.getSession();
+  return session?.session.token;
+}
