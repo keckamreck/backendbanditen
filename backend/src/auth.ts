@@ -23,6 +23,9 @@ export const auth = betterAuth({
       : "localhost",
     }
   },
+  session: {
+    expiresIn: 4 * 60 * 60,
+  },
   emailAndPassword: {
     enabled: true,
   },

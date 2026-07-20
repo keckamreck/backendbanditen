@@ -1,80 +1,84 @@
 "use client";
 
 import EditorForm from "@/app/_components/EditorForm";
-import { getLists, editTask, deleteTask } from "@/app/_lib/demo";
-import { TaskFormattedForEditor, Task } from "@/app/_models/task";
-import { useState } from "react";
+import { TaskFrontend, TaskFrontendWithoutId } from "@/app/_models/task";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { List } from "@/app/_models/list";
-import { getTask } from "@/app/_lib/demo";
+import { ListReal } from "@/app/_models/list";
+import { deleteTask, editTask, getTask } from "@/app/_api/tasks-api";
+import { getLists } from "@/app/_api/lists-api";
 
 export default function Page() {
-  const id: { id: string } = useParams<{ id: string }>();
-  const [dateToday] = useState<Date>(new Date());
-  const [defaultDate] = useState<Date>(
-    new Date(
-      dateToday.getFullYear(),
-      dateToday.getMonth(),
-      dateToday.getDate() + 1,
-      12,
-      30,
-    ),
-  );
-  const [lists] = useState<List[]>(getLists());
-  const [initialTask] = useState<Task>(getTask(parseInt(id.id)));
-  const [initialTaskForEditor] = useState<TaskFormattedForEditor>({
-    title: initialTask.title,
-    enterDeadline: initialTask.deadline !== null,
-    deadline:
-      initialTask.deadline === null ? defaultDate : initialTask.deadline,
-    idSelectedList: initialTask.listKey,
-    selectedPriority: initialTask.priority,
-    notes: initialTask.note === null ? "" : initialTask.note,
-  });
+  const { id }: { id: string } = useParams<{ id: string }>();
+  const [lists, setLists] = useState<ListReal[]>();
+  const [initialTask, setInitialTask] = useState<TaskFrontend>();
 
-  function handleSave(editedTaskFromEditor: TaskFormattedForEditor): void {
-    const editedTask: Partial<Task> = {
-      title: editedTaskFromEditor.title,
-      deadline: editedTaskFromEditor.enterDeadline
-        ? editedTaskFromEditor.deadline
-        : null,
-      listKey: editedTaskFromEditor.idSelectedList,
-      priority: editedTaskFromEditor.selectedPriority,
-      note:
-        editedTaskFromEditor.notes === "" ? null : editedTaskFromEditor.notes,
-    };
-    const updatedFields: Partial<Task> = {};
+  useEffect((): void => {
+    async function fetchTask(): Promise<void> {
+      const task: TaskFrontend | false = await getTask(id);
+      if (task) {
+        setInitialTask(task);
+      }
+    }
+    async function fetchLists(): Promise<void> {
+      const lists: ListReal[] | undefined = await getLists();
+      setLists(lists);
+    }
+    fetchTask();
+    fetchLists();
+  }, [id]);
 
-    if (editedTask.title !== initialTask.title) {
-      updatedFields.title = editedTask.title;
+  async function handleSave(
+    editedTask: TaskFrontendWithoutId,
+  ): Promise<true | false> {
+    const updatedFields: Partial<TaskFrontend> = {};
+    if (initialTask) {
+      if (editedTask.title !== initialTask.title) {
+        updatedFields.title = editedTask.title;
+      }
+      if (editedTask.deadline !== initialTask.deadline) {
+        updatedFields.deadline = editedTask.deadline;
+      }
+      if (editedTask.listId !== initialTask.listId) {
+        updatedFields.listId = editedTask.listId;
+      }
+      if (editedTask.priority !== initialTask.priority) {
+        updatedFields.priority = editedTask.priority;
+      }
+      if (editedTask.note !== initialTask.note) {
+        updatedFields.note = editedTask.note;
+      }
+      const result: TaskFrontend | false = await editTask(
+        initialTask.id,
+        updatedFields,
+      );
+      return !!result;
     }
-    if (editedTask.deadline !== initialTask.deadline) {
-      updatedFields.deadline = editedTask.deadline;
-    }
-    if (editedTask.listKey !== initialTask.listKey) {
-      updatedFields.listKey = editedTask.listKey;
-    }
-    if (editedTask.priority !== initialTask.priority) {
-      updatedFields.priority = editedTask.priority;
-    }
-    if (editedTask.note !== initialTask.note) {
-      updatedFields.note = editedTask.note;
-    }
-    editTask(initialTask.id, updatedFields);
+    return false;
   }
 
-  function handleDelete(): void {
-    deleteTask(parseInt(id.id));
+  async function handleDelete(): Promise<true | false> {
+    return await deleteTask(id);
   }
 
-  return (
-    <EditorForm
-      initialValues={initialTaskForEditor}
-      taskDone={initialTask.done}
-      lists={lists}
-      saveAction={handleSave}
-      deleteButtonVisible={true}
-      deleteAction={handleDelete}
-    />
-  );
+  if (initialTask && lists) {
+    return (
+      <EditorForm
+        initialValues={{
+          title: initialTask.title,
+          deadline: initialTask.deadline,
+          listId: initialTask.listId,
+          priority: initialTask.priority,
+          note: initialTask.note,
+          done: initialTask.done,
+        }}
+        lists={lists}
+        saveAction={handleSave}
+        deleteButtonVisible={true}
+        deleteAction={handleDelete}
+      />
+    );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
+  }
 }

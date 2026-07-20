@@ -10,12 +10,8 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  newList,
-  getLists,
-  getDueTask,
-  getListsBySearch,
-} from "@/app/api/lists-api";
+import { newList, getLists, getListsBySearch } from "@/app/_api/lists-api";
+import { getDueTask } from "@/app/_api/tasks-api";
 import { ListReal as List } from "@/app/_models/list";
 import { TaskFrontend as Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
