@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import { router as usersRouter } from "./routers/users-router.js";
 import { router as userContextRouter } from "./routers/user-context-router.js";
 import { router as categoriesRouter } from "./routers/categories-router.js";
 import { toNodeHandler } from "better-auth/node";
