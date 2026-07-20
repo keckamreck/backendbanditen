@@ -26,7 +26,7 @@ export default function Register() {
           //show loading
         },
         onSuccess: (ctx) => {
-          alert("Account successfully created! YAY");
+          alert("Konto erfolgreich erstellt!");
           redirect("/dashboard");
         },
         onError: (ctx) => {
@@ -43,43 +43,43 @@ export default function Register() {
   return (
     <div className={styles.container}>
       <div className={styles.chevron}>
-        <button onClick={showLogin}>Go back</button>
+        <button onClick={showLogin}>Zurück</button>
       </div>
       <div className={styles.card}>
         <form action={processForm}>
-          <h1>Register</h1>
+          <h1>Registrieren</h1>
           <div className={styles.icon}>
             <FontAwesomeIcon size="6x" icon={faCircleInfo} />
           </div>
           <div className={styles.inputPair}>
-            <span>Your name:</span>
+            <span>Name:</span>
             <input
               type="text"
-              placeholder="Erling Haaland"
+              placeholder="Max Mustermann"
               name="name"
               required
             />
           </div>
           <div className={styles.inputPair}>
-            <span>Your username:</span>
+            <span>Benutzername:</span>
             <input
               type="text"
-              placeholder="duBistGutGENUUUUUUUUG"
+              placeholder="madmax1231"
               name="username"
               required
             />
           </div>
           <div className={styles.inputPair}>
-            <span>Your email:</span>
+            <span>E-Mail:</span>
             <input
               type="text"
-              placeholder="tooManyGoalsWOW@example.de"
+              placeholder="mustermann.max@example.de"
               name="email"
               required
             />
           </div>
           <div className={styles.inputPair}>
-            <span>Your password:</span>
+            <span>Passwort:</span>
             <input
               type="password"
               placeholder="**********"
@@ -90,9 +90,9 @@ export default function Register() {
           </div>
           <div className={styles.inputTerms}>
             <input type="checkbox" id="terms" />
-            <label>I accept the terms and also the cookies.</label>
+            <label>Ich stimme den Nutzungsbedingungen zu.</label>
           </div>
-          <button type="submit">Create account</button>
+          <button type="submit">Konto erstellen</button>
         </form>
       </div>
     </div>

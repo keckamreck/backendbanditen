@@ -20,7 +20,7 @@ export function Logout() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          alert("Redirecting!");
+          alert("Erfolgreich ausgeloggt");
           redirect("/login");
         },
       },
@@ -48,7 +48,7 @@ export function Logout() {
       >
         <div className={styles.content}>
           <CloseButton onClick={handleClose} className={styles.closeButton} />
-          <div className={styles.modalTitle}>Session Management</div>
+          <div className={styles.modalTitle}>Kontoverwaltung</div>
           <div className={styles.actionContainer}>
             <button onClick={handleUser} className={styles.actionButton}>
               UserID
@@ -57,7 +57,7 @@ export function Logout() {
               Zong
             </button>
             <button onClick={handleLogout} className={styles.actionButton}>
-              Logout
+              Ausloggen
             </button>
           </div>
         </div>
