@@ -1,37 +1,61 @@
 import { list as lists } from "../db/schema.js";
 import { db } from "./db.js";
-import { eq,  ilike, and } from "drizzle-orm";
+import { eq, ilike, and, SQL } from "drizzle-orm";
+import { z } from "zod";
+
+import { NotFoundError } from "../errors/errors.js";
+import { mapDatabaseError } from "../errors/map-database-error.js";
+import { userUpdateSchema } from "../routers/lists-router.js";
 
 export type List = typeof lists.$inferInsert;
 
-export type ListUpdateInput = {
-  title?: string;
-  isFavorite?: boolean;
-  categoryId?: string;
-};
-
 export async function getListById(ListId: string, userId: string) {
-  return await db.query.list.findFirst({
-    where: (list, { eq, and }) =>
-      and(eq(list.id, ListId), eq(list.userId, userId)),
-  });
+  try {
+    const result = await db.query.list.findFirst({
+      where: (list, { eq, and }) =>
+        and(eq(list.id, ListId), eq(list.userId, userId)),
+    });
+    if (!result) {
+      throw new NotFoundError("List not found");
+    }
+    return result;
+  } catch (error) {
+    throw mapDatabaseError(error);
+  }
 }
 export async function updateListById(
   ListId: string,
   userId: string,
-  data: ListUpdateInput,
+  data: z.infer<typeof userUpdateSchema>,
 ) {
-  return db
-    .update(lists)
-    .set(data)
-    .where(and(eq(lists.id, ListId), eq(lists.userId, userId)))
-    .returning();
+  try {
+    const [updated] = await db
+      .update(lists)
+      .set(data)
+      .where(and(eq(lists.id, ListId), eq(lists.userId, userId)))
+      .returning();
+    if (!updated) {
+      throw new NotFoundError("List not found");
+    }
+    return updated;
+  } catch (error) {
+    throw mapDatabaseError(error);
+  }
 }
 
 export async function deleteListById(ListId: string, userId: string) {
-  return db
-    .delete(lists)
-    .where(and(eq(lists.id, ListId), eq(lists.userId, userId)));
+  try {
+    const [deleted] = await db
+      .delete(lists)
+      .where(and(eq(lists.id, ListId), eq(lists.userId, userId)))
+      .returning();
+    if (!deleted) {
+      throw new NotFoundError("List not found");
+    }
+    return deleted;
+  } catch (error) {
+    throw mapDatabaseError(error);
+  }
 }
 
 export async function newList(list: List) {
@@ -42,40 +66,22 @@ export async function newList(list: List) {
 }
 
 export async function getListsBySearch(query: any, userId: string) {
-  if (query.search != undefined) {
-    console.log(query.search);
-    return db
-      .select()
-      .from(lists)
-      .where(
-        and(ilike(lists.title, `%${query.search}%`), eq(lists.userId, userId)),
-      );
+  const conditions: SQL[] = [eq(lists.userId, userId)];
+
+  if (query.search !== undefined) {
+    conditions.push(ilike(lists.title, `%${query.search}%`));
   }
-  if (query.categoryId != "null" && query.categoryId != undefined) {
-    return db
-      .select()
-      .from(lists)
-      .where(
-        and(eq(lists.categoryId, query.categoryId), eq(lists.userId, userId)),
-      );
+
+  if (query.categoryId && query.categoryId !== "null") {
+    conditions.push(eq(lists.categoryId, query.categoryId));
   }
-  console.log(`query+ ${Object.keys(query).length}`);
-  if (query.isFavorite != undefined) {
-    console.log("test");
-    return db
-      .select()
-      .from(lists)
-      .where(
-        and(eq(lists.isFavorite, query.isFavorite), eq(lists.userId, userId)),
-      );
+
+  if (query.isFavorite !== undefined) {
+    conditions.push(eq(lists.isFavorite, query.isFavorite));
   }
-  if (Object.keys(query).length === 0) {
-    console.log("no keys");
-    return db.select().from(lists).where(eq(lists.userId, userId));
-  } else {
-    console.log("Fail");
-    return {
-      error: "invalid search request",
-    };
-  }
+
+  return db
+    .select()
+    .from(lists)
+    .where(and(...conditions));
 }

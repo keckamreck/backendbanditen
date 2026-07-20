@@ -10,3 +10,10 @@ export interface List {
   isFavourite?: boolean;
   category?: string;
 }
+
+export interface ListReal {
+  id: string;
+  title: string;
+  isFavourite?: boolean;
+  category?: string;
+}

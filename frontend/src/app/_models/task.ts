@@ -4,21 +4,26 @@ export enum Priority {
   Low,
 }
 
-export interface Task {
-  id: number;
+export interface TaskBackend {
+  id: string;
   title: string;
+  deadline: Date | string | null;
+  listId: string;
+  priority: "0" | "1" | "2";
   note: string | null;
-  deadline: Date | null;
-  priority: Priority;
-  listKey: number;
   done: boolean;
 }
 
-export interface TaskFormattedForEditor {
+export type TaskBackendWithoutId = Omit<TaskBackend, "id">;
+
+export interface TaskFrontend {
+  id: string;
   title: string;
-  enterDeadline: boolean;
-  idSelectedList: number;
-  selectedPriority: Priority;
-  deadline: Date;
-  notes: string;
+  deadline: Date | null;
+  listId: string;
+  priority: Priority;
+  note: string | null;
+  done: boolean;
 }
+
+export type TaskFrontendWithoutId = Omit<TaskFrontend, "id">;
