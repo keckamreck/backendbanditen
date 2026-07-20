@@ -377,5 +377,7 @@ export default function EditorForm({
         </div>
       </form>
     );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
   }
 }
