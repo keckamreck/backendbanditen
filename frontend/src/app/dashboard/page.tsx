@@ -217,7 +217,7 @@ export default function DashboardPage() {
   }
 
   function gotoList(listId: string) {
-    router.push("/list/" + listId);
+    router.push("/editTask/" + listId);
   }
   function handleNewListButton(name: string) {
     newList(name).then(() => {

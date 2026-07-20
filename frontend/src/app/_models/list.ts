@@ -14,6 +14,6 @@ export interface List {
 export interface ListReal {
   id: string;
   title: string;
-  isFavourite?: boolean;
-  category?: string;
+  isFavorite?: boolean;
+  category?: string | null;
 }

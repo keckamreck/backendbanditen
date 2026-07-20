@@ -21,7 +21,7 @@ export async function getTasks(query: any, userId: string) {
   const filterConditions: SQL[] = [];
   if (query.sort) {
     filterConditions.push(
-      query.direction === "asc" ? asc(query.sort) : desc(query.sort),
+      query.direction === "asc" ? asc(tasks.deadline) : desc(tasks.deadline),
     );
   }
 

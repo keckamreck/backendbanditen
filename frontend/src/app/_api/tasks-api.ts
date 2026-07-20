@@ -12,21 +12,12 @@ import { toTask, toApiTask } from "@/app/_mappers/task.mapper";
 import { fetchApi } from "@/app/_api/fetcher";
 
 export async function getDueTask() {
-  try {
-    const userId = await getUserId();
-    const response = await fetch(
-      `${config.apiUrl}users/${userId}/tasks?done=false&sort=deadline&direction=asc&limit=1`,
-    );
-    if (!response.ok) {
-      throw new Error();
-    }
-    const data = await response.json();
-    console.log(data);
-    return Array.isArray(data) ? data[0] : null;
-  } catch (e) {
-    console.log("Due Task Error");
-    apiError();
-  }
+  const response = await fetchApi<TaskBackend[]>(
+    `/tasks?done=false&sort=deadline&direction=asc&limit=1`,
+    "GET",
+  );
+  console.log(response);
+  return Array.isArray(response) ? response[0] : null;
 }
 
 type TaskSortField = "title" | "deadline" | "priority";
