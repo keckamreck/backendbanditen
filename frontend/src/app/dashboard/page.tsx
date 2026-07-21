@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [update, triggerUpdate] = useState(false);
+  const [fetchComplete, setFetchComplete] = useState(false);
   const [categories, setCategories] = useState<CategoryFrontend[] | []>([]);
 
   const filteredLists = selectedCategory
@@ -42,11 +43,16 @@ export default function DashboardPage() {
 
   //Get Lists and Due Task
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       getLists().then((lists) => setLists(lists));
-      getDueTask().then((task) => setDueTask(task));
+      await getDueTask().then((task) => setDueTask(task));
     };
-    fetchData();
+    const firstFetch = async () => {
+      setFetchComplete(false);
+      await fetchData();
+      setFetchComplete(true);
+    };
+    firstFetch();
     const timer = setInterval(fetchData, 60000);
     return () => clearInterval(timer);
   }, [update]);
@@ -98,7 +104,7 @@ export default function DashboardPage() {
       ),
     );
   }
-  if (dueTask === null || (dueTask && lists)) {
+  if (fetchComplete) {
     return (
       <div className={styles.page}>
         <Head>
