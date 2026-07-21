@@ -1,7 +1,3 @@
-import { apiError } from "@/app/_api/errorHandler";
-import { getUserId } from "@/app/_api/users-api";
-
-import config from "@/app/_lib/config";
 import {
   TaskFrontend,
   TaskBackend,
@@ -54,15 +50,13 @@ export async function getTask(taskId: string): Promise<TaskFrontend | false> {
   }
 }
 
-export async function getNumberOfTasks(
-  listId: string,
-): Promise<number> {
+export async function getNumberOfTasks(listId: string): Promise<number> {
   const result: TaskBackend[] | "successful" | undefined = await fetchApi<
     TaskBackend[]
   >(`/lists/${listId}/tasks?done=false`, "GET");
   if (result && result.length > 0 && result !== "successful") {
     let i = 0;
-    for (const task of result){
+    for (const task of result) {
       i++;
     }
     return i;

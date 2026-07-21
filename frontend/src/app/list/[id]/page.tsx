@@ -1,7 +1,7 @@
 "use client";
 
 import { TopBar } from "@/app/_components/TopBar";
-import { Sort, ListReal } from "@/app/_models/list";
+import { Sort, List as ListReal } from "@/app/_models/list";
 import { TaskFrontend } from "@/app/_models/task";
 import { getListById } from "@/app/_api/lists-api";
 import { getTasksForList, editTask } from "@/app/_api/tasks-api";

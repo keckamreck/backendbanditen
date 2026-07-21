@@ -1,31 +1,32 @@
 import { fetchApi } from "@/app/_api/fetcher";
-import { ListBackend, ListReal } from "../_models/list";
+import { ListBackend, List } from "../_models/list";
 
 export async function newList(title: string) {
-  return fetchApi<ListReal>(`/lists`, "POST", {
+  return fetchApi<List>(`/lists`, "POST", {
     title: title,
     isFavorite: false,
   });
 }
 
 export async function getLists() {
-  const result = await fetchApi<ListReal[]>(`/lists`, "GET");
-  return result !== undefined && result !== "successful" ? result : [];
-}
-  
-
-export async function getListsBySearch(searchTerm: string): Promise<ListReal[] | []> {
-  const result = await fetchApi<ListReal[]>(`/lists?search=${searchTerm}`, "GET");
+  const result = await fetchApi<List[]>(`/lists`, "GET");
   return result !== undefined && result !== "successful" ? result : [];
 }
 
-export async function getListById(ListId: string): Promise<ListReal | false> {
-  const result = await fetchApi<ListReal>(`/lists/${ListId}`, "GET");
+export async function getListsBySearch(
+  searchTerm: string,
+): Promise<List[] | []> {
+  const result = await fetchApi<List[]>(`/lists?search=${searchTerm}`, "GET");
+  return result !== undefined && result !== "successful" ? result : [];
+}
+
+export async function getListById(ListId: string): Promise<List | false> {
+  const result = await fetchApi<List>(`/lists/${ListId}`, "GET");
   return result !== undefined && result !== "successful" ? result : false;
 }
 
 export async function deleteListById(ListId: string): Promise<true | false> {
-  const result = await fetchApi<ListReal>(`/lists/${ListId}`, "DELETE");
+  const result = await fetchApi<List>(`/lists/${ListId}`, "DELETE");
   console.log("delete");
   return result === "successful";
 }
@@ -38,15 +39,15 @@ export interface ListUpdateData {
 export async function updateListById(
   ListId: string,
   data: ListUpdateData,
-): Promise<ListReal | false> {
-  const result = await fetchApi<ListReal>(`/lists/${ListId}/`, "PATCH", data);
+): Promise<List | false> {
+  const result = await fetchApi<List>(`/lists/${ListId}/`, "PATCH", data);
   return result !== undefined && result !== "successful" ? result : false;
 }
 
 export async function updateList(
   listId: string,
   changes: Partial<ListBackend>,
-): Promise<ListReal | false> {
+): Promise<List | false> {
   const result: ListBackend | "successful" | undefined =
     await fetchApi<ListBackend>(`/lists/${listId}`, "PATCH", changes);
   if (result !== undefined && result !== "successful") {

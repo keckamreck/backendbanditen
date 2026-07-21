@@ -4,13 +4,13 @@ import EditorForm from "@/app/_components/EditorForm";
 import { TaskFrontend, TaskFrontendWithoutId } from "@/app/_models/task";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { ListReal } from "@/app/_models/list";
+import { List } from "@/app/_models/list";
 import { deleteTask, editTask, getTask } from "@/app/_api/tasks-api";
 import { getLists } from "@/app/_api/lists-api";
 
 export default function Page() {
   const { id }: { id: string } = useParams<{ id: string }>();
-  const [lists, setLists] = useState<ListReal[]>();
+  const [lists, setLists] = useState<List[]>();
   const [initialTask, setInitialTask] = useState<TaskFrontend>();
 
   useEffect((): void => {
@@ -21,7 +21,7 @@ export default function Page() {
       }
     }
     async function fetchLists(): Promise<void> {
-      const lists: ListReal[] | undefined = await getLists();
+      const lists: List[] | undefined = await getLists();
       setLists(lists);
     }
     fetchTask();

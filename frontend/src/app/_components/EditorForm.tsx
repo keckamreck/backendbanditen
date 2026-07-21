@@ -16,14 +16,14 @@ import Calendar from "@/app/_components/Calendar";
 import { PriorityButton } from "@/app/_components/PriorityButton";
 import { Button } from "@/app/_components/Buttons";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { ListReal } from "@/app/_models/list";
+import { List } from "@/app/_models/list";
 import { Priority, TaskFrontendWithoutId } from "@/app/_models/task";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/app/_components/modal";
 
 interface EditorFormProps {
   initialValues: TaskFrontendWithoutId;
-  lists: ListReal[];
+  lists: List[];
   saveAction: (task: TaskFrontendWithoutId) => Promise<true | false>;
   deleteButtonVisible: boolean;
   deleteAction?: () => Promise<true | false>;
@@ -139,8 +139,8 @@ export default function EditorForm({
   }
 
   function handleChangeSelectedList(e: ChangeEvent<HTMLSelectElement>): void {
-    const selectedList: ListReal | undefined = lists.find(
-      (list: ListReal): boolean => list.id === e.target.value,
+    const selectedList: List | undefined = lists.find(
+      (list: List): boolean => list.id === e.target.value,
     );
     if (selectedList !== undefined) {
       setIdSelectedList(selectedList.id);
@@ -315,7 +315,7 @@ export default function EditorForm({
               value={idSelectedList}
               onChange={handleChangeSelectedList}
             >
-              {lists.map((list: ListReal) => (
+              {lists.map((list: List) => (
                 <option
                   className={styles.selectedList}
                   key={list.id}

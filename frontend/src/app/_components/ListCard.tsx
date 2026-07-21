@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./ListCard.module.css";
-import { ListReal } from "@/app/_models/list";
+import { List } from "@/app/_models/list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar as emptyStar,
@@ -14,18 +14,19 @@ import { updateList } from "../_api/lists-api";
 import CategoryPopup from "./CategoryPopup";
 import { getNumberOfTasks } from "../_api/tasks-api";
 import { CategoryFrontend } from "../_models/category";
-import { getCategoryById } from "../_api/categories-api";
 export interface ListProps {
-  list: ListReal;
+  list: List;
 
   category: CategoryFrontend | null;
-    onToggleFavorite?: (updatedList: ListReal) => void;
+  onToggleFavorite?: (updatedList: List) => void;
 }
 
 export function ListCard({ list, category, onToggleFavorite }: ListProps) {
   const [dueTasks, setdueTasks] = useState<number>(0);
   const [currentList, setCurrentList] = useState(list);
-  const [categoryName, setCategoryName] = useState<string  | undefined>(category ? category.name : undefined)
+  const [categoryName, setCategoryName] = useState<string | undefined>(
+    category ? category.name : undefined,
+  );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const categoryRef = useRef(false);
 
@@ -39,9 +40,9 @@ export function ListCard({ list, category, onToggleFavorite }: ListProps) {
     }
   };
 
-    //Anzahl an Tasks wird geladen
-  useEffect(() => {  
-    async function loadDueTasks(){
+  //Anzahl an Tasks wird geladen
+  useEffect(() => {
+    async function loadDueTasks() {
       const numberOfDueTasks: number = await getNumberOfTasks(list.id);
       setdueTasks(numberOfDueTasks);
     }
@@ -122,7 +123,7 @@ export function ListCard({ list, category, onToggleFavorite }: ListProps) {
         <CategoryPopup
           initialValue={category}
           onClose={() => setIsPopupOpen(false)}
-          onSave={handleSaveCategory} 
+          onSave={handleSaveCategory}
         />
       )}
     </>

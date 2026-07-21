@@ -7,14 +7,14 @@ import {
   TaskFrontend,
   TaskFrontendWithoutId,
 } from "@/app/_models/task";
-import { ListReal } from "@/app/_models/list";
+import { List } from "@/app/_models/list";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createTask } from "@/app/_api/tasks-api";
 
 export default function Page() {
   const { listId }: { listId: string } = useParams<{ listId: string }>();
-  const [lists, setLists] = useState<ListReal[]>();
+  const [lists, setLists] = useState<List[]>();
   const [initialTask, setInitialTask] = useState<TaskFrontendWithoutId>();
 
   async function handleSave(
@@ -25,13 +25,13 @@ export default function Page() {
   }
   useEffect((): void => {
     async function fetchListsAndSetInitialTask(): Promise<void> {
-      const lists: ListReal[] | undefined = await getLists();
+      const lists: List[] | undefined = await getLists();
       setLists(lists);
       if (lists) {
         setInitialTask({
           title: "",
           deadline: null,
-          listId: lists.some((value: ListReal): boolean => value.id === listId)
+          listId: lists.some((value: List): boolean => value.id === listId)
             ? listId
             : lists[0].id,
           priority: Priority.Low,

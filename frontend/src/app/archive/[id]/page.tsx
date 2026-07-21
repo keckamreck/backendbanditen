@@ -14,13 +14,13 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { getListById } from "@/app/_api/lists-api";
-import { ListReal } from "@/app/_models/list";
+import { List } from "@/app/_models/list";
 
 export default function ArchivePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const ListId = params.id;
-  const [list, setList] = useState<ListReal>();
+  const [list, setList] = useState<List>();
   const [tasks, setTasks] = useState<TaskFrontend[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
