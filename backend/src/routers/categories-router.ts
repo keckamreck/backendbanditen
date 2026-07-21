@@ -1,23 +1,25 @@
-import express, { response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import * as category from "../repositories/category.js";
 import { Category } from "../repositories/category.js";
-import { resourceLimits } from "node:worker_threads";
+import z from "zod";
+import { zodValidation } from "../validation/zod-validation.js";
+import { errorHandler } from "../middleware/errorHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
+const uuidSchema = z.uuid();
+const nameSchema = z.string().trim().min(1).max(100);
+
 router.get(
-  "/users/:userId/categories/:categoryId",
-  async (request, response, next) => {
+  "/",
+  async (
+    request: Request<{ userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const categoryId = request.params.categoryId;
       const userId = request.params.userId;
-      if (!categoryId || !userId) {
-        return response.status(400).json({ error: "Missing parameters" });
-      }
-      const result = await category.readCategories(categoryId, userId);
-      if (!result) {
-        return response.status(404).json({ error: "Not found" });
-      }
+      const result: Category[] = await category.getAllCategories(userId);
       return response.status(200).json(result);
     } catch (error) {
       next(error);
@@ -25,36 +27,61 @@ router.get(
   },
 );
 
-router.post("/users/:userId/categories", async (request, response, next) => {
-  try {
-    const newCategory: Category = {
-      id: "",
-      name: request.body.name,
-      userId: request.params.userId,
-    };
-    if (!newCategory.name || !newCategory.userId) {
-      return response.status(400).json({ error: "Missing parameters" });
+
+router.get(
+  "/:categoryId",
+  async (
+    request: Request<{ categoryId: string; userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const categoryId = zodValidation(uuidSchema, request.params.categoryId);
+      const userId = request.params.userId;
+      const result: Category[] = await category.getCategoryById(categoryId, userId);
+      return response.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
-    await category.createCategory(newCategory).then((result: any) => {
-      return response.status(201).json("Created");
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
+
+router.post(
+  "/",
+  async (
+    request: Request<{ userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+        const name: string = zodValidation(nameSchema, request.body.name);
+        const userId: string = request.params.userId;
+      const result: Category = await category.createCategory(name, userId);
+      return response.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.patch(
-  "/users/:userId/categories/:categoryId",
-  async (request, response, next) => {
+  "/:categoryId",
+  async (
+    request: Request<{ categoryId: string; userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const catergoryId: string = request.params.categoryId;
-      const newName: string = request.body.name;
+      const categoryId = zodValidation(uuidSchema, request.params.categoryId);
+      const newName: string = zodValidation(nameSchema, request.body.name);
       const userId: string = request.params.userId;
-      if (!catergoryId || !newName || !userId) {
-        return response.status(400).json({ error: "Missing parameters" });
-      }
-      const result = await category.patchCategory(catergoryId, userId, newName);
-      return response.status(201).json("created");
+
+      const result: Category = await category.updateCategory(
+        categoryId,
+        userId,
+        newName,
+      );
+      return response.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -62,16 +89,28 @@ router.patch(
 );
 
 router.delete(
-  "/users/:userId/categories/:categoryId",
-  async (request, response, next) => {
+  "/:categoryId",
+  async (
+    request: Request<{ categoryId: string; userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const categoryId: string = request.params.categoryId;
+      const categoryId: string = zodValidation(
+        uuidSchema,
+        request.params.categoryId,
+      );
       const userId: string = request.params.userId;
 
-      const result = category.deleteCategory(categoryId, userId);
+      const result: Category = await category.deleteCategory(
+        categoryId,
+        userId,
+      );
       return response.status(200).json(result);
     } catch (error) {
       next(error);
     }
   },
 );
+
+router.use(errorHandler);

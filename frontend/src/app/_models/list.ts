@@ -7,7 +7,7 @@ export enum Sort {
 export interface List {
   id: number;
   title: string;
-  isFavourite?: boolean;
+  isFavorite?: boolean;
   category?: string;
 }
 
@@ -15,5 +15,13 @@ export interface ListReal {
   id: string;
   title: string;
   isFavorite?: boolean;
-  category?: string | null;
+  categoryId?: string | null;
+}
+
+export interface ListBackend {
+  id: string;
+  title: string;
+  isFavorite?: boolean;
+  userId: string;
+  categoryId?: string  | null;
 }

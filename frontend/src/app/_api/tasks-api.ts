@@ -54,6 +54,23 @@ export async function getTask(taskId: string): Promise<TaskFrontend | false> {
   }
 }
 
+export async function getNumberOfTasks(
+  listId: string,
+): Promise<number> {
+  const result: TaskBackend[] | "successful" | undefined = await fetchApi<
+    TaskBackend[]
+  >(`/lists/${listId}/tasks?done=false`, "GET");
+  if (result && result.length > 0 && result !== "successful") {
+    let i = 0;
+    for (const task of result){
+      i++;
+    }
+    return i;
+  } else {
+    return 0;
+  }
+}
+
 export async function createTask(
   task: TaskFrontendWithoutId,
 ): Promise<TaskFrontend | false> {

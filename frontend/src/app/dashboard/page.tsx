@@ -12,30 +12,34 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { newList, getLists, getListsBySearch } from "@/app/_api/lists-api";
 import { getDueTask } from "@/app/_api/tasks-api";
-import { ListReal as List } from "@/app/_models/list";
-import { TaskFrontend as Task } from "@/app/_models/task";
+import { ListReal } from "@/app/_models/list";
+import { TaskBackend } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
-import CategorySort from "../_components/CategorySort";
+import CategoryFilter from "../_components/CategoryFilter";
 import { Logout } from "../_components/logout";
+import { CategoryFrontend } from "../_models/category";
+import { getCategories } from "../_api/categories-api";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [lists, setLists] = useState<List[]>([]);
-  const [dueTask, setDueTask] = useState<Task | null>();
+  const [dueTask, setDueTask] = useState<TaskBackend | null>();
+  const [lists, setLists] = useState<ListReal[]>([]);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<List[]>([]);
+  const [searchResults, setSearchResults] = useState<ListReal[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [update, triggerUpdate] = useState(false);
+  const [categories,setCategories] = useState<CategoryFrontend[]  | []>([]);
 
+  
   const filteredLists = selectedCategory
-    ? lists.filter((l) => l.category === selectedCategory)
+    ? lists.filter((list) => list.categoryId === selectedCategory)
     : lists;
-  const favourites = filteredLists.filter((l) => l.isFavourite);
-  const others = filteredLists.filter((l) => !l.isFavourite);
+  const favourites = filteredLists.filter((list) => list.isFavorite);
+  const others = filteredLists.filter((list) => !list.isFavorite);
 
   //Get Lists and Due Task
   useEffect(() => {
@@ -80,12 +84,18 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
-  function handleToggleFavourite(updatedList: List) {
+  useEffect(() => {
+    async function loadCategories(){
+      const fetchedCategories: CategoryFrontend[]  | [] = await getCategories();
+      setCategories(fetchedCategories);
+    }
+    loadCategories();
+  }, [update]);
+
+  function handleToggleFavourite(updatedList: ListReal) {
     setLists((prevLists) =>
       prevLists.map((list) =>
-        list.id === updatedList.id
-          ? { ...list, isFavourite: updatedList.isFavourite }
-          : list,
+        list.id === updatedList.id ? { ...list, ...updatedList } : list,
       ),
     );
   }
@@ -131,46 +141,47 @@ export default function DashboardPage() {
               <Logout />
             </div>
 
-            {/* Search Dropdown */}
-            {isSearchOpen && (
-              //Listen gefunden
-              <div className={styles.searchDropdown}>
-                {searchResults.length > 0 ? (
-                  <div className={styles.searchResultsContainer}>
-                    {searchResults.map((list) => (
-                      <div
-                        key={list.id}
-                        className={styles.dropdownItem}
-                        onClick={() => {
-                          gotoList(list.id);
-                          setIsSearchOpen(false);
-                          setSearchResults([]);
-                        }}
-                      >
-                        <span>{list.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  //Keine Listen gefunden
-                  <div className={styles.noResults}>Keine Listen gefunden</div>
-                )}
-              </div>
-            )}
-          </div>
-          {/* Section for due Task */}
-          <DueTaskSection />
-          {/* Section for Category Sort */}
-          <CategorySort onCategorySelect={setSelectedCategory} />
-          <div className={styles.cardContainer}>
-            {favourites.map((list) => (
-              <ListCard
-                key={list.id}
-                list={list}
-                onToggleFavorite={handleToggleFavourite}
-              />
-            ))}
-          </div>
+          {/* Search Dropdown */}
+          {isSearchOpen && (
+            //Listen gefunden
+            <div className={styles.searchDropdown}>
+              {searchResults.length > 0 ? (
+                <div className={styles.searchResultsContainer}>
+                  {searchResults.map((list) => (
+                    <div
+                      key={list.id}
+                      className={styles.dropdownItem}
+                      onClick={() => {
+                        gotoList(list.id);
+                        setIsSearchOpen(false);
+                        setSearchResults([]);
+                      }}
+                    >
+                      <span>{list.title}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                //Keine Listen gefunden
+                <div className={styles.noResults}>Keine Listen gefunden</div>
+              )}
+            </div>
+          )}
+        </div>
+        {/* Section for due Task */}
+        <DueTaskSection />
+        {/* Section for Category Sort */}
+        <CategoryFilter onCategorySelect={setSelectedCategory} />
+        <div className={styles.cardContainer}>
+          {favourites.map((list) => (
+            <ListCard
+              key={list.id}
+              list={list}
+              category={categories.find((cat) => cat.id === list.categoryId) || null}
+              onToggleFavorite={handleToggleFavourite}
+            />
+          ))}
+        </div>
 
           {/* Der Toggle-Button */}
           <ExpandButton
@@ -185,6 +196,7 @@ export default function DashboardPage() {
                 <ListCard
                   key={list.id}
                   list={list}
+                  category={categories.find((cat) => cat.id === list.categoryId) || null}
                   onToggleFavorite={handleToggleFavourite}
                 />
               ))}
@@ -268,7 +280,7 @@ export default function DashboardPage() {
     const input = document.getElementById("searchInput") as HTMLInputElement;
 
     if (input && input.value.trim()) {
-      getListsBySearch(input.value.trim()).then((lists) => {
+      getListsBySearch(input.value.trim()).then((lists: ListReal[]  |  []) => {
         setSearchResults(lists);
         setIsSearchOpen(true);
       });

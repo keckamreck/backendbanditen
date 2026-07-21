@@ -1,5 +1,5 @@
 import { fetchApi } from "@/app/_api/fetcher";
-import { ListReal } from "@/app/_models/list";
+import { ListBackend, ListReal } from "../_models/list";
 
 export async function newList(title: string) {
   return fetchApi<ListReal>(`/lists`, "POST", {
@@ -9,11 +9,14 @@ export async function newList(title: string) {
 }
 
 export async function getLists() {
-  return fetchApi<ListReal>(`/lists`, "GET");
+  const result = await fetchApi<ListReal[]>(`/lists`, "GET");
+  return result !== undefined && result !== "successful" ? result : [];
 }
+  
 
-export async function getListsBySearch(searchTerm: string) {
-  return fetchApi(`/lists?search=${searchTerm}`, "GET");
+export async function getListsBySearch(searchTerm: string): Promise<ListReal[] | []> {
+  const result = await fetchApi<ListReal[]>(`/lists?search=${searchTerm}`, "GET");
+  return result !== undefined && result !== "successful" ? result : [];
 }
 
 export async function getListById(ListId: string): Promise<ListReal | false> {
@@ -38,4 +41,21 @@ export async function updateListById(
 ): Promise<ListReal | false> {
   const result = await fetchApi<ListReal>(`/lists/${ListId}/`, "PATCH", data);
   return result !== undefined && result !== "successful" ? result : false;
+}
+
+export async function updateList(
+  listId: string,
+  changes: Partial<ListBackend>,
+): Promise<ListReal | false> {
+  const result: ListBackend | "successful" | undefined =
+    await fetchApi<ListBackend>(`/lists/${listId}`, "PATCH", changes);
+  if (result !== undefined && result !== "successful") {
+    return {
+      id: result.id,
+      title: result.title,
+      isFavorite: result.isFavorite || undefined,
+      categoryId: result.categoryId || undefined,
+    };
+  }
+  return false;
 }
