@@ -1,22 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./CategoryPopup.module.css";
-import { getCategories } from "../_lib/demo";
+import { getCategories, createCategory } from "../_api/categories-api";
+import { CategoryFrontend } from "../_models/category";
 
 interface CategoryPopupProps {
-  initialValue: string;
+  initialValue: CategoryFrontend | undefined ;
   onClose: () => void;
-  onSave: (newValue: string) => void;
+  onSave: (newValue: CategoryFrontend | undefined) => void;
 }
 
 export default function CategoryPopup({ initialValue, onClose, onSave }: CategoryPopupProps) {
-  const [inputValue, setInputValue] = useState(initialValue);
+  const [inputValue, setInputValue] = useState<CategoryFrontend | undefined>(initialValue);
+  const [categories, setCategories] = useState<CategoryFrontend[]>([]);
+  const [text, setText] = useState<string>(initialValue?.name || "");
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!inputValue) {
+      const name = text.trim();
+      if (name.length === 0) {
+        onSave(undefined);
+        onClose();
+        return;
+      }
+      const newCategory = await createCategory(name);
+      if (newCategory) {
+        setInputValue(newCategory);
+        onSave(newCategory);
+        onClose();
+        return;
+      }
+      onSave(undefined);
+      onClose();
+      return;
+    }
     onSave(inputValue);
     onClose();
   };
+  useEffect(() => {
+    async function loadCategories(){
+      const result = await getCategories();
+      if(result){
+      setCategories(result);
+      }
+    }
+
+    loadCategories();
+  }, [])
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -26,19 +57,34 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
         <input
           type="text"
           className={styles.input}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              const name = text.trim();
+              if (name.length === 0) return;
+              createCategory(name).then((newCategory) => {
+                if (newCategory) {
+                  setInputValue(newCategory);
+                  setText(newCategory.name);
+                }
+              });
+            }
+          }}
           placeholder="Name der Kategorie..."
           autoFocus
         />
         <div className={styles.existingCategoriesRow}>
-          {getCategories().map((category, index) => (
+          {categories && categories.map((category) => (
             <p
-              key={index}
+              key={category.id}
               className={styles.existingCategoryBtn}
-              onClick={() => setInputValue(category)}
+              onClick={() => {
+                setInputValue(category);
+                setText(category.name);
+              }}
             >
-              {category}
+              {category.name}
             </p>
           ))}
         </div>

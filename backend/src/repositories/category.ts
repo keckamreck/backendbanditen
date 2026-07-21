@@ -7,13 +7,25 @@ import { NotFoundError } from "../errors/errors.js";
 
 export type Category = InferSelectModel<typeof category>;
 
+export async function getAllCategories(userId: string) {
+  try {
+    const result = await db
+      .select()
+      .from(category)
+      .where(eq(category.userId, userId)).orderBy(category.name);
+    return result;
+  } catch (error: unknown) {
+    throw mapDatabaseError(error);
+  }
+}
+
 export async function getCategoryById(categoryId: string, userId: string) {
   try {
     const result = await db
       .select()
       .from(category)
       .where(and(eq(category.id, categoryId), eq(category.userId, userId)));
-    if (!result) {
+    if (result.length === 0) {
       throw new NotFoundError("Category not found");
     }
     return result;
@@ -24,6 +36,16 @@ export async function getCategoryById(categoryId: string, userId: string) {
 
 export async function createCategory(name:  string, userId: string) {
   try {
+    const existingCategory = await db
+      .select()
+      .from(category)
+      .where(and(eq(category.userId, userId), eq(category.name, name)))
+      .limit(1);
+
+    if (existingCategory.length > 0) {
+      return existingCategory[0];
+    }
+    
     const generatedCategory = {
       id: randomUUID(),
       name: name,

@@ -1,53 +1,90 @@
 "use client";
 
 import styles from "./ListCard.module.css";
-import { List } from "@/app/_models/list";
+import { ListReal } from "@/app/_models/list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar as emptyStar,
   faFlag,
 } from "@fortawesome/free-regular-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { getTasks, updateListCategory, updateListisFavourite } from "../_lib/demo";
+import { updateList } from "../_api/lists-api";
 import CategoryPopup from "./CategoryPopup";
-import { getTaskofList } from "../_lib/demo";
+import { getNumberOfTasks } from "../_api/tasks-api";
+import { CategoryFrontend } from "../_models/category";
+import { getCategoryById } from "../_api/categories-api";
 export interface ListProps {
-  list: List;
-  onToggleFavorite?: (updatedList: List) => void;
+  list: ListReal;
+    onToggleFavorite?: (updatedList: ListReal) => void;
 }
 
 export function ListCard({ list, onToggleFavorite }: ListProps) {
-  const dueTasks = getTaskofList(list.id).filter((task) => !task.done);
+  const [dueTasks, setdueTasks] = useState<number>(0);
+  const category = useRef("");
   const [currentList, setCurrentList] = useState(list);
-  const [isFavourite, setIsFavorite] = useState(
-    currentList.isFavourite ?? false,
-  );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const categoryRef = useRef(false);
 
-  const toggleFavorite = (event: React.MouseEvent) => {
+    //Anzahl an Tasks wird geladen
+  useEffect(() => {  
+    async function loadDueTasks(){
+      const numberOfDueTasks: number = await getNumberOfTasks(list.id);
+      setdueTasks(numberOfDueTasks);
+    }
+
+    loadDueTasks();
+  }, [list.id]);
+
+  useEffect(() => {
+    setCurrentList(list);
+  }, [list]);
+
+  //Name der Category über list.categoryId herausfinden
+  useEffect(() => {
+    async function loadCategory() {
+      if (currentList.categoryId) {
+        const fetchedCategory = await getCategoryById(currentList.categoryId);
+        fetchedCategory ? (category.current = fetchedCategory.name) : (category.current = "");
+      } else {
+        category.current = "";
+      }
+    }
+
+    loadCategory();
+  }, [currentList.categoryId]);
+
+  //Außer beim erstmaligen Laden, wird list.categoryId in der currentList bei Änderung geupdated
+  useEffect(() => {
+    if (!categoryRef.current) {
+      categoryRef.current = true;
+      return;
+    }
+
+    async function saveCategory() {
+      await updateList(currentList.id, { categoryId: currentList.categoryId });
+    }
+
+    saveCategory();
+  }, [currentList.categoryId, currentList.id, category]);
+
+  const toggleFavorite = async (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
 
-    const nextState = !isFavourite;
-    setIsFavorite(nextState);
+    const nextValue = !(currentList.isFavorite ?? false);
+    const updatedList = { ...currentList, isFavorite: nextValue };
 
-    if (onToggleFavorite) {
-      updateListisFavourite(currentList.id, nextState);
-      onToggleFavorite({ ...currentList, isFavourite: nextState });
-    }
+    setCurrentList(updatedList);
+    await updateList(currentList.id, { isFavorite: nextValue });
+    onToggleFavorite?.(updatedList);
   };
 
   const openPopup = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setIsPopupOpen(true);
-  };
-
-  const handleSaveCategory = (newCategory: string) => {
-    updateListCategory(currentList.id, newCategory);
-    setCurrentList({ ...currentList, category: newCategory });
   };
 
   return (
@@ -58,34 +95,33 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
             <p className={styles.title}>{currentList.title}</p>
             <FontAwesomeIcon
               className={styles.starIcon}
-              icon={isFavourite ? filledStar : emptyStar}
+              icon={currentList.isFavorite ? filledStar : emptyStar}
               onClick={toggleFavorite}
             />
           </div>
           <div className={styles.categoryRow}>
-            {!currentList.category && (
+            {!currentList.categoryId && (
               <FontAwesomeIcon
                 className={styles.flagIcon}
                 icon={faFlag}
                 onClick={openPopup}
               />
             )}
-            {currentList.category && (
+            {currentList.categoryId && (
               <p className={styles.category} onClick={openPopup}>
-                {" "}
-                {currentList.category}
+                {category?.name}
               </p>
             )}
           </div>
           <div className={styles.row}>
-            <h1 className={styles.taskAmount}>{dueTasks.length}</h1>
-            <p className={styles.dueTasks}>noch fällig</p>
+            <h1 className={styles.taskAmount}>{dueTasks}</h1>
+            <p className={styles.dueTasks}>offene Tasks</p>
           </div>
         </div>
       </Link>
       {isPopupOpen && (
         <CategoryPopup
-          initialValue={currentList.category || ""}
+          initialValue={category}
           onClose={() => setIsPopupOpen(false)}
           onSave={handleSaveCategory}
         />

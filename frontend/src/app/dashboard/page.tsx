@@ -12,17 +12,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { newList, getLists, getListsBySearch } from "@/app/_api/lists-api";
 import { getDueTask } from "@/app/_api/tasks-api";
-import { ListReal as List } from "@/app/_models/list";
+import { ListReal as List, ListReal } from "@/app/_models/list";
 import { TaskFrontend as Task } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
-import CategorySort from "../_components/CategorySort";
+import CategoryFilter from "../_components/CategoryFilter";
 import { Logout } from "../_components/logout";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [lists, setLists] = useState<List[]>([]);
+  const [lists, setLists] = useState<ListReal[]>([]);
   const [dueTask, setDueTask] = useState<Task | null>(null);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
@@ -31,11 +31,12 @@ export default function DashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [update, triggerUpdate] = useState(false);
 
+  
   const filteredLists = selectedCategory
-    ? lists.filter((l) => l.category === selectedCategory)
+    ? lists.filter((list) => list.categoryId === selectedCategory)
     : lists;
-  const favourites = filteredLists.filter((l) => l.isFavourite);
-  const others = filteredLists.filter((l) => !l.isFavourite);
+  const favourites = filteredLists.filter((list) => list.isFavorite);
+  const others = filteredLists.filter((list) => !list.isFavorite);
 
   //Get Lists and Due Task
   useEffect(() => {
@@ -80,12 +81,10 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
-  function handleToggleFavourite(updatedList: List) {
+  function handleToggleFavourite(updatedList: ListReal) {
     setLists((prevLists) =>
       prevLists.map((list) =>
-        list.id === updatedList.id
-          ? { ...list, isFavourite: updatedList.isFavourite }
-          : list,
+        list.id === updatedList.id ? { ...list, ...updatedList } : list,
       ),
     );
   }
@@ -160,8 +159,8 @@ export default function DashboardPage() {
         </div>
         {/* Section for due Task */}
         <DueTaskSection />
-        {/* Section for Category Sort */}
-        <CategorySort onCategorySelect={setSelectedCategory} />
+        {/* Section for Category Filter */}
+        <CategoryFilter onCategorySelect={setSelectedCategory} />
         <div className={styles.cardContainer}>
           {favourites.map((list) => (
             <ListCard

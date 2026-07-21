@@ -11,6 +11,24 @@ const uuidSchema = z.uuid();
 const nameSchema = z.string().trim().min(1).max(100);
 
 router.get(
+  "/",
+  async (
+    request: Request<{ userId: string }>,
+    response: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = request.params.userId;
+      const result: Category[] = await category.getAllCategories(userId);
+      return response.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+
+router.get(
   "/:categoryId",
   async (
     request: Request<{ categoryId: string; userId: string }>,

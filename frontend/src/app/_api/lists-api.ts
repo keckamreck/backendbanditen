@@ -1,6 +1,9 @@
 import { apiError } from "@/app/_api/errorHandler";
 import { getUserId } from "@/app/_api/users-api";
 import config from "@/app/_lib/config";
+import { CategoryBackend } from "../_models/category";
+import { fetchApi } from "./fetcher";
+import { ListBackend, ListReal } from "../_models/list";
 
 export async function newList(title: string) {
   try {
@@ -53,4 +56,21 @@ export async function getListsBySearch(searchTerm: string) {
     console.log("Search Error");
     apiError();
   }
+}
+
+export async function updateList(
+  listId: string,
+  changes: Partial<ListReal>,
+): Promise<ListReal | false> {
+  const result: ListBackend | "successful" | undefined =
+    await fetchApi<ListBackend>(`/lists/${listId}`, "PATCH", changes);
+  if (result !== undefined && result !== "successful") {
+    return {
+      id: result.id,
+      title: result.title,
+      isFavorite: result.isFavorite || undefined,
+      categoryId: result.categoryId || undefined,
+    };
+  }
+  return false;
 }

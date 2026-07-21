@@ -1,31 +1,38 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "./CategorySort.module.css";
-import { getCategories } from "@/app/_lib/demo";
+import { getCategories } from "@/app/_api/categories-api";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CategoryFrontend } from "../_models/category";
 
-interface CategorySortProps {
+interface CategoryFilterProps {
   onCategorySelect: (category: string | null) => void;
 }
 
-export default function CategorySort({ onCategorySelect }: CategorySortProps) {
+export default function CategoryFilter({ onCategorySelect }: CategoryFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<CategoryFrontend[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFrontend | null>(null);
 
   useEffect(() => {
-    const cats = getCategories();
-    setCategories(cats);
+    async function loadCategories(){
+      const result = await getCategories();
+      if(result){
+      setCategories(result);
+      }
+    }
+    loadCategories();
   }, []);
+
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelectCategory = (category: string | null) => {
-    setSelectedCategory(category);
-    onCategorySelect(category);
+  const handleSelectCategory = (category: CategoryFrontend | null) => {
+    setSelectedCategory(category || null);
+    onCategorySelect(category?.id || null);
     setIsOpen(false);
   };
 
@@ -33,8 +40,8 @@ export default function CategorySort({ onCategorySelect }: CategorySortProps) {
     <div className={styles.container}>
       <button className={isOpen ? styles.sortButtonActive : styles.sortButton} onClick={handleToggle}>
         <FontAwesomeIcon icon={faSort} className={styles.sortIcon} />
-        Nach Kategorie sortieren{" "}
-        {selectedCategory ? `(${selectedCategory})` : ""}
+        Nach Kategorie filtern{" "}
+        {selectedCategory ? `(${selectedCategory.name})` : ""}
       </button>
 
       {isOpen && (
@@ -45,13 +52,13 @@ export default function CategorySort({ onCategorySelect }: CategorySortProps) {
           >
             Alle
           </div>
-          {getCategories().map((category, index) => (
+          {categories.map((category) => (
             <p
-              key={index}
+              key={category.id}
               className={styles.dropdownItem}
               onClick={() => handleSelectCategory(category)}
             >
-              {category}
+              {category.name}
             </p>
           ))}
         </div>
