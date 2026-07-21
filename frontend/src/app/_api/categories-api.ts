@@ -1,7 +1,7 @@
 import { fetchApi } from "./fetcher";
 import {CategoryBackend, CategoryFrontend} from "@/app/_models/category";
 
-export async function getCategories(): Promise<CategoryFrontend[] | undefined> {
+export async function getCategories(): Promise<CategoryFrontend[] | []> {
     const result: CategoryBackend[] | "successful" | undefined = await fetchApi<CategoryBackend[]>(`/categories`, "GET");
     if(result && result !== "successful") {
         return result.map((category) => ({

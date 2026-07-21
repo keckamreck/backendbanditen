@@ -12,24 +12,27 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { newList, getLists, getListsBySearch } from "@/app/_api/lists-api";
 import { getDueTask } from "@/app/_api/tasks-api";
-import { ListReal as List, ListReal } from "@/app/_models/list";
-import { TaskFrontend as Task } from "@/app/_models/task";
+import { ListReal } from "@/app/_models/list";
+import { TaskBackend } from "@/app/_models/task";
 import { ListCard } from "../_components/ListCard";
 import ExpandButton from "../_components/ExpandBtn";
 import CategoryFilter from "../_components/CategoryFilter";
 import { Logout } from "../_components/logout";
+import { CategoryFrontend } from "../_models/category";
+import { getCategories } from "../_api/categories-api";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [dueTask, setDueTask] = useState<Task | null>();
+  const [dueTask, setDueTask] = useState<TaskBackend | null>();
   const [lists, setLists] = useState<ListReal[]>([]);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<List[]>([]);
+  const [searchResults, setSearchResults] = useState<ListReal[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [update, triggerUpdate] = useState(false);
+  const [categories,setCategories] = useState<CategoryFrontend[]  | []>([]);
 
   
   const filteredLists = selectedCategory
@@ -80,6 +83,14 @@ export default function DashboardPage() {
     getDueTaskTime();
     return () => clearInterval(timer);
   }, [dueTask]);
+
+  useEffect(() => {
+    async function loadCategories(){
+      const fetchedCategories: CategoryFrontend[]  | [] = await getCategories();
+      setCategories(fetchedCategories);
+    }
+    loadCategories();
+  }, [update]);
 
   function handleToggleFavourite(updatedList: ListReal) {
     setLists((prevLists) =>
@@ -166,6 +177,7 @@ export default function DashboardPage() {
             <ListCard
               key={list.id}
               list={list}
+              category={categories.find((cat) => cat.id === list.categoryId) || null}
               onToggleFavorite={handleToggleFavourite}
             />
           ))}
@@ -184,6 +196,7 @@ export default function DashboardPage() {
                 <ListCard
                   key={list.id}
                   list={list}
+                  category={categories.find((cat) => cat.id === list.categoryId) || null}
                   onToggleFavorite={handleToggleFavourite}
                 />
               ))}
@@ -267,7 +280,7 @@ export default function DashboardPage() {
     const input = document.getElementById("searchInput") as HTMLInputElement;
 
     if (input && input.value.trim()) {
-      getListsBySearch(input.value.trim()).then((lists) => {
+      getListsBySearch(input.value.trim()).then((lists: ListReal[]  |  []) => {
         setSearchResults(lists);
         setIsSearchOpen(true);
       });

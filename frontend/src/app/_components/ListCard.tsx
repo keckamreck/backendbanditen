@@ -17,15 +17,27 @@ import { CategoryFrontend } from "../_models/category";
 import { getCategoryById } from "../_api/categories-api";
 export interface ListProps {
   list: ListReal;
+
+  category: CategoryFrontend | null;
     onToggleFavorite?: (updatedList: ListReal) => void;
 }
 
-export function ListCard({ list, onToggleFavorite }: ListProps) {
+export function ListCard({ list, category, onToggleFavorite }: ListProps) {
   const [dueTasks, setdueTasks] = useState<number>(0);
-  const category = useRef("");
   const [currentList, setCurrentList] = useState(list);
+  const [categoryName, setCategoryName] = useState<string  | undefined>(category ? category.name : undefined)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const categoryRef = useRef(false);
+
+  const handleSaveCategory = (newCategory: CategoryFrontend | undefined) => {
+    if (newCategory) {
+      setCurrentList({ ...currentList, categoryId: newCategory.id });
+      setCategoryName(newCategory.name);
+    } else {
+      setCurrentList({ ...currentList, categoryId: undefined });
+      setCategoryName(undefined);
+    }
+  };
 
     //Anzahl an Tasks wird geladen
   useEffect(() => {  
@@ -41,20 +53,6 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
     setCurrentList(list);
   }, [list]);
 
-  //Name der Category über list.categoryId herausfinden
-  useEffect(() => {
-    async function loadCategory() {
-      if (currentList.categoryId) {
-        const fetchedCategory = await getCategoryById(currentList.categoryId);
-        fetchedCategory ? (category.current = fetchedCategory.name) : (category.current = "");
-      } else {
-        category.current = "";
-      }
-    }
-
-    loadCategory();
-  }, [currentList.categoryId]);
-
   //Außer beim erstmaligen Laden, wird list.categoryId in der currentList bei Änderung geupdated
   useEffect(() => {
     if (!categoryRef.current) {
@@ -64,6 +62,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
 
     async function saveCategory() {
       await updateList(currentList.id, { categoryId: currentList.categoryId });
+      setCategoryName(category ? category.name : undefined);
     }
 
     saveCategory();
@@ -100,16 +99,16 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
             />
           </div>
           <div className={styles.categoryRow}>
-            {!currentList.categoryId && (
+            {!category?.id && (
               <FontAwesomeIcon
                 className={styles.flagIcon}
                 icon={faFlag}
                 onClick={openPopup}
               />
             )}
-            {currentList.categoryId && (
+            {category?.id && (
               <p className={styles.category} onClick={openPopup}>
-                {category?.name}
+                {categoryName}
               </p>
             )}
           </div>
@@ -123,7 +122,7 @@ export function ListCard({ list, onToggleFavorite }: ListProps) {
         <CategoryPopup
           initialValue={category}
           onClose={() => setIsPopupOpen(false)}
-          onSave={handleSaveCategory}
+          onSave={handleSaveCategory} 
         />
       )}
     </>

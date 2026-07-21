@@ -6,18 +6,18 @@ import { getCategories, createCategory } from "../_api/categories-api";
 import { CategoryFrontend } from "../_models/category";
 
 interface CategoryPopupProps {
-  initialValue: CategoryFrontend | undefined ;
+  initialValue: CategoryFrontend | null ;
   onClose: () => void;
   onSave: (newValue: CategoryFrontend | undefined) => void;
 }
 
 export default function CategoryPopup({ initialValue, onClose, onSave }: CategoryPopupProps) {
-  const [inputValue, setInputValue] = useState<CategoryFrontend | undefined>(initialValue);
+  const [inputValue, setInputValue] = useState<CategoryFrontend | null>(initialValue);
   const [categories, setCategories] = useState<CategoryFrontend[]>([]);
   const [text, setText] = useState<string>(initialValue?.name || "");
 
   const handleSave = async () => {
-    if (!inputValue) {
+    if (inputValue) {
       const name = text.trim();
       if (name.length === 0) {
         onSave(undefined);
@@ -35,9 +35,9 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
       onClose();
       return;
     }
-    onSave(inputValue);
     onClose();
   };
+  
   useEffect(() => {
     async function loadCategories(){
       const result = await getCategories();
