@@ -42,16 +42,16 @@ export default function Login() {
             <FontAwesomeIcon size="6x" icon={faCircleUser} />
           </div>
           <div className={styles.inputPair}>
-            <span>Username</span>
+            <span>Benutzername</span>
             <input
               type="text"
-              placeholder="meinHundGniesbert"
+              placeholder="madmax1231"
               name="username"
               required
             />
           </div>
           <div className={styles.inputPair}>
-            <span>Password</span>
+            <span>Passwort</span>
             <input
               type="password"
               placeholder="**********"
@@ -60,9 +60,9 @@ export default function Login() {
               required
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit">Einloggen</button>
           <a className={styles.new} onClick={showRegister}>
-            Create a new account
+            Neues Konto erstellen
           </a>
         </form>
       </div>

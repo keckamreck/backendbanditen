@@ -1,5 +1,5 @@
 import config from "@/app/_lib/config";
-import { getUserId } from "@/app/_api/users-api";
+import { getUserId, getToken } from "@/app/_api/users-api";
 
 interface errorResponse {
   error: {
@@ -15,14 +15,17 @@ export async function fetchApi<typeOfResource>(
 ): Promise<typeOfResource | "successful" | undefined> {
   try {
     const userId: string | undefined = await getUserId();
+    const token: string | undefined = await getToken();
     if (!userId) {
       throw new Error("Cannot get userId");
+    } else if (!token) {
+      throw new Error("Cannot get token");
     }
     const result: Response = await fetch(
       config.apiUrl + "users/" + userId + url,
       {
         method: method,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": token},
         body: JSON.stringify(body),
       },
     );
