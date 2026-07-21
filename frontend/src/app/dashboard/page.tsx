@@ -22,8 +22,8 @@ import { Logout } from "../_components/logout";
 export default function DashboardPage() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [dueTask, setDueTask] = useState<Task | null>();
   const [lists, setLists] = useState<ListReal[]>([]);
-  const [dueTask, setDueTask] = useState<Task | null>(null);
   const [dueTaskTime, setDueTaskTime] = useState<string>("");
   const [searchResults, setSearchResults] = useState<List[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -88,47 +88,47 @@ export default function DashboardPage() {
       ),
     );
   }
-
-  return (
-    <div className={styles.page}>
-      <Head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+  if (dueTask === null || (dueTask && lists)) {
+    return (
+      <div className={styles.page}>
+        <Head>
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+          />
+          <title>Dashboard</title>
+        </Head>
+        <PopupWithInput
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          onSubmitting={(name) => handleNewListButton(name)}
         />
-        <title>Dashboard</title>
-      </Head>
-      <PopupWithInput
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        onSubmitting={(name) => handleNewListButton(name)}
-      />
-      {isSearchOpen && (
-        <div
-          className={styles.searchBackdrop}
-          onClick={() => setIsSearchOpen(false)}
-        />
-      )}
-      <main className={styles.main}>
-        <div className={styles.pageContainer}>
-          {/* Header mit Suchleiste links und Add-Button rechts */}
-          <div className={styles.header}>
-            <div className={styles.searchSection}>
-              <SearchBar />
-            </div>
+        {isSearchOpen && (
+          <div
+            className={styles.searchBackdrop}
+            onClick={() => setIsSearchOpen(false)}
+          />
+        )}
+        <main className={styles.main}>
+          <div className={styles.pageContainer}>
+            {/* Header mit Suchleiste links und Add-Button rechts */}
+            <div className={styles.header}>
+              <div className={styles.searchSection}>
+                <SearchBar />
+              </div>
 
-            <div className={styles.addButtonSection}>
-              <button
-                title="addList"
-                className={styles.addIcon}
-                onClick={() => setIsPopupOpen(true)}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
+              <div className={styles.addButtonSection}>
+                <button
+                  title="addList"
+                  className={styles.addIcon}
+                  onClick={() => setIsPopupOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+              <Logout />
             </div>
-            <Logout />
-          </div>
 
           {/* Search Dropdown */}
           {isSearchOpen && (
@@ -159,7 +159,7 @@ export default function DashboardPage() {
         </div>
         {/* Section for due Task */}
         <DueTaskSection />
-        {/* Section for Category Filter */}
+        {/* Section for Category Sort */}
         <CategoryFilter onCategorySelect={setSelectedCategory} />
         <div className={styles.cardContainer}>
           {favourites.map((list) => (
@@ -171,27 +171,30 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Der Toggle-Button */}
-        <ExpandButton
-          isExpanded={isExpanded}
-          onToggle={() => setIsExpanded(!isExpanded)}
-        />
+          {/* Der Toggle-Button */}
+          <ExpandButton
+            isExpanded={isExpanded}
+            onToggle={() => setIsExpanded(!isExpanded)}
+          />
 
-        {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
-        {isExpanded && (
-          <div className={styles.cardContainer}>
-            {others.map((list) => (
-              <ListCard
-                key={list.id}
-                list={list}
-                onToggleFavorite={handleToggleFavourite}
-              />
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
-  );
+          {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
+          {isExpanded && (
+            <div className={styles.cardContainer}>
+              {others.map((list) => (
+                <ListCard
+                  key={list.id}
+                  list={list}
+                  onToggleFavorite={handleToggleFavourite}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  } else {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
+  }
 
   function SearchBar() {
     return (
@@ -213,7 +216,7 @@ export default function DashboardPage() {
   }
 
   function gotoList(listId: string) {
-    router.push("/list/" + listId);
+    router.push("/editTask/" + listId);
   }
   function handleNewListButton(name: string) {
     newList(name).then(() => {

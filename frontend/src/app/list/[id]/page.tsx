@@ -1,43 +1,43 @@
 "use client";
 
 import { TopBar } from "@/app/_components/TopBar";
-import { Sort } from "@/app/_models/list";
-import { getList } from "@/app/_lib/demo";
-import { getTaskofList } from "@/app/_lib/demo";
+import { Sort, ListReal } from "@/app/_models/list";
+import { TaskFrontend } from "@/app/_models/task";
+import { getListById } from "@/app/_api/lists-api";
+import { getTasksForList, editTask } from "@/app/_api/tasks-api";
 import { TaskCard } from "@/app/_components/TaskCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import styles from "./page.module.css";
 import { ButtonSort } from "@/app/_components/ButtonSort";
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { deleteList } from "@/app/_lib/demo";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Footer } from "@/app/_components/footer";
-import { editTaskDone } from "@/app/_lib/demo";
 
-function List({ ListId }: { ListId: number }) {
+function List({ ListId }: { ListId: string }) {
   const router = useRouter();
-  const [list, setList] = useState(getList(ListId));
-  const initialTasks = getTaskofList(ListId);
-  const [tasks, setTasks] = useState(initialTasks);
+  const [list, setList] = useState<ListReal>();
+  const [tasks, setTasks] = useState<TaskFrontend[]>([]);
   const [sort, setSort] = useState<Sort>(Sort.dueDate);
-  const [fadingTaskIds, setFadingTaskIds] = useState<Set<number>>(new Set());
-  const [showModal, setShowModal] = useState(false);
+  const [fadingTaskIds, setFadingTaskIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
 
-  function handleDelete() {
-    deleteList(ListId);
-    router.push(`/dashboard/`);
-  }
-
-  function toggleModal() {
-    setShowModal(!showModal);
-  }
-
-  function handleConfirm() {
-    handleDelete();
-    toggleModal();
-  }
+  useEffect(() => {
+    async function load(): Promise<void> {
+      const [listResult, tasksResult] = await Promise.all([
+        getListById(ListId),
+        getTasksForList(ListId, false),
+      ]);
+      if (listResult) {
+        setList(listResult);
+      }
+      if (tasksResult) {
+        setTasks(tasksResult);
+      }
+      setLoading(false);
+    }
+    load();
+  }, [ListId]);
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sort) {
@@ -50,6 +50,35 @@ function List({ ListId }: { ListId: number }) {
     }
   });
 
+  async function handleDoneClicked(TaskId: string) {
+    setFadingTaskIds((prev) => new Set(prev).add(TaskId));
+
+    setTasks((prev) =>
+      prev.map((t) => (t.id === TaskId ? { ...t, done: true } : t)),
+    );
+    const result = await editTask(TaskId, { done: true });
+    if (!result) {
+      setTasks((prev) =>
+        prev.map((t) => (t.id === TaskId ? { ...t, done: false } : t)),
+      );
+      setFadingTaskIds((prev) => {
+        const next = new Set(prev);
+        next.delete(TaskId);
+        return next;
+      });
+    }
+    setTimeout(() => {
+      setFadingTaskIds((prev) => {
+        const next = new Set(prev);
+        next.delete(TaskId);
+        return next;
+      });
+    }, 1500);
+  }
+
+  if (loading || !list) {
+    return <div style={{ margin: "20px" }}>Loading...</div>;
+  }
   return (
     <div className={styles.list}>
       <TopBar ListId={ListId}></TopBar>
@@ -77,15 +106,7 @@ function List({ ListId }: { ListId: number }) {
                 task={task}
                 onPencilClick={() => router.push(`/editTask/${task.id}`)}
                 onDoneClick={() => {
-                  setFadingTaskIds((prev) => new Set(prev).add(task.id));
-                  editTaskDone(task.id, true);
-                  setTimeout(() => {
-                    setFadingTaskIds((prev) => {
-                      const next = new Set(prev);
-                      next.delete(task.id);
-                      return next;
-                    });
-                  }, 1500);
+                  handleDoneClicked(task.id);
                 }}
               />
             </div>
@@ -98,6 +119,6 @@ function List({ ListId }: { ListId: number }) {
 
 export default function Page() {
   const parms = useParams();
-  const id = parms.id;
-  return <List ListId={Number(id)} />;
+  const id = parms.id as string;
+  return <List ListId={id} />;
 }

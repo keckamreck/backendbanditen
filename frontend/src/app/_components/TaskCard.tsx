@@ -5,11 +5,11 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { PriorityBadge } from "@/app/_components/PriorityBadge";
-import { Task } from "@/app/_models/task";
+import { TaskFrontend } from "@/app/_models/task";
 import styles from "./TaskCard.module.css";
 
 export interface TaskProps {
-  task: Task;
+  task: TaskFrontend;
   onPencilClick: () => void;
   onDoneClick: () => boolean | void;
 }

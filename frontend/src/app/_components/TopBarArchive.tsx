@@ -1,13 +1,13 @@
 "use client";
 
-import { ArchiveButton, ChevronButton } from './ButtonsIcon';
-import { useRouter } from 'next/navigation';
-import styles from './TopBarArchive.module.css'
+import { ArchiveButton, ChevronButton } from "./ButtonsIcon";
+import { useRouter } from "next/navigation";
+import styles from "./TopBarArchive.module.css";
 
 export interface TopBarArchiveProps {
-  title: string,
-  id: number
-};
+  title: string;
+  id: string;
+}
 
 export function TopBarArchive(props: TopBarArchiveProps) {
   const router = useRouter();
@@ -18,10 +18,10 @@ export function TopBarArchive(props: TopBarArchiveProps) {
 
   return (
     <div className={styles.container}>
-      <ChevronButton onClick={() => handleChevron()}/>
+      <ChevronButton onClick={() => handleChevron()} />
       <div className={styles.card}>
         <h1>{props.title}</h1>
-        <ArchiveButton/>
+        <ArchiveButton />
       </div>
     </div>
   );

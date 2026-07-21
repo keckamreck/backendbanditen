@@ -15,7 +15,7 @@ export interface ListReal {
   id: string;
   title: string;
   isFavorite?: boolean;
-  categoryId?: string;
+  category?: string | null;
 }
 
 export interface ListBackend {
