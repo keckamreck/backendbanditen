@@ -9,10 +9,11 @@ import {
 } from "@/app/_models/task";
 import { List } from "@/app/_models/list";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createTask } from "@/app/_api/tasks-api";
 
 export default function Page() {
+  const router = useRouter();
   const { listId }: { listId: string } = useParams<{ listId: string }>();
   const [lists, setLists] = useState<List[]>();
   const [initialTask, setInitialTask] = useState<TaskFrontendWithoutId>();
@@ -38,10 +39,12 @@ export default function Page() {
           note: null,
           done: false,
         });
+      } else {
+        router.back();
       }
     }
     fetchListsAndSetInitialTask();
-  }, [listId]);
+  }, [listId, router]);
 
   if (lists && initialTask) {
     return (
