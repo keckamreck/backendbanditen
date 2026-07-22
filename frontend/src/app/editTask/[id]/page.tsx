@@ -3,12 +3,13 @@
 import EditorForm from "@/app/_components/EditorForm";
 import { TaskFrontend, TaskFrontendWithoutId } from "@/app/_models/task";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { List } from "@/app/_models/list";
 import { deleteTask, editTask, getTask } from "@/app/_api/tasks-api";
 import { getLists } from "@/app/_api/lists-api";
 
 export default function Page() {
+  const router = useRouter();
   const { id }: { id: string } = useParams<{ id: string }>();
   const [lists, setLists] = useState<List[]>();
   const [initialTask, setInitialTask] = useState<TaskFrontend>();
@@ -18,15 +19,21 @@ export default function Page() {
       const task: TaskFrontend | false = await getTask(id);
       if (task) {
         setInitialTask(task);
+      } else {
+        router.back();
       }
     }
     async function fetchLists(): Promise<void> {
       const lists: List[] | undefined = await getLists();
-      setLists(lists);
+      if (lists) {
+        setLists(lists);
+      } else {
+        router.back();
+      }
     }
     fetchTask();
     fetchLists();
-  }, [id]);
+  }, [id, router]);
 
   async function handleSave(
     editedTask: TaskFrontendWithoutId,

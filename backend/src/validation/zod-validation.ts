@@ -9,7 +9,11 @@ export function zodValidation<Schema extends ZodType>(
   if (!result.success) {
     throw new ValidationError(
       result.error.issues
-        .map((error): string => "invalid " + error.path.join(", "))
+        .map((error): string =>
+          error.path.length > 0
+            ? "invalid " + error.path.join(", ")
+            : error.message,
+        )
         .join("; ")
         .trim(),
     );
