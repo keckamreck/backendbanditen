@@ -10,7 +10,7 @@ import {
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { updateList } from "../_api/lists-api";
+import { updateListById } from "../_api/lists-api";
 import CategoryPopup from "./CategoryPopup";
 import { getNumberOfTasks } from "../_api/tasks-api";
 import { CategoryFrontend } from "../_models/category";
@@ -39,10 +39,11 @@ export function ListCard({
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleSaveCategory = async (
-    newCategory: CategoryFrontend | undefined,
+    newCategory: CategoryFrontend | null,
   ) => {
     const updatedList = { ...list, categoryId: newCategory?.id };
-    await updateList(list.id, { categoryId: newCategory?.id });
+    const safeCategoryId: string | null = newCategory ? newCategory.id : null;
+    await updateListById(list.id, { categoryId: safeCategoryId });
     onCategoryChange?.(updatedList);
     if(newCategory && !allCategories?.some(cat => cat.id === newCategory.id)){
       onCategoryCreated?.();
@@ -74,7 +75,7 @@ let isMounted = true;
     const nextValue = !(list.isFavorite ?? false);
     const updatedList = { ...list, isFavorite: nextValue };
 
-    await updateList(list.id, { isFavorite: nextValue });
+    await updateListById(list.id, { isFavorite: nextValue });
     onToggleFavorite?.(updatedList);
   };
 

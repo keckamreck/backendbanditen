@@ -10,7 +10,7 @@ interface CategoryPopupProps {
 
   loadedCategories: CategoryFrontend[] | null;
   onClose: () => void;
-  onSave: (newValue: CategoryFrontend | undefined) => void;
+  onSave: (newValue: CategoryFrontend | null) => void;
 }
 
 export default function CategoryPopup({
@@ -28,13 +28,8 @@ export default function CategoryPopup({
   const [text, setText] = useState<string>(initialValue?.name || "");
 
   const handleSave = async () => {
-    if (inputValue) {
+    if (text.trim().length > 0) {
       const name = text.trim();
-      if (name.length === 0) {
-        onSave(undefined);
-        onClose();
-        return;
-      }
       const newCategory = await createCategory(name);
       if (newCategory) {
         setInputValue(newCategory);
@@ -42,7 +37,7 @@ export default function CategoryPopup({
         onClose();
         return;
       }
-      onSave(undefined);
+      onSave(null);
       onClose();
       return;
     }
