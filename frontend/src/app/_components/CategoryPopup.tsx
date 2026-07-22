@@ -6,14 +6,25 @@ import { getCategories, createCategory } from "../_api/categories-api";
 import { CategoryFrontend } from "../_models/category";
 
 interface CategoryPopupProps {
-  initialValue: CategoryFrontend | null ;
+  initialValue: CategoryFrontend | null;
+
+  loadedCategories: CategoryFrontend[] | null;
   onClose: () => void;
   onSave: (newValue: CategoryFrontend | undefined) => void;
 }
 
-export default function CategoryPopup({ initialValue, onClose, onSave }: CategoryPopupProps) {
-  const [inputValue, setInputValue] = useState<CategoryFrontend | null>(initialValue);
-  const [categories, setCategories] = useState<CategoryFrontend[]>([]);
+export default function CategoryPopup({
+  initialValue,
+  loadedCategories,
+  onClose,
+  onSave,
+}: CategoryPopupProps) {
+  const [inputValue, setInputValue] = useState<CategoryFrontend | null>(
+    initialValue,
+  );
+  const [categories, setCategories] = useState<CategoryFrontend[]>(
+    loadedCategories || [],
+  );
   const [text, setText] = useState<string>(initialValue?.name || "");
 
   const handleSave = async () => {
@@ -37,8 +48,9 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
     }
     onClose();
   };
-  
-  useEffect(() => {
+
+  {
+    /* useEffect(() => {
     async function loadCategories(){
       const result = await getCategories();
       if(result){
@@ -47,13 +59,14 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
     }
 
     loadCategories();
-  }, [])
+  }, []) */
+  }
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.popupCard} onClick={(e) => e.stopPropagation()}>
         <h3 className={styles.title}>Kategorie wählen</h3>
-        
+
         <input
           type="text"
           className={styles.input}
@@ -66,8 +79,7 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
               createCategory(name).then((newCategory) => {
                 if (newCategory) {
                   setInputValue(newCategory);
-                  setText(newCategory.name);
-                }
+                  setText(newCategory.name);                }
               });
             }
           }}
@@ -75,18 +87,19 @@ export default function CategoryPopup({ initialValue, onClose, onSave }: Categor
           autoFocus
         />
         <div className={styles.existingCategoriesRow}>
-          {categories && categories.map((category) => (
-            <p
-              key={category.id}
-              className={styles.existingCategoryBtn}
-              onClick={() => {
-                setInputValue(category);
-                setText(category.name);
-              }}
-            >
-              {category.name}
-            </p>
-          ))}
+          {categories &&
+            categories.map((category) => (
+              <p
+                key={category.id}
+                className={styles.existingCategoryBtn}
+                onClick={() => {
+                  setInputValue(category);
+                  setText(category.name);
+                }}
+              >
+                {category.name}
+              </p>
+            ))}
         </div>
         <div className={styles.buttonRow}>
           <button className={styles.cancelBtn} onClick={onClose}>

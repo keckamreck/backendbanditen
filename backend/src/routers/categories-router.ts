@@ -106,7 +106,7 @@ router.delete(
         categoryId,
         userId,
       );
-      return response.status(200).json(result);
+      return response.status(200).send();
     } catch (error) {
       next(error);
     }

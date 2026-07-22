@@ -19,7 +19,7 @@ import ExpandButton from "../_components/ExpandBtn";
 import CategoryFilter from "../_components/CategoryFilter";
 import { Logout } from "../_components/logout";
 import { CategoryFrontend } from "../_models/category";
-import { getCategories } from "../_api/categories-api";
+import { deleteCategory, getCategories } from "../_api/categories-api";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -34,6 +34,8 @@ export default function DashboardPage() {
   const [update, triggerUpdate] = useState(false);
   const [fetchComplete, setFetchComplete] = useState(false);
   const [categories, setCategories] = useState<CategoryFrontend[] | []>([]);
+  const [areCategoriesLoaded, setAreCategoriesLoaded] =
+    useState<boolean>(false);
 
   const filteredLists = selectedCategory
     ? lists.filter((list) => list.categoryId === selectedCategory)
@@ -89,14 +91,44 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
+
+  //Categories Laden 
   useEffect(() => {
     async function loadCategories() {
+      setAreCategoriesLoaded(false);
       const fetchedCategories: CategoryFrontend[] | [] = await getCategories();
       setCategories(fetchedCategories);
+      setAreCategoriesLoaded(true);
     }
     loadCategories();
   }, [update]);
 
+  //unbenutzte Categories löschen
+  useEffect(()=>{
+  if (!areCategoriesLoaded || lists.length === 0) return;
+
+  async function cleanupUnusedCategories() {
+    const usedCategoryIds = new Set(
+      lists
+        .map((list) => list.categoryId)
+        .filter((id): id is string => Boolean(id)) 
+    );
+    const unusedCategories = categories.filter(
+      (category) => !usedCategoryIds.has(category.id)
+    );
+    if (unusedCategories.length > 0) {
+        await Promise.all(
+          unusedCategories.map((category) => deleteCategory(category.id))
+        );
+        setCategories((prevCategories) =>
+          prevCategories.filter((cat) => usedCategoryIds.has(cat.id))
+        );
+    }
+  }
+  cleanupUnusedCategories();
+}, [areCategoriesLoaded, lists, categories]);
+
+  //Wechseln dev Favouriten Zustands
   function handleToggleFavourite(updatedList: List) {
     setLists((prevLists) =>
       prevLists.map((list) =>
@@ -104,6 +136,16 @@ export default function DashboardPage() {
       ),
     );
   }
+
+  //Wechseln der Category
+  function handleCategoryChange(updatedList: List) {
+    setLists((prevLists) =>
+      prevLists.map((list) =>
+        (list.id === updatedList.id ? { ...list, ...updatedList } : list)
+      ),
+    );
+  }
+
   if (fetchComplete) {
     return (
       <div className={styles.page}>
@@ -178,16 +220,20 @@ export default function DashboardPage() {
           {/* Section for Category Sort */}
           <CategoryFilter onCategorySelect={setSelectedCategory} />
           <div className={styles.cardContainer}>
-            {favourites.map((list) => (
-              <ListCard
-                key={list.id}
-                list={list}
-                category={
-                  categories.find((cat) => cat.id === list.categoryId) || null
-                }
-                onToggleFavorite={handleToggleFavourite}
-              />
-            ))}
+            {areCategoriesLoaded &&
+              favourites.map((list) => (
+                <ListCard
+                  key={list.id}
+                  list={list}
+                  category={
+                    categories.find((cat) => cat.id === list.categoryId) || null
+                  }
+                  allCategories={categories}
+                  onToggleFavorite={handleToggleFavourite}
+                  onCategoryChange={handleCategoryChange}
+                  onCategoryCreated={() => triggerUpdate((prev) => !prev)}
+                />
+              ))}
           </div>
 
           {/* Der Toggle-Button */}
@@ -199,16 +245,21 @@ export default function DashboardPage() {
           {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
           {isExpanded && (
             <div className={styles.cardContainer}>
-              {others.map((list) => (
-                <ListCard
-                  key={list.id}
-                  list={list}
-                  category={
-                    categories.find((cat) => cat.id === list.categoryId) || null
-                  }
-                  onToggleFavorite={handleToggleFavourite}
-                />
-              ))}
+              {areCategoriesLoaded &&
+                others.map((list) => (
+                  <ListCard
+                    key={list.id}
+                    list={list}
+                    category={
+                      categories.find((cat) => cat.id === list.categoryId) ||
+                      null
+                    }
+                    allCategories={categories}
+                    onToggleFavorite={handleToggleFavourite}
+                    onCategoryChange={handleCategoryChange}
+                    onCategoryCreated={() => triggerUpdate((prev) => !prev)}
+                  />
+                ))}
             </div>
           )}
         </main>
