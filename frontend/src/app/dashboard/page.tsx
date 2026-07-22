@@ -41,12 +41,12 @@ export default function DashboardPage() {
   const favourites = filteredLists.filter((list) => list.isFavorite);
   const others = filteredLists.filter((list) => !list.isFavorite);
 
+  const fetchData = async () => {
+    getLists().then((lists) => setLists(lists));
+    await getDueTask().then((task) => setDueTask(task));
+  };
   //Get Lists and Due Task
   useEffect(() => {
-    const fetchData = async () => {
-      getLists().then((lists) => setLists(lists));
-      await getDueTask().then((task) => setDueTask(task));
-    };
     const firstFetch = async () => {
       setFetchComplete(false);
       await fetchData();
@@ -55,6 +55,10 @@ export default function DashboardPage() {
     firstFetch();
     const timer = setInterval(fetchData, 60000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
   }, [update]);
 
   //Validate the Due Task
