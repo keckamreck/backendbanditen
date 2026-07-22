@@ -10,7 +10,7 @@ import {
   faSearch,
   faCalendarWeek,
 } from "@fortawesome/free-solid-svg-icons";
-import { newList, getLists, getListsBySearch,  } from "@/app/_api/lists-api";
+import { newList, getLists, getListsBySearch } from "@/app/_api/lists-api";
 import { getDueTask } from "@/app/_api/tasks-api";
 import { List } from "@/app/_models/list";
 import { TaskBackend } from "@/app/_models/task";
@@ -91,8 +91,7 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
-
-  //Categories Laden 
+  //Categories Laden
   useEffect(() => {
     async function loadCategories() {
       setAreCategoriesLoaded(false);
@@ -104,29 +103,29 @@ export default function DashboardPage() {
   }, [update]);
 
   //unbenutzte Categories löschen
-  useEffect(()=>{
-  if (!areCategoriesLoaded || lists.length === 0) return;
+  useEffect(() => {
+    if (!areCategoriesLoaded || lists.length === 0) return;
 
-  async function cleanupUnusedCategories() {
-    const usedCategoryIds = new Set(
-      lists
-        .map((list) => list.categoryId)
-        .filter((id): id is string => Boolean(id)) 
-    );
-    const unusedCategories = categories.filter(
-      (category) => !usedCategoryIds.has(category.id)
-    );
-    if (unusedCategories.length > 0) {
+    async function cleanupUnusedCategories() {
+      const usedCategoryIds = new Set(
+        lists
+          .map((list) => list.categoryId)
+          .filter((id): id is string => Boolean(id)),
+      );
+      const unusedCategories = categories.filter(
+        (category) => !usedCategoryIds.has(category.id),
+      );
+      if (unusedCategories.length > 0) {
         await Promise.all(
-          unusedCategories.map((category) => deleteCategory(category.id))
+          unusedCategories.map((category) => deleteCategory(category.id)),
         );
         setCategories((prevCategories) =>
-          prevCategories.filter((cat) => usedCategoryIds.has(cat.id))
+          prevCategories.filter((cat) => usedCategoryIds.has(cat.id)),
         );
+      }
     }
-  }
-  cleanupUnusedCategories();
-}, [areCategoriesLoaded, lists, categories]);
+    cleanupUnusedCategories();
+  }, [areCategoriesLoaded, lists, categories]);
 
   //Wechseln dev Favouriten Zustands
   function handleToggleFavourite(updatedList: List) {
@@ -138,115 +137,105 @@ export default function DashboardPage() {
   }
 
   //Wechseln der Category
-  function handleCategoryChange(updatedList: List) {
+  function handleCategoryChange(
+    updatedList: List,
+    newCategory: CategoryFrontend | undefined,
+  ) {
     setLists((prevLists) =>
       prevLists.map((list) =>
-        (list.id === updatedList.id ? { ...list, ...updatedList } : list)
+        list.id === updatedList.id ? { ...list, ...updatedList } : list,
       ),
     );
+    if (newCategory) {
+      setCategories((prevCategories) => {
+        const exists = prevCategories.some((cat) => cat.id === newCategory.id);
+        if (!exists) {
+          return [...prevCategories, newCategory];
+        }
+        return prevCategories;
+      });
+    }
+    
   }
 
-  if (fetchComplete) {
-    return (
-      <div className={styles.page}>
-        <Head>
-          <meta charSet="utf-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+    if (fetchComplete) {
+      return (
+        <div className={styles.page}>
+          <Head>
+            <meta charSet="utf-8" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+            />
+            <title>Dashboard</title>
+          </Head>
+          <PopupWithInput
+            isOpen={isPopupOpen}
+            onClose={() => setIsPopupOpen(false)}
+            onSubmitting={(name) => handleNewListButton(name)}
           />
-          <title>Dashboard</title>
-        </Head>
-        <PopupWithInput
-          isOpen={isPopupOpen}
-          onClose={() => setIsPopupOpen(false)}
-          onSubmitting={(name) => handleNewListButton(name)}
-        />
-        {isSearchOpen && (
-          <div
-            className={styles.searchBackdrop}
-            onClick={() => setIsSearchOpen(false)}
-          />
-        )}
-        <main className={styles.main}>
-          <div className={styles.pageContainer}>
-            {/* Header mit Suchleiste links und Add-Button rechts */}
-            <div className={styles.header}>
-              <div className={styles.searchSection}>
-                <SearchBar />
+          {isSearchOpen && (
+            <div
+              className={styles.searchBackdrop}
+              onClick={() => setIsSearchOpen(false)}
+            />
+          )}
+          <main className={styles.main}>
+            <div className={styles.pageContainer}>
+              {/* Header mit Suchleiste links und Add-Button rechts */}
+              <div className={styles.header}>
+                <div className={styles.searchSection}>
+                  <SearchBar />
+                </div>
+
+                <div className={styles.addButtonSection}>
+                  <button
+                    title="addList"
+                    className={styles.addIcon}
+                    onClick={() => setIsPopupOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                </div>
+                <Logout />
               </div>
 
-              <div className={styles.addButtonSection}>
-                <button
-                  title="addList"
-                  className={styles.addIcon}
-                  onClick={() => setIsPopupOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
-              </div>
-              <Logout />
+              {/* Search Dropdown */}
+              {isSearchOpen && (
+                //Listen gefunden
+                <div className={styles.searchDropdown}>
+                  {searchResults.length > 0 ? (
+                    <div className={styles.searchResultsContainer}>
+                      {searchResults.map((list) => (
+                        <div
+                          key={list.id}
+                          className={styles.dropdownItem}
+                          onClick={() => {
+                            gotoList(list.id);
+                            setIsSearchOpen(false);
+                            setSearchResults([]);
+                          }}
+                        >
+                          <span>{list.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    //Keine Listen gefunden
+                    <div className={styles.noResults}>
+                      Keine Listen gefunden
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-
-            {/* Search Dropdown */}
-            {isSearchOpen && (
-              //Listen gefunden
-              <div className={styles.searchDropdown}>
-                {searchResults.length > 0 ? (
-                  <div className={styles.searchResultsContainer}>
-                    {searchResults.map((list) => (
-                      <div
-                        key={list.id}
-                        className={styles.dropdownItem}
-                        onClick={() => {
-                          gotoList(list.id);
-                          setIsSearchOpen(false);
-                          setSearchResults([]);
-                        }}
-                      >
-                        <span>{list.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  //Keine Listen gefunden
-                  <div className={styles.noResults}>Keine Listen gefunden</div>
-                )}
-              </div>
-            )}
-          </div>
-          {/* Section for due Task */}
-          <DueTaskSection />
-          {/* Section for Category Sort */}
-          <CategoryFilter onCategorySelect={setSelectedCategory} />
-          <div className={styles.cardContainer}>
-            {areCategoriesLoaded &&
-              favourites.map((list) => (
-                <ListCard
-                  key={list.id}
-                  list={list}
-                  category={
-                    categories.find((cat) => cat.id === list.categoryId) || null
-                  }
-                  allCategories={categories}
-                  onToggleFavorite={handleToggleFavourite}
-                  onCategoryChange={handleCategoryChange}
-                  onCategoryCreated={() => triggerUpdate((prev) => !prev)}
-                />
-              ))}
-          </div>
-
-          {/* Der Toggle-Button */}
-          <ExpandButton
-            isExpanded={isExpanded}
-            onToggle={() => setIsExpanded(!isExpanded)}
-          />
-
-          {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
-          {isExpanded && (
+            {/* Section for due Task */}
+            <DueTaskSection />
+            {/* Section for Category Sort */}
+            <CategoryFilter onCategorySelect={setSelectedCategory} />
             <div className={styles.cardContainer}>
               {areCategoriesLoaded &&
-                others.map((list) => (
+                favourites.map((list) => (
                   <ListCard
                     key={list.id}
                     list={list}
@@ -257,96 +246,120 @@ export default function DashboardPage() {
                     allCategories={categories}
                     onToggleFavorite={handleToggleFavourite}
                     onCategoryChange={handleCategoryChange}
-                    onCategoryCreated={() => triggerUpdate((prev) => !prev)}
                   />
                 ))}
             </div>
-          )}
-        </main>
-      </div>
-    );
-  } else {
-    return <div style={{ margin: "20px" }}>Loading...</div>;
-  }
 
-  function SearchBar() {
-    return (
-      <form
-        className={styles.searchForm}
-        onSubmit={(form) => handleSearchSubmit(form)}
-      >
-        <div className={styles.searchInputWrapper}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-          <input
-            id="searchInput"
-            className={styles.searchBar}
-            type="search"
-            placeholder="Listen durchsuchen..."
-          />
-        </div>
-      </form>
-    );
-  }
+            {/* Der Toggle-Button */}
+            <ExpandButton
+              isExpanded={isExpanded}
+              onToggle={() => setIsExpanded(!isExpanded)}
+            />
 
-  function gotoList(listId: string) {
-    router.push("/editTask/" + listId);
-  }
-  function handleNewListButton(name: string) {
-    newList(name).then(() => {
-      triggerUpdate((prev) => !prev);
-    });
-  }
-
-  function DueTaskSection() {
-    if (dueTask?.deadline) {
-      const deadlineDate = new Date(dueTask.deadline);
-      return (
-        <div className={styles.todaySection}>
-          <h3>{dueTaskTime}</h3>
-          <div
-            className={styles.todayContent}
-            onClick={() => gotoList(dueTask?.id)}
-          >
-            <div className={styles.dueItem}>
-              <div className={styles.dueInfo}>
-                <span className={styles.dueTitle}>{dueTask.title}</span>
-                <span className={styles.dueDate}>
-                  {deadlineDate.toLocaleDateString("de-DE", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                  ,{" "}
-                  {deadlineDate.toLocaleTimeString("de-DE", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+            {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
+            {isExpanded && (
+              <div className={styles.cardContainer}>
+                {areCategoriesLoaded &&
+                  others.map((list) => (
+                    <ListCard
+                      key={list.id}
+                      list={list}
+                      category={
+                        categories.find((cat) => cat.id === list.categoryId) ||
+                        null
+                      }
+                      allCategories={categories}
+                      onToggleFavorite={handleToggleFavourite}
+                      onCategoryChange={handleCategoryChange}
+                    />
+                  ))}
               </div>
-              <div className={styles.dueIcon}>
-                <FontAwesomeIcon icon={faCalendarWeek} />
+            )}
+          </main>
+        </div>
+      );
+    } else {
+      return <div style={{ margin: "20px" }}>Loading...</div>;
+    }
+
+    function SearchBar() {
+      return (
+        <form
+          className={styles.searchForm}
+          onSubmit={(form) => handleSearchSubmit(form)}
+        >
+          <div className={styles.searchInputWrapper}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              id="searchInput"
+              className={styles.searchBar}
+              type="search"
+              placeholder="Listen durchsuchen..."
+            />
+          </div>
+        </form>
+      );
+    }
+
+    function gotoList(listId: string) {
+      router.push("/editTask/" + listId);
+    }
+    function handleNewListButton(name: string) {
+      newList(name).then(() => {
+        triggerUpdate((prev) => !prev);
+      });
+    }
+
+    function DueTaskSection() {
+      if (dueTask?.deadline) {
+        const deadlineDate = new Date(dueTask.deadline);
+        return (
+          <div className={styles.todaySection}>
+            <h3>{dueTaskTime}</h3>
+            <div
+              className={styles.todayContent}
+              onClick={() => gotoList(dueTask?.id)}
+            >
+              <div className={styles.dueItem}>
+                <div className={styles.dueInfo}>
+                  <span className={styles.dueTitle}>{dueTask.title}</span>
+                  <span className={styles.dueDate}>
+                    {deadlineDate.toLocaleDateString("de-DE", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                    ,{" "}
+                    {deadlineDate.toLocaleTimeString("de-DE", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <div className={styles.dueIcon}>
+                  <FontAwesomeIcon icon={faCalendarWeek} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      }
+    }
+
+    function handleSearchSubmit(e: FormEvent) {
+      e.preventDefault();
+
+      const input = document.getElementById("searchInput") as HTMLInputElement;
+
+      if (input && input.value.trim()) {
+        getListsBySearch(input.value.trim()).then((lists: List[] | []) => {
+          setSearchResults(lists);
+          setIsSearchOpen(true);
+        });
+        input.value = "";
+      } else {
+        alert("Bitte geben Sie einen Namen ein!");
+      }
     }
   }
-
-  function handleSearchSubmit(e: FormEvent) {
-    e.preventDefault();
-
-    const input = document.getElementById("searchInput") as HTMLInputElement;
-
-    if (input && input.value.trim()) {
-      getListsBySearch(input.value.trim()).then((lists: List[] | []) => {
-        setSearchResults(lists);
-        setIsSearchOpen(true);
-      });
-      input.value = "";
-    } else {
-      alert("Bitte geben Sie einen Namen ein!");
-    }
-  }
-}

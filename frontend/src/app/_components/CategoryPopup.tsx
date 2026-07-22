@@ -10,7 +10,7 @@ interface CategoryPopupProps {
 
   loadedCategories: CategoryFrontend[] | null;
   onClose: () => void;
-  onSave: (newValue: CategoryFrontend | null) => void;
+  onSave: (newValue: CategoryFrontend | undefined) => void;
 }
 
 export default function CategoryPopup({
@@ -28,8 +28,22 @@ export default function CategoryPopup({
   const [text, setText] = useState<string>(initialValue?.name || "");
 
   const handleSave = async () => {
-    if (text.trim().length > 0) {
-      const name = text.trim();
+    const name = text.trim();
+    if (name.length > 0) {
+      if (inputValue && inputValue.name === name) {
+        onSave(inputValue);
+        onClose();
+        return;
+      }
+
+      const existingCat: CategoryFrontend | undefined = categories.find(
+        (cat) => cat.name === name,
+      );
+      if (existingCat) {
+        onSave(existingCat);
+        onClose();
+        return;
+      }
       const newCategory = await createCategory(name);
       if (newCategory) {
         setInputValue(newCategory);
@@ -37,10 +51,11 @@ export default function CategoryPopup({
         onClose();
         return;
       }
-      onSave(null);
+      onSave(undefined);
       onClose();
       return;
     }
+    onSave(undefined);
     onClose();
   };
 
@@ -74,7 +89,8 @@ export default function CategoryPopup({
               createCategory(name).then((newCategory) => {
                 if (newCategory) {
                   setInputValue(newCategory);
-                  setText(newCategory.name);                }
+                  setText(newCategory.name);
+                }
               });
             }
           }}

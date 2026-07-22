@@ -22,9 +22,7 @@ export interface ListProps {
   allCategories: CategoryFrontend[] | null;
   onToggleFavorite?: (updatedList: List) => void;
 
-  onCategoryChange?: (updatedList: List) => void;
-
-  onCategoryCreated?: () => void;
+  onCategoryChange?: (updatedList: List, newCategory: CategoryFrontend | undefined) => void;
 }
 
 export function ListCard({
@@ -33,21 +31,18 @@ export function ListCard({
   allCategories,
   onToggleFavorite,
   onCategoryChange,
-  onCategoryCreated,
 }: ListProps) {
   const [dueTasks, setdueTasks] = useState<number>(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleSaveCategory = async (
-    newCategory: CategoryFrontend | null,
+    newCategory: CategoryFrontend | undefined,
   ) => {
-    const updatedList = { ...list, categoryId: newCategory?.id };
+    console.log(newCategory);
     const safeCategoryId: string | null = newCategory ? newCategory.id : null;
+    const updatedList = { ...list, categoryId: safeCategoryId };
     await updateListById(list.id, { categoryId: safeCategoryId });
-    onCategoryChange?.(updatedList);
-    if(newCategory && !allCategories?.some(cat => cat.id === newCategory.id)){
-      onCategoryCreated?.();
-    }
+    onCategoryChange?.(updatedList, newCategory);
     setIsPopupOpen(false);
   };
 
