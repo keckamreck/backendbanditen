@@ -10,9 +10,7 @@ import { NextFunction } from "express-serve-static-core";
 export const router = express.Router({ mergeParams: true });
 
 async function validateRequest(request: Request, response: Response, next: NextFunction) {
-  const token = request.header("Authorization") as string;
-  if(token !== undefined)
-    await validateSession(request);
+  await validateSession(request);
   next();
 }
 
