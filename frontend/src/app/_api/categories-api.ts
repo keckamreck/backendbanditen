@@ -44,3 +44,9 @@ export async function createCategory(newName: string): Promise<CategoryFrontend 
     }
     return false;
 }
+
+export async function deleteCategory(categoryId: string): Promise<null> {
+    await fetchApi<CategoryBackend>(`/categories/${categoryId}`, "DELETE");
+    console.log("delete");
+    return null;
+}

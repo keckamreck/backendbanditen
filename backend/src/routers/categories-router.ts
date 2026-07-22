@@ -81,7 +81,7 @@ router.patch(
         userId,
         newName,
       );
-      return response.status(204).send();
+      return response.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -102,11 +102,11 @@ router.delete(
       );
       const userId: string = request.params.userId;
 
-      const result: Category = await category.deleteCategory(
+      await category.deleteCategory(
         categoryId,
         userId,
       );
-      return response.status(200).json(result);
+      return response.status(204).send();
     } catch (error) {
       next(error);
     }
