@@ -312,8 +312,11 @@ export default function DashboardPage() {
     );
   }
 
+  function gotoTask(taskId: string) {
+    router.push("/editTask/" + taskId);
+  }
   function gotoList(listId: string) {
-    router.push("/editTask/" + listId);
+    router.push("/list/" + listId);
   }
   function handleNewListButton(name: string) {
     newList(name).then(() => {
@@ -329,7 +332,7 @@ export default function DashboardPage() {
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={() => gotoList(dueTask?.id)}
+            onClick={() => gotoTask(dueTask?.id)}
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>
