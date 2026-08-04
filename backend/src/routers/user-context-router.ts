@@ -7,6 +7,7 @@ import { validateSession } from "../repositories/session.js";
 import { Request, Response } from "express";
 import { NextFunction } from "express-serve-static-core";
 import { errorHandler } from "../middleware/errorHandler.js";
+import { routeNotFoundHandler } from "../middleware/routeNotFoundHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -20,5 +21,5 @@ router.use("/lists", listsRouter);
 router.use("/tasks", tasksRouter);
 router.use("/categories", categoriesRouter);
 router.use("/", usersRouter);
-
+router.use(routeNotFoundHandler);
 router.use(errorHandler);

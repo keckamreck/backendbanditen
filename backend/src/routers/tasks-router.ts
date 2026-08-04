@@ -7,7 +7,6 @@ import {
   getTask,
   updateTask,
 } from "../repositories/task.js";
-import { errorHandler } from "../middleware/errorHandler.js";
 import { ValidationError } from "../errors/errors.js";
 import { InferSelectModel } from "drizzle-orm";
 import { task } from "../db/schema.js";
@@ -157,5 +156,3 @@ router.delete(
     }
   },
 );
-
-router.use(errorHandler);

@@ -13,7 +13,6 @@ import {
 
 import { deleteTask, getTasksForList } from "../repositories/task.js";
 import { zodValidation } from "../validation/zod-validation.js";
-import { errorHandler } from "../middleware/errorHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -141,5 +140,3 @@ router.delete("/:listId/tasks", async (req: Request, res: Response, next) => {
     next(error);
   }
 });
-
-router.use(errorHandler);

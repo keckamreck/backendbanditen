@@ -3,7 +3,6 @@ import * as category from "../repositories/category.js";
 import { Category } from "../repositories/category.js";
 import z from "zod";
 import { zodValidation } from "../validation/zod-validation.js";
-import { errorHandler } from "../middleware/errorHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -112,5 +111,3 @@ router.delete(
     }
   },
 );
-
-router.use(errorHandler);
