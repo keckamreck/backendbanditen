@@ -38,7 +38,6 @@ export function ListCard({
   const handleSaveCategory = async (
     newCategory: CategoryFrontend | undefined,
   ) => {
-    console.log(newCategory);
     const safeCategoryId: string | null = newCategory ? newCategory.id : null;
     const updatedList = { ...list, categoryId: safeCategoryId };
     await updateListById(list.id, { categoryId: safeCategoryId });

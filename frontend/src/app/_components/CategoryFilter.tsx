@@ -8,14 +8,16 @@ import { CategoryFrontend } from "../_models/category";
 
 interface CategoryFilterProps {
   onCategorySelect: (category: string | null) => void;
+
+  categories: CategoryFrontend[] | [] 
 }
 
-export default function CategoryFilter({ onCategorySelect }: CategoryFilterProps) {
+export default function CategoryFilter({ onCategorySelect, categories }: CategoryFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState<CategoryFrontend[]>([]);
+  //const [categories, setCategories] = useState<CategoryFrontend[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFrontend | null>(null);
 
-  useEffect(() => {
+  {/*useEffect(() => {
     async function loadCategories(){
       const result = await getCategories();
       if(result){
@@ -24,7 +26,7 @@ export default function CategoryFilter({ onCategorySelect }: CategoryFilterProps
     }
     loadCategories();
   }, []);
-
+*/}
 
   const handleToggle = () => {
     setIsOpen(!isOpen);

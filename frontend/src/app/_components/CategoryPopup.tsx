@@ -84,14 +84,7 @@ export default function CategoryPopup({
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              const name = text.trim();
-              if (name.length === 0) return;
-              createCategory(name).then((newCategory) => {
-                if (newCategory) {
-                  setInputValue(newCategory);
-                  setText(newCategory.name);
-                }
-              });
+              handleSave();
             }
           }}
           placeholder="Name der Kategorie..."
