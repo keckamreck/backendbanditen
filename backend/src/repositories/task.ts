@@ -10,6 +10,7 @@ import {
 import { NotFoundError } from "../errors/errors.js";
 import { mapDatabaseError } from "../errors/map-database-error.js";
 import { z } from "zod";
+import { getListById } from "./list.js";
 
 export async function getTasks(query: any, userId: string) {
   const whereConditions = [
@@ -81,6 +82,7 @@ export async function createTask(
   data: z.infer<typeof userInputCreateTaskSchema>,
 ): Promise<Task> {
   try {
+    await getListById(data.listId, userId);
     const newTask: Task = {
       id: crypto.randomUUID(),
       userId: userId,
@@ -99,6 +101,9 @@ export async function updateTask(
   data: z.infer<typeof userInputUpdateTaskSchema>,
 ): Promise<Task> {
   try {
+    if (data.listId) {
+      await getListById(data.listId, userId);
+    }
     const [updatedTask] = await db
       .update(tasks)
       .set(data)

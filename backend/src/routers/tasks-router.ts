@@ -117,8 +117,10 @@ router.patch(
       const userInputCleaned: z.infer<typeof userInputUpdateTaskSchema> =
         Object.fromEntries(
           Object.entries(userInput).filter(
-            ([_key, value]: [string, string | boolean | null]): boolean =>
-              value !== undefined,
+            ([_key, value]: [
+              string,
+              string | boolean | null | undefined,
+            ]): boolean => value !== undefined,
           ),
         );
       if (Object.keys(userInputCleaned).length === 0) {

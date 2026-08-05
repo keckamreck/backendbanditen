@@ -52,7 +52,6 @@ export default function Page() {
         initialValues={initialTask}
         lists={lists}
         saveAction={handleSave}
-        deleteButtonVisible={false}
       />
     );
   } else {
