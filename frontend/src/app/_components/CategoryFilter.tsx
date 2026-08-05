@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import styles from "./CategorySort.module.css";
-import { getCategories } from "@/app/_api/categories-api";
+import { useState } from "react";
+import styles from "./CategoryFilter.module.css";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CategoryFrontend } from "../_models/category";
