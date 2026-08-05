@@ -3,7 +3,6 @@ import * as category from "../repositories/category.js";
 import { Category } from "../repositories/category.js";
 import z from "zod";
 import { zodValidation } from "../validation/zod-validation.js";
-import { errorHandler } from "../middleware/errorHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -81,7 +80,7 @@ router.patch(
         userId,
         newName,
       );
-      return response.status(204).send();
+      return response.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -102,15 +101,13 @@ router.delete(
       );
       const userId: string = request.params.userId;
 
-      const result: Category = await category.deleteCategory(
+      await category.deleteCategory(
         categoryId,
         userId,
       );
-      return response.status(200).json(result);
+      return response.status(204).send();
     } catch (error) {
       next(error);
     }
   },
 );
-
-router.use(errorHandler);

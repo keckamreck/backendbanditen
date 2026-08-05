@@ -19,7 +19,7 @@ import ExpandButton from "../_components/ExpandBtn";
 import CategoryFilter from "../_components/CategoryFilter";
 import { Logout } from "../_components/logout";
 import { CategoryFrontend } from "../_models/category";
-import { getCategories } from "../_api/categories-api";
+import { deleteCategory, getCategories } from "../_api/categories-api";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -34,6 +34,8 @@ export default function DashboardPage() {
   const [update, triggerUpdate] = useState(false);
   const [fetchComplete, setFetchComplete] = useState(false);
   const [categories, setCategories] = useState<CategoryFrontend[] | []>([]);
+  const [areCategoriesLoaded, setAreCategoriesLoaded] =
+    useState<boolean>(false);
 
   const filteredLists = selectedCategory
     ? lists.filter((list) => list.categoryId === selectedCategory)
@@ -41,12 +43,12 @@ export default function DashboardPage() {
   const favourites = filteredLists.filter((list) => list.isFavorite);
   const others = filteredLists.filter((list) => !list.isFavorite);
 
+  const fetchData = async () => {
+    getLists().then((lists) => setLists(lists));
+    await getDueTask().then((task) => setDueTask(task));
+  };
   //Get Lists and Due Task
   useEffect(() => {
-    const fetchData = async () => {
-      getLists().then((lists) => setLists(lists));
-      await getDueTask().then((task) => setDueTask(task));
-    };
     const firstFetch = async () => {
       setFetchComplete(false);
       await fetchData();
@@ -55,30 +57,45 @@ export default function DashboardPage() {
     firstFetch();
     const timer = setInterval(fetchData, 60000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
   }, [update]);
 
   //Validate the Due Task
   useEffect(() => {
     const getDueTaskTime = () => {
-      const timestamp = new Date();
+      const now = new Date();
       if (dueTask !== null && dueTask != undefined) {
         if (dueTask.deadline !== null && dueTask.deadline !== undefined) {
           //Constants
           const deadlineDate = new Date(dueTask.deadline);
-          const timestampInDays = timestamp.getTime() / 86400000;
-          const dueTaskInDays = deadlineDate.getTime() / 86400000;
-          const ceilTimeLeft = Math.ceil(dueTaskInDays - timestampInDays);
-          const floorTimeLeft = Math.floor(dueTaskInDays - timestampInDays);
+          const today = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+          );
+          const dueDay = new Date(
+            deadlineDate.getFullYear(),
+            deadlineDate.getMonth(),
+            deadlineDate.getDate(),
+          );
+          // const timestampInDays = timestamp.getTime() / 86400000;
+          // const dueTaskInDays = deadlineDate.getTime() / 86400000;
+          const diffTime = dueDay.getTime() - today.getTime();
+          const diffDays = Math.round(diffTime / 86400000);
+          console.log(diffDays);
           //Check how much time is left
-          if (dueTaskInDays === timestampInDays) {
+          if (diffDays < 0) {
+            setDueTaskTime("Überfällig");
+          } else if (diffDays === 0) {
             setDueTaskTime("Heute fällig");
-          } else if (ceilTimeLeft === 1) {
-            setDueTaskTime("Morgen fällig");
           } else {
-            if (floorTimeLeft < 1) {
-              setDueTaskTime(`Heute fällig`);
+            if (diffDays === 1) {
+              setDueTaskTime(`Morgen fällig`);
             } else {
-              setDueTaskTime(`In ${ceilTimeLeft} Tagen fällig`);
+              setDueTaskTime(`In ${diffDays} Tagen fällig`);
             }
           }
         }
@@ -89,14 +106,43 @@ export default function DashboardPage() {
     return () => clearInterval(timer);
   }, [dueTask]);
 
+  //Categories Laden
   useEffect(() => {
     async function loadCategories() {
+      setAreCategoriesLoaded(false);
       const fetchedCategories: CategoryFrontend[] | [] = await getCategories();
       setCategories(fetchedCategories);
+      setAreCategoriesLoaded(true);
     }
     loadCategories();
   }, [update]);
 
+  //unbenutzte Categories löschen
+  useEffect(() => {
+    if (!areCategoriesLoaded || lists.length === 0) return;
+
+    async function cleanupUnusedCategories() {
+      const usedCategoryIds = new Set(
+        lists
+          .map((list) => list.categoryId)
+          .filter((id): id is string => Boolean(id)),
+      );
+      const unusedCategories = categories.filter(
+        (category) => !usedCategoryIds.has(category.id),
+      );
+      if (unusedCategories.length > 0) {
+        await Promise.all(
+          unusedCategories.map((category) => deleteCategory(category.id)),
+        );
+        setCategories((prevCategories) =>
+          prevCategories.filter((cat) => usedCategoryIds.has(cat.id)),
+        );
+      }
+    }
+    cleanupUnusedCategories();
+  }, [areCategoriesLoaded, lists, categories]);
+
+  //Wechseln dev Favouriten Zustands
   function handleToggleFavourite(updatedList: List) {
     setLists((prevLists) =>
       prevLists.map((list) =>
@@ -104,6 +150,28 @@ export default function DashboardPage() {
       ),
     );
   }
+
+  //Wechseln der Category
+  function handleCategoryChange(
+    updatedList: List,
+    newCategory: CategoryFrontend | undefined,
+  ) {
+    setLists((prevLists) =>
+      prevLists.map((list) =>
+        list.id === updatedList.id ? { ...list, ...updatedList } : list,
+      ),
+    );
+    if (newCategory) {
+      setCategories((prevCategories) => {
+        const exists = prevCategories.some((cat) => cat.id === newCategory.id);
+        if (!exists) {
+          return [...prevCategories, newCategory];
+        }
+        return prevCategories;
+      });
+    }
+  }
+
   if (fetchComplete) {
     return (
       <div className={styles.page}>
@@ -178,16 +246,19 @@ export default function DashboardPage() {
           {/* Section for Category Sort */}
           <CategoryFilter onCategorySelect={setSelectedCategory} />
           <div className={styles.cardContainer}>
-            {favourites.map((list) => (
-              <ListCard
-                key={list.id}
-                list={list}
-                category={
-                  categories.find((cat) => cat.id === list.categoryId) || null
-                }
-                onToggleFavorite={handleToggleFavourite}
-              />
-            ))}
+            {areCategoriesLoaded &&
+              favourites.map((list) => (
+                <ListCard
+                  key={list.id}
+                  list={list}
+                  category={
+                    categories.find((cat) => cat.id === list.categoryId) || null
+                  }
+                  allCategories={categories}
+                  onToggleFavorite={handleToggleFavourite}
+                  onCategoryChange={handleCategoryChange}
+                />
+              ))}
           </div>
 
           {/* Der Toggle-Button */}
@@ -199,16 +270,20 @@ export default function DashboardPage() {
           {/* Bereich für den Rest - nur sichtbar wenn isExpanded true ist */}
           {isExpanded && (
             <div className={styles.cardContainer}>
-              {others.map((list) => (
-                <ListCard
-                  key={list.id}
-                  list={list}
-                  category={
-                    categories.find((cat) => cat.id === list.categoryId) || null
-                  }
-                  onToggleFavorite={handleToggleFavourite}
-                />
-              ))}
+              {areCategoriesLoaded &&
+                others.map((list) => (
+                  <ListCard
+                    key={list.id}
+                    list={list}
+                    category={
+                      categories.find((cat) => cat.id === list.categoryId) ||
+                      null
+                    }
+                    allCategories={categories}
+                    onToggleFavorite={handleToggleFavourite}
+                    onCategoryChange={handleCategoryChange}
+                  />
+                ))}
             </div>
           )}
         </main>
@@ -237,8 +312,11 @@ export default function DashboardPage() {
     );
   }
 
+  function gotoTask(taskId: string) {
+    router.push("/editTask/" + taskId);
+  }
   function gotoList(listId: string) {
-    router.push("/editTask/" + listId);
+    router.push("/list/" + listId);
   }
   function handleNewListButton(name: string) {
     newList(name).then(() => {
@@ -254,7 +332,7 @@ export default function DashboardPage() {
           <h3>{dueTaskTime}</h3>
           <div
             className={styles.todayContent}
-            onClick={() => gotoList(dueTask?.id)}
+            onClick={() => gotoTask(dueTask?.id)}
           >
             <div className={styles.dueItem}>
               <div className={styles.dueInfo}>

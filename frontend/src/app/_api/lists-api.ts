@@ -34,7 +34,7 @@ export async function deleteListById(ListId: string): Promise<true | false> {
 export interface ListUpdateData {
   title?: string;
   isFavorite?: boolean;
-  categoryId?: string;
+  categoryId?: string | null;
 }
 export async function updateListById(
   ListId: string,

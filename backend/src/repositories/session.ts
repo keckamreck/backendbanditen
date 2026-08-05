@@ -4,20 +4,24 @@ import { eq, InferSelectModel } from "drizzle-orm";
 import { NotFoundError, ValidationError } from "../errors/errors.js";
 import { mapDatabaseError } from "../errors/map-database-error.js";
 import { Request } from "express";
+import { NextFunction } from "express-serve-static-core";
 
 export type Session = InferSelectModel<typeof session>;
 
-export async function validateSession(request: Request) {
+export async function validateSession(request: Request, next: NextFunction) {  
   try {
     const userId = request.params.userId as string;
     const token = request.header("Authorization") as string;
-    const session = await getSessionByToken(token);
 
+    if(token == undefined || userId == undefined)
+      throw new ValidationError("User doesn't match");
+
+    const session = await getSessionByToken(token);
     if (session[0].userId != userId) {
       throw new ValidationError("User doesn't match");
     }
   } catch (error: unknown) {
-    throw mapDatabaseError(error);
+    next(error)
   }
 }
 

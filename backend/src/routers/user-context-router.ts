@@ -6,13 +6,13 @@ import { router as usersRouter } from "./users-router.js";
 import { validateSession } from "../repositories/session.js";
 import { Request, Response } from "express";
 import { NextFunction } from "express-serve-static-core";
+import { errorHandler } from "../middleware/errorHandler.js";
+import { routeNotFoundHandler } from "../middleware/routeNotFoundHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
 async function validateRequest(request: Request, response: Response, next: NextFunction) {
-  const token = request.header("Authorization") as string;
-  if(token !== undefined)
-    await validateSession(request);
+  await validateSession(request, next);
   next();
 }
 
@@ -21,4 +21,5 @@ router.use("/lists", listsRouter);
 router.use("/tasks", tasksRouter);
 router.use("/categories", categoriesRouter);
 router.use("/", usersRouter);
-
+router.use(routeNotFoundHandler);
+router.use(errorHandler);
