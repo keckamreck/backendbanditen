@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./CategoryPopup.module.css";
-import { getCategories, createCategory } from "../_api/categories-api";
+import { createCategory } from "../_api/categories-api";
 import { CategoryFrontend } from "../_models/category";
 
 interface CategoryPopupProps {
@@ -19,58 +19,37 @@ export default function CategoryPopup({
   onClose,
   onSave,
 }: CategoryPopupProps) {
-  const [inputValue, setInputValue] = useState<CategoryFrontend | null>(
-    initialValue,
-  );
-  const [categories, setCategories] = useState<CategoryFrontend[]>(
-    loadedCategories || [],
-  );
-  const [text, setText] = useState<string>(initialValue?.name || "");
+  const [inputValue, setInputValue] = useState<string>(initialValue?.name || "");
+  const categories = loadedCategories || [];
 
   const handleSave = async () => {
-    const name = text.trim();
+    const name = inputValue.trim();
     if (name.length > 0) {
-      if (inputValue && inputValue.name === name) {
-        onSave(inputValue);
-        onClose();
-        return;
-      }
-
       const existingCat: CategoryFrontend | undefined = categories.find(
         (cat) => cat.name === name,
       );
+
       if (existingCat) {
         onSave(existingCat);
         onClose();
         return;
       }
+
       const newCategory = await createCategory(name);
       if (newCategory) {
-        setInputValue(newCategory);
         onSave(newCategory);
         onClose();
         return;
       }
+
       onSave(undefined);
       onClose();
       return;
     }
+
     onSave(undefined);
     onClose();
   };
-
-  {
-    /* useEffect(() => {
-    async function loadCategories(){
-      const result = await getCategories();
-      if(result){
-      setCategories(result);
-      }
-    }
-
-    loadCategories();
-  }, []) */
-  }
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -80,8 +59,8 @@ export default function CategoryPopup({
         <input
           type="text"
           className={styles.input}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSave();
@@ -91,15 +70,11 @@ export default function CategoryPopup({
           autoFocus
         />
         <div className={styles.existingCategoriesRow}>
-          {categories &&
-            categories.map((category) => (
+          {categories.map((category) => (
               <p
                 key={category.id}
                 className={styles.existingCategoryBtn}
-                onClick={() => {
-                  setInputValue(category);
-                  setText(category.name);
-                }}
+                onClick={() =>setInputValue(category.name)}
               >
                 {category.name}
               </p>
