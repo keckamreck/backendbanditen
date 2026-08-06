@@ -53,7 +53,7 @@ router.get(
     request: Request<{ userId: string; taskId: string }>,
     response: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const taskId: z.infer<typeof uuidSchema> = zodValidation(
         uuidSchema,
@@ -73,7 +73,7 @@ router.post(
     request: Request<{ userId: string }>,
     response: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const userInput: z.infer<typeof userInputCreateTaskSchema> =
         zodValidation(userInputCreateTaskSchema, {
@@ -98,7 +98,7 @@ router.patch(
     request: Request<{ userId: string; taskId: string }>,
     response: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const taskId: z.infer<typeof uuidSchema> = zodValidation(
         uuidSchema,
@@ -116,13 +116,15 @@ router.patch(
       const userInputCleaned: z.infer<typeof userInputUpdateTaskSchema> =
         Object.fromEntries(
           Object.entries(userInput).filter(
-            ([_key, value]: [string, string | boolean | null]): boolean =>
-              value !== undefined,
+            ([_key, value]: [
+              string,
+              string | boolean | null | undefined,
+            ]): boolean => value !== undefined,
           ),
         );
       if (Object.keys(userInputCleaned).length === 0) {
         throw new ValidationError(
-          "no valid fields were passed to update the task",
+          "No valid fields were passed to update the task",
         );
       }
       const result: Task = await updateTask(
@@ -143,7 +145,7 @@ router.delete(
     request: Request<{ userId: string; taskId: string }>,
     response: Response,
     next: NextFunction,
-  ) => {
+  ): Promise<void> => {
     try {
       const taskId: z.infer<typeof uuidSchema> = zodValidation(
         uuidSchema,

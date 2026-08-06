@@ -25,14 +25,12 @@ interface EditorFormProps {
   initialValues: TaskFrontendWithoutId;
   lists: List[];
   saveAction: (task: TaskFrontendWithoutId) => Promise<true | false>;
-  deleteButtonVisible: boolean;
   deleteAction?: () => Promise<true | false>;
 }
 
 export default function EditorForm({
   initialValues,
   lists,
-  deleteButtonVisible,
   saveAction,
   deleteAction,
 }: EditorFormProps) {
@@ -350,7 +348,7 @@ export default function EditorForm({
         </div>
         <div className={`${styles.saveDeleteButtons} ${styles.dflexRow}`}>
           <Button
-            className={deleteButtonVisible ? "" : styles.hideElement}
+            className={deleteAction ? "" : styles.hideElement}
             disabled={false}
             buttonType={"button"}
             onClickAction={(): void => setShowModalConfirmDelete(true)}
