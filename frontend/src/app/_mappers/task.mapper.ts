@@ -11,13 +11,9 @@ import {
 
 export function toTask(task: TaskBackend): TaskFrontend {
   return {
-    id: task.id,
-    title: task.title,
+    ...task,
     deadline: task.deadline === null ? null : new Date(task.deadline),
-    listId: task.listId,
     priority: stringToPriority(task.priority),
-    note: task.note,
-    done: task.done,
   };
 }
 

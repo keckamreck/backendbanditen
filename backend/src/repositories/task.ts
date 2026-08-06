@@ -7,7 +7,7 @@ import {
   userInputCreateTaskSchema,
   userInputUpdateTaskSchema,
 } from "../routers/tasks-router.js";
-import { NotFoundError } from "../errors/errors.js";
+import { DatabaseError, NotFoundError } from "../errors/errors.js";
 import { mapDatabaseError } from "../errors/map-database-error.js";
 import { z } from "zod";
 import { getListById } from "./list.js";
@@ -88,8 +88,11 @@ export async function createTask(
       userId: userId,
       ...data,
     };
-    await db.insert(tasks).values(newTask);
-    return newTask;
+    const [task] = await db.insert(tasks).values(newTask).returning();
+    if (!task) {
+      throw new DatabaseError("Failed to create task");
+    }
+    return task;
   } catch (error: unknown) {
     throw mapDatabaseError(error);
   }

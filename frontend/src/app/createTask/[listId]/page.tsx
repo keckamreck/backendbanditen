@@ -18,12 +18,6 @@ export default function Page() {
   const [lists, setLists] = useState<List[]>();
   const [initialTask, setInitialTask] = useState<TaskFrontendWithoutId>();
 
-  async function handleSave(
-    task: TaskFrontendWithoutId,
-  ): Promise<true | false> {
-    const result: TaskFrontend | false = await createTask(task);
-    return !!result;
-  }
   useEffect((): void => {
     async function fetchListsAndSetInitialTask(): Promise<void> {
       const lists: List[] | undefined = await getLists();
@@ -45,6 +39,13 @@ export default function Page() {
     }
     fetchListsAndSetInitialTask();
   }, [listId, router]);
+
+  async function handleSave(
+    task: TaskFrontendWithoutId,
+  ): Promise<true | false> {
+    const result: TaskFrontend | false = await createTask(task);
+    return !!result;
+  }
 
   if (lists && initialTask) {
     return (
