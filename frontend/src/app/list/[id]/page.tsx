@@ -26,7 +26,7 @@ function List({ ListId }: { ListId: string }) {
     async function load(): Promise<void> {
       const [listResult, tasksResult] = await Promise.all([
         getListById(ListId),
-        getTasksForList(ListId, false),
+        getTasksForList(ListId, false, "deadline"),
       ]);
       if (listResult) {
         setList(listResult);
