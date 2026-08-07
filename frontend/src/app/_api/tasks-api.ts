@@ -83,7 +83,9 @@ export async function editTask(
   taskId: string,
   changes: Partial<TaskFrontend>,
 ): Promise<TaskFrontend | false> {
-  const changesFormattedForBackend: Partial<TaskBackend> = toApiTask(changes);
+  const changesFormattedForBackend:
+    | TaskBackendWithoutId
+    | Partial<TaskBackend> = toApiTask(changes);
   const result: TaskBackend | "successful" | undefined =
     await fetchApi<TaskBackend>(
       `/tasks/${taskId}`,

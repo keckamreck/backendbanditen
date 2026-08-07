@@ -16,7 +16,7 @@ export function mapDatabaseError(error: unknown): AppError {
     return error;
   } else {
     const dbError: dbError = error as dbError;
-    switch (dbError.cause.code) {
+    switch (dbError?.cause?.code) {
       case "23505":
         return new ConflictError("resource already exists");
       case "23503":

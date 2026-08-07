@@ -1,7 +1,3 @@
-/* ==============================================
-   DASHBOARD PAGE STYLES - iPhone 14 Pro Max Optimiert
-   ============================================== */
-
 /* Base Layout */
 .page {
   display: flex;
@@ -32,9 +28,7 @@
   min-width: 0;
 }
 
-/* ==============================================
-   SEARCH BACKDROP
-   ============================================== */
+/*  search Backdrop */
 
 .searchBackdrop {
   position: fixed;
@@ -46,18 +40,14 @@
   z-index: 5;
 }
 
-/* ==============================================
-   HEADER CONTAINER
-   ============================================== */
+/* header container*/
 
 .pageContainer {
   position: relative;
   z-index: 10;
 }
 
-/* ==============================================
-   HEADER SECTION
-   ============================================== */
+/* header section */
 
 .header {
   display: grid;
@@ -163,9 +153,7 @@
   transition: transform 0.25s ease;
 }
 
-/* ==============================================
-   SEARCH DROPDOWN
-   ============================================== */
+/* Search Dropdown*/
 
 .searchDropdown {
   background: #f8f9fa;
@@ -217,9 +205,7 @@
   margin: 0;
 }
 
-/* ==============================================
-   CONTENT SECTIONS
-   ============================================== */
+/* Content Section from Today Section*/
 
 .todaySection {
   background: #f8f9fa;
@@ -288,9 +274,7 @@
   text-decoration: none;
 }
 
-/* ==============================================
-   RESPONSIVE DESIGN
-   ============================================== */
+/* responsive design */
 
 @media screen and (max-width: 430px) {
   .page {
@@ -332,9 +316,7 @@
   }
 }
 
-/* ==============================================
-   List Cards
-   ============================================== */
+/* List Cards */
 
   .cardContainer {
   width: 100%;

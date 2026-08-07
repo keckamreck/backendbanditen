@@ -29,7 +29,7 @@ export default function ArchivePage() {
     async function load(): Promise<void> {
       const [listResult, tasksResult] = await Promise.all([
         getListById(ListId),
-        getTasksForList(ListId, true),
+        getTasksForList(ListId, true, "title"),
       ]);
       if (listResult) {
         setList(listResult);

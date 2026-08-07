@@ -1,41 +1,26 @@
 [![Build Frontend](https://github.com/keckamreck/backendbanditen/actions/workflows/build-frontend.yml/badge.svg)](https://github.com/keckamreck/backendbanditen/actions/workflows/build-frontend.yml)
 [![Publish Frontend](https://github.com/keckamreck/backendbanditen/actions/workflows/publish-frontend.yml/badge.svg)](https://github.com/keckamreck/backendbanditen/actions/workflows/publish-frontend.yml)
 
-# Template_Next
+# Installation
 
-This repository is a template with a working GitHub action for the build and GitHub pages.
+To build the web app locally, run the `buildscript.sh` script. Node.js is required to run this script.
 
-## How to use this template
+Note: For the following to work, you'll need the two `.env` files. They have to be in the `/frontend` and `/backend` folder.
 
-After creating a repo with this template, deploy works automatically with each push to github pages. The template is deployed to [keckamreck.github.io/backendbanditen/] (https://keckamreck.github.io/backendbanditen/)
+# Starting the Application
 
-# Next
+Open a new terminal window, navigate to the backend folder, and run `npm run start`.
+Open a new terminal window, navigate to the frontend folder, and run `npm run start`.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Starting the Application in development mode
 
-## Getting Started
+Open a new terminal window, navigate to the backend folder, and run `npm run dev`.
+Open a new terminal window, navigate to the frontend folder, and run `npm run dev`.
 
-First, run the development server:
+# Open locally
 
-```bash
-npm install
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the website.
 
-```bash
-npm run dev
-```
+# Open deployed website
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open under https://backendbanditen.biber.mom/login or just https://biber.mom

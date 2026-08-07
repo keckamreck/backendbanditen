@@ -13,7 +13,6 @@ import {
 
 import { deleteTask, getTasksForList } from "../repositories/task.js";
 import { zodValidation } from "../validation/zod-validation.js";
-import { errorHandler } from "../middleware/errorHandler.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -130,16 +129,9 @@ router.delete("/:listId/tasks", async (req: Request, res: Response, next) => {
     const userId = zodValidation(uuidSchema, req.params.userId);
     const { done } = zodValidation(taskQuerySchema, req.query);
     const tasks = await getTasksForList(id, userId, done);
-    tasks.map((task) => {
-      async function deleteDoneTask() {
-        await deleteTask(userId, task.id);
-      }
-      deleteDoneTask();
-    });
+    await Promise.all(tasks.map((task) => deleteTask(userId, task.id)));
     res.status(204).send();
   } catch (error) {
     next(error);
   }
 });
-
-router.use(errorHandler);

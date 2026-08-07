@@ -81,7 +81,6 @@ export default function Page() {
         }}
         lists={lists}
         saveAction={handleSave}
-        deleteButtonVisible={true}
         deleteAction={handleDelete}
       />
     );
