@@ -58,27 +58,6 @@ export async function createCategory(name:  string, userId: string) {
   }
 }
 
-export async function updateCategory(
-  categoryId: string,
-  userId: string,
-  newName: string,
-) {
-  try {
-    const [result] = await db
-      .update(category)
-      .set({ name: newName })
-      .where(and(eq(category.id, categoryId), eq(category.userId, userId)))
-      .returning();
-
-    if (!result) {
-      throw new NotFoundError("Category not found");
-    }
-    return result;
-  } catch (error: unknown) {
-    throw mapDatabaseError(error);
-  }
-}
-
 export async function deleteCategory(categoryId: string, userId: string) {
   try {
     const [result] = await db

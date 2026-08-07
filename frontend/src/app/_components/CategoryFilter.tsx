@@ -13,19 +13,9 @@ interface CategoryFilterProps {
 
 export default function CategoryFilter({ onCategorySelect, categories }: CategoryFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  //const [categories, setCategories] = useState<CategoryFrontend[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFrontend | null>(null);
 
-  {/*useEffect(() => {
-    async function loadCategories(){
-      const result = await getCategories();
-      if(result){
-      setCategories(result);
-      }
-    }
-    loadCategories();
-  }, []);
-*/}
+
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
