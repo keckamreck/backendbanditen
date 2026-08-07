@@ -44,19 +44,3 @@ export async function updateListById(
   return result !== undefined && result !== "successful" ? result : false;
 }
 
-export async function updateList(
-  listId: string,
-  changes: Partial<ListBackend>,
-): Promise<List | false> {
-  const result: ListBackend | "successful" | undefined =
-    await fetchApi<ListBackend>(`/lists/${listId}`, "PATCH", changes);
-  if (result !== undefined && result !== "successful") {
-    return {
-      id: result.id,
-      title: result.title,
-      isFavorite: result.isFavorite || undefined,
-      categoryId: result.categoryId || undefined,
-    };
-  }
-  return false;
-}

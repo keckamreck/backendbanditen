@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "tsx -r dotenv/config src/app.ts",
     "build": "npx tsc && echo '{\"type\": \"module\"}' > dist/package.json",
+    "buildlocal": "npx tsc",
     "start": "node -r dotenv/config dist/app.js"
   },
   "dependencies": {

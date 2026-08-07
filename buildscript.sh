@@ -4,4 +4,4 @@ npm install
 npm run build
 cd ../backend || exit 1
 npm install
-npm run build
+npm run buildlocal
