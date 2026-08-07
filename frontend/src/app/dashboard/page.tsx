@@ -166,7 +166,7 @@ export default function DashboardPage() {
         const exists = prevCategories.some((cat) => cat.id === newCategory.id);
         if (!exists) {
           return [...prevCategories, newCategory];
-         }
+        }
         return prevCategories;
       });
     }
@@ -242,12 +242,12 @@ export default function DashboardPage() {
             )}
           </div>
           {/* Section for due Task */}
-            <DueTaskSection />
-            {/* Section for Category Sort */}
-            <CategoryFilter
-             onCategorySelect={setSelectedCategory}
-             categories={categories}
-              />
+          <DueTaskSection />
+          {/* Section for Category Sort */}
+          <CategoryFilter
+            onCategorySelect={setSelectedCategory}
+            categories={categories}
+          />
           <div className={styles.cardContainer}>
             {areCategoriesLoaded &&
               favourites.map((list) => (
