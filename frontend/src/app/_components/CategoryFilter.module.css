@@ -1,3 +1,5 @@
+
+
 .container {
   position: relative;
   margin-bottom: 1em;
@@ -48,6 +50,8 @@
   transform: scale(0.98);
   transition: transform 0.25s ease;
 }
+
+/* Ab hier ist das css KI-generiert. Nichts was man nicht selbst machen kann, aber der Fairnes wegen musste ich es sagen*/
 
 .dropdownOverlay {
   position: fixed;
