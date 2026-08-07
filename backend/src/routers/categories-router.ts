@@ -7,7 +7,7 @@ import { zodValidation } from "../validation/zod-validation.js";
 export const router = express.Router({ mergeParams: true });
 
 const uuidSchema = z.uuid();
-const nameSchema = z.string().trim().min(1).max(100);
+const nameSchema = z.string().trim().min(1);
 
 router.get(
   "/",
@@ -57,30 +57,6 @@ router.post(
         const userId: string = request.params.userId;
       const result: Category = await category.createCategory(name, userId);
       return response.status(201).json(result);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-router.patch(
-  "/:categoryId",
-  async (
-    request: Request<{ categoryId: string; userId: string }>,
-    response: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const categoryId = zodValidation(uuidSchema, request.params.categoryId);
-      const newName: string = zodValidation(nameSchema, request.body.name);
-      const userId: string = request.params.userId;
-
-      const result: Category = await category.updateCategory(
-        categoryId,
-        userId,
-        newName,
-      );
-      return response.status(200).json(result);
     } catch (error) {
       next(error);
     }

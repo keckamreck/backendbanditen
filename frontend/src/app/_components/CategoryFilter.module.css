@@ -1,8 +1,8 @@
 .container {
   position: relative;
-  width: fit-content;
   margin-bottom: 1em;
 }
+
 
 .sortButton {
   background-color: white;
@@ -23,7 +23,7 @@
 
 .sortButton:active {
   transform: scale(0.98);
-  transition: transform 0.1s ease;
+  transition: transform 0.25s ease;
 }
 
 .sortButtonActive {
@@ -44,13 +44,18 @@
   z-index: 20;
 }
 
+.sortButtonActive:active {
+  transform: scale(0.98);
+  transition: transform 0.25s ease;
+}
+
 .dropdownOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 
@@ -58,7 +63,7 @@
   position: absolute;
   top: 110%;
   left: 0;
-  width: 85vw;
+  width: 100%;
   background: white;
   border: 2px solid black;
   border-radius: 12px;

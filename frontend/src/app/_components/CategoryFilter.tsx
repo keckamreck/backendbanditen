@@ -1,29 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
-import styles from "./CategorySort.module.css";
-import { getCategories } from "@/app/_api/categories-api";
+import { useState } from "react";
+import styles from "./CategoryFilter.module.css";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CategoryFrontend } from "../_models/category";
 
 interface CategoryFilterProps {
   onCategorySelect: (category: string | null) => void;
+
+  categories: CategoryFrontend[] | [] 
 }
 
-export default function CategoryFilter({ onCategorySelect }: CategoryFilterProps) {
+export default function CategoryFilter({ onCategorySelect, categories }: CategoryFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState<CategoryFrontend[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFrontend | null>(null);
 
-  useEffect(() => {
-    async function loadCategories(){
-      const result = await getCategories();
-      if(result){
-      setCategories(result);
-      }
-    }
-    loadCategories();
-  }, []);
 
 
   const handleToggle = () => {

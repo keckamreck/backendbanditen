@@ -244,7 +244,10 @@ export default function DashboardPage() {
           {/* Section for due Task */}
           <DueTaskSection />
           {/* Section for Category Sort */}
-          <CategoryFilter onCategorySelect={setSelectedCategory} />
+          <CategoryFilter
+            onCategorySelect={setSelectedCategory}
+            categories={categories}
+          />
           <div className={styles.cardContainer}>
             {areCategoriesLoaded &&
               favourites.map((list) => (
